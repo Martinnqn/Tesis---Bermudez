@@ -1,0 +1,79 @@
+\documentclass{report}
+%\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[]{enumerate}
+\usepackage[]{amssymb}
+\usepackage[colorlinks, citecolor=black, filecolor=black, linkcolor=black, urlcolor=black]{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{minted}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{tabularx,ragged2e}
+\usepackage{textcomp}
+\usepackage{multicol}
+\usepackage{tikz}
+\usepackage{adjustbox}
+
+%para insertar pdf
+\usepackage[final]{pdfpages}
+
+%para el arbol de directorios
+\usepackage{dirtree}
+
+\newtheorem{definition}{{\bf\sc Definición }}[section]
+\newtheorem{theorem}{Teorema}[section]
+
+\newcolumntype{C}{>{\Centering\arraybackslash}X} % centered "X" column
+
+\begin{document}
+	
+	\title{Generación de texto en la web semántica}
+	\author{\ }
+	\date{}
+	\maketitle
+	\tableofcontents
+
+\pagebreak
+	
+\chapter{Introducción}
+La Web Semántica es un conjunto de estándares y tecnologías. Tiene como objetivo enriquecer la web actual (web 2.0) agregando explícitamente una capa de significado a los datos. De esta manera, se crea un mejor ambiente para poder automatizar tareas complejas que actualmente se realizan por los humanos de forma manual. 
+
+Para describir el dominio de interés en la Web Semántica, se adoptó el uso de ontologías, que tienen base en la lógica descriptiva y el vocabulario de RDF.
+
+Como las ontologías estructuran los datos de manera formal, son poco comprensibles por usuarios no expertos, y no brindan una cómoda visualización de la información para aquellos que quieran beneficiarse del uso de las tecnologías semánticas. Surge así, la necesidad de documentar ontologías, y de expresar su contenido formal en Lenguaje Natural (LN), para ser publicado y que pueda ser consumido por cualquier usuario. 
+
+En esta tesis se propone un sistema de generación de textos para visualizar en lenguaje natural el contenido de una ontología expresada en OWL.
+
+\section{Objetivo}
+El objetivo de este trabajo es diseñar e implementar una aplicación capaz de procesar el contenido de una ontología y expresarlo en lenguaje natural, para que sea accesible a cualquier usuario cuyo interés sea el dominio modelado, pero no tenga las herramientas necesarias para comprender las lógicas subyacentes.
+
+Se espera que este trabajo sirva como soporte a la comprensión de los dominios modelados en ontologías.
+
+\section{Motivación}
+Este trabajo tiene varios motivos.
+En principio, el gran avance en los estudios de lingüística computacional y técnicas desarrolladas en generación de textos, que permiten estudiarlas para analizar sus características, con el fin de integrarlas.
+
+Por otro lado, se encuentra el hecho de acercar más las disciplinas tales como lingüística y ciencias de la computación. La Web Semántica promete un terreno especial para el desarrollo de aplicaciones que permitan sacar provecho de las tecnologías semánticas. Utilizar conocimientos de lingüística y computación puede ayudar a establecer los procesos necesarios, que permitan generar información que sea comprensible para cualquier usuario, siendo primordial el hecho de que la información debe ser accesible a todo el público.
+
+En cuanto a la automatización de procesos, poder separar la generación de textos automática en procesos específicos, da la posibilidad de crear agentes con Inteligencia Artificial especializados en tales procesos, y la posibilidad de intercambiarlos, sin alterar otras partes del sistema de generación de texto.
+
+
+
+\input{Antecedentes}
+
+\input{presentacion_problema.tex}
+
+\input{organizacion_informacion.tex}
+
+\input{generacion_documento.tex}
+
+\input{conclusiones.tex}
+
+\bibliographystyle{abbrv}
+\bibliography{bibliografia}
+
+\end{document}

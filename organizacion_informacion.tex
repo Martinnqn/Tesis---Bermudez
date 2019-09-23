@@ -1,0 +1,131 @@
+\chapter{Organización de la información}
+
+\section{Diseño}
+\subsection{Clasificación de las entidades más relevantes}
+Para este trabajo, asumimos que los grafos subyacentes a las ontologías usadas en la web semántica están caracterizados por ser grafos libres de escala ~\cite{zhang2008scale}. Considerando esta hipótesis, esperamos que la naturaleza de las relaciones brinden información suficiente para discriminar entre el contenido principal y el menos relevante.
+
+El criterio principal para establecer una clasificación sobre las clases de una ontología, y que tal clasificación sirva para seleccionar las clases más relevantes para la verbalización de la ontología, se basa en cuánta información posee una clase respecto al resto de las clases en la ontología. En este trabajo se considera la mayor cantidad de información, a aquellas clases que están presentes en la mayor cantidad de dominios de \emph{ObjectProperties}. Esto permite obtener las clases que tengan mayor cantidad de conexiones con otras clases, y que a su vez sean el núcleo de la relación. Teniendo en cuenta a las clases mejor clasificadas, se puede centrar lo que se dice en el texto alrededor de estas clases.
+
+Visualizando la ontología como un grafo, se puede considerar el grado del nodo como valor para clasificar las clases, pero teniendo en cuenta para el cálculo del grado únicamente los arcos que  
+unen a los nodos a través de la relación \emph{rdf:domain}.
+
+Algunas ventajas de este enfoque son:
+\begin{itemize}
+    \item Sencillez de implementación. Únicamente se debe recorrer el grafo calculando el valor de cada nodo. El recorrido del grafo tiene a lo sumo una complejidad polinomial.
+    \item No se requiere agregar información extra al dominio.
+    \item No es necesario utilizar sobre la ontología un razonador que requiera una complejidad computacional que sea intratable. La única observación es que hay que inferir el dominio y rango de las \emph{ObjectProperties}. Sin embargo, la inferencia de dominio y rango se realiza teniendo en cuenta la jerarquía de \emph{ObjectProperties}, sin necesidad de inferir clases equivalentes o disjuntas.
+\end{itemize}
+
+La eficacia de este enfoque depende fuertemente de que las \emph{ObjectProperties} más importantes tengan el dominio explícito.
+
+
+\subsection{Seleccionando las principales clases}
+\label{sec:select_class}
+Una vez calculado el valor de cada clase, se pueden seleccionar las clases que superen cierto umbral para remover las menos importantes. En este trabajo, se recorren todas las clases y se seleccionan las que superen el valor promedio entre cantidad de propiedades y cantidad de clases.
+
+Además, se estableció un factor de reducción del umbral, para el caso en el que no exista ninguna clase que supere el umbral seleccionado. Este factor reduce el umbral en 10\%, y se recorren todas las clases nuevamente. Iterativamente, el umbral es reducido hasta encontrar alguna clase que lo supere, o hasta llegar a cero.
+
+Cuando se seleccionan las clases que van a representar los temas principales, puede ocurrir que se elijan clases de una misma rama en la jerarquía de clases. Esto hace que se pierda algo de semántica, pues se incluyen clases en el mismo nivel, siendo que algunas son más específicas y pueden ser alcanzadas desde sus ancestros. Para evitar este problema, se optó por eliminar las subclases que sean seleccionadas en un principio, y que tengan a una clase ancestro dentro de los temas principales.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm, height=7cm]{img/organizacion_informacion/secuencia_getMainContent.pdf}
+    \caption{Diagrama de secuencia para seleccionar las clases principales}
+    \label{fig:diagrama_secuencia_getMainContent}
+\end{figure}
+
+
+\subsection{Agrupando la información de las clases elegidas}
+\label{sec:agrupando_info}
+Una vez elegidas las clases que serán los temas principales del texto, se intenta agrupar la información de cada una en grupos más generales, que abarquen con mayor nivel de abstracción su información. Para esto, para cada clase, se busca reemplazar las propiedades donde participan como dominio, por propiedades en común de más alto nivel en la jerarquía de \emph{ObjectProperties}. Por ejemplo, en la ontología de las pizzas, para la clase \emph{pizza} existen dos propiedades: \emph{tieneCobertura} y \emph{tieneBase}. Como estas dos propiedades tienen a su vez una \emph{superproperty} en común llamada \emph{tieneIngrediente}, se agrupa toda la información que pueda ser alcanzada por las \emph{subproperties} en un único grupo representado por \emph{tieneIngrediente}. 
+
+Además de la información que puede ser alcanzada desde las \emph{ObjectProperties}, la información que poseen las subclases en la jerarquía de clases y los individuos también es de suficiente valor para ser agrupada. En este sentido, las unidades de información representadas por las subclases y los individuos de cada clase elegida como tema relevante, son también incluidas en un grupo. En este caso estamos haciendo uso de las relaciones \emph{owl:subClassOf} y \emph{owl:NamedIndividual}.
+
+Con toda esta información, se crea un primer nivel de grupos que abarcan lo más general posible todos los temas a ser tratados en un texto. Como ejemplo, el primer nivel de la ontología de las pizzas quedaría como en la figura \ref{fig:macro_planning_pizza}.
+\begin{figure}[H]
+%no borrar el % de dirtree porque es necesario.
+\dirtree{%
+.1 pizza.
+.2 tieneIngrediente.
+.2 pizzaConCarne.
+.2 pizzaConNombre.
+.2 $...$ las restantes subclases de pizza.
+}
+\caption{Organización del contenido de la ontología \emph{pizza}.}
+\label{fig:macro_planning_pizza}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm, height=7cm]{img/organizacion_informacion/secuencia_contentGrouping.pdf}
+    \caption{Diagrama de secuencia para agrupar la información de las clases}
+    \label{fig:diagrama_secuencia_contentGrouping}
+\end{figure}
+
+
+\subsection{Recorriendo la ontología}
+Luego de obtener el primer grupo de información, queda pendiente tratar el segundo problema nombrado en \ref{sec:problema_coherencia-texto}: recorrer la ontología obteniendo y agrupando la información relacionada a los temas elegidos. 
+
+El objetivo es establecer una jerarquía de grupos de información, comenzando desde los elementos del primer grupo, que abarcan la información más general, e ir creando nuevos grupos con información más específica. De esta manera, se garantiza que entre los elementos pertenecientes a una rama haya una relación semántica.
+
+Partiendo desde el primer nivel (como los de la figura \ref{fig:macro_planning_pizza}), se aplica el mismo algoritmo usado en \ref{sec:agrupando_info} para obtener el contenido principal, pero esta vez sobre cada elemento del primer nivel. Como ahora es posible que un elemento sea una \emph{ObjectProperty}, para continuar el recorrido de la ontología se buscan sus subproperties, para luego continuar obteniendo información de ellas. Las subproperties elegidas deben contener en su dominio, a la clase que haya sido elegida como tópico para ese grupo de información que se está creando. La búsqueda de subproperties debe ser exhaustiva, pues si no se encuentran subproperties que tengan en su dominio a la clase tópico, debe continuar la búsqueda bajando en la jerarquía de propiedades hasta hallar alguna, ya que es el proceso inverso a la búsqueda de superproperties en común usadas para agrupar la información de manera más general. Si no hay subproperties, entonces la nueva información para agregar en el texto se basa en el rango de la \emph{ObjectProperty} inicial. En este último caso, empleamos la relación \emph{rdf:Range}.
+
+Continuando con el ejemplo de la ontología de la pizza, expandimos la figura \ref{fig:macro_planning_pizza} con el siguiente nivel de información, en la figura \ref{fig:macro_planning_pizza_n2}. 
+\begin{figure}[H]
+%no borrar el % de dirtree porque es necesario.
+\dirtree{%
+.1 pizza.
+.2 tieneIngrediente.
+.3 tieneBase.
+.3 tieneCobertura.
+.2 pizzaConCarne.
+.2 pizzaConNombre.
+.3 Margherita.
+.3 Napoletana.
+.3 $...$ las restantes subclases de pizzaConNombre.
+.2 $...$ las restantes subclases de pizza, con sus respectivas subclases.
+}
+\caption{Organización del contenido de nivel dos de la ontología \emph{pizza}.}
+\label{fig:macro_planning_pizza_n2}
+\end{figure}
+
+Se puede ver que las subproperties \emph{tieneBase} y \emph{tieneCobertura} tienen en su dominio a \emph{pizza}, la clase más cercana recorriendo sus ancestros. Si existiera por ejemplo, \emph{tieneCondimento} como una tercer subproperty de \emph{tieneIngrediente}, cuyo dominio no tuviera \emph{pizza}, entonces no sería listada dentro del grupo \emph{tieneIngredientes} en la rama de \emph{pizza}. Sin embargo, deben explorarse las subproperties de \emph{tieneCondimento}, por el caso de que tenga alguna subproperty que tuviera como dominio a \emph{pizza}. Por ejemplo, supongamos que \emph{tieneCondimento} tiene como subproperty a \emph{tieneOrégano} con diminio \emph{pizza}, en ese caso se habilita a \emph{tieneCondimento} para ser insertado en el grupo junto a  \emph{tieneCobertura} y \emph{tieneBase}.  
+
+De esta manera, el mismo algoritmo se aplica recursivamente para cada elemento de cada nivel. El algoritmo se detiene cuando no encuentra más subclases ni propiedades para cada clase del último nivel.
+
+\subsection{Agregando información marginada}
+Con el recorrido de la ontología para formar los grupos de información, existe la posibilidad de que hayan clases que no sean parte de un grupo. Es el caso, por ejemplo, de la clase \emph{Comida}, y sus subclases \emph{Helado} y \emph{Condimento}, en la ontología \emph{pizza}. Para no dejar información del dominio excluida, una vez que finaliza la creación de grupos desde las clases principales, se crea un nuevo grupo menos importante, y se agregan todas las clases que habían quedado marginadas. El proceso de creación de subgrupos para este nuevo grupo es idéntico al explicado en las sección anterior.
+
+Continuando con el ejemplo de la pizza, el resultado de agregar la  información marginada se muestra en la figura \ref{fig:macro_planning_pizza_marg}
+
+\begin{figure}[H]
+%no borrar el % de dirtree porque es necesario.
+\dirtree{%
+.1 pizza.
+.2 ....
+.1 comida.
+.2 condimento.
+.2 helado.
+}
+\caption{Grupos de la ontología \emph{pizza} con información marginada.}
+\label{fig:macro_planning_pizza_marg}
+\end{figure}
+
+\subsection{Diagrama de clases}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm, height=7cm]{img/organizacion_informacion/clases_organizador_informacion.pdf}
+    \caption{Diagrama de clases del organizador de información}
+    \label{fig:diagrama_clases_organizador}
+\end{figure}
+
+\section{Implementación}
+\subsection{blabla}
+
+\section{Casos de estudio}
+\subsection{Organización de Ontología Wine}
+\subsection{Organización de Ontología SNOMED-CT}
+
+\section{Conclusiones}
