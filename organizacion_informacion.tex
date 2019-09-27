@@ -1,7 +1,7 @@
 \chapter{Organización de la información}
 
 \section{Diseño}
-La información se organiza en una estructura  jerárquica. En esta estructura, se insertan las entidades presentes en la ontología, de manera que las entidades más relevantes se encuentran en el primer nivel de jerarquía, y a medida que se desciende por los niveles la importancia de las entidades disminuye.
+La información se organiza en una estructura  jerárquica. La estructura se compone de las entidades presentes en la ontología, de manera que las entidades más relevantes se encuentran en el primer nivel de jerarquía, y a medida que se desciende por los niveles la importancia de las entidades disminuye.
 
 Para alcanzar esta estructura, se crearon una serie de módulos que transforman la entrada hasta alcanzar un árbol con toda la información que posee la ontología. El primer módulo recibe la entrada y crea una representación interna de la ontología, luego esta representación es enviada a otros dos módulos: uno se encarga de extraer las entidades más relevantes; el otro, con la representación interna de la ontología y las entidades más relevantes, se encarga de generar un árbol de entidades. Para finalizar, un último módulo se asegura de agregar aquellas entidades que no han sido utilizadas en ninguna rama del árbol, creando una rama especial del árbol en el que se insertan las entidades que no han sido relacionadas con las demás.
 

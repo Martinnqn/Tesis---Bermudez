@@ -1,58 +1,50 @@
 \chapter{Generación del documento de texto}
 
-\section{Consideraciones previas}
-\subsection*{Convención y suposiciones del nombrado de entidades}
-Para no limitar la aplicación a una convención de nombrado, no se requiere una forma estricta para nombrar las entidades en una ontología. Sin embargo, nos basamos en algunas suposiciones que resultan natural al crear una ontología:
-\begin{enumerate}
-    \item Las entidades pueden tener su nombre ya sea en la IRI o en un label\footnote{Estas opciones son excluyentes, al verbalizar una ontología solo se extraen los nombres de un solo lugar, por lo que todos los nombres deben ser extraídos de IRI o de label sin combinarse}. Si el nombre es extraído de una IRI, debe estar escrito con el estilo CamelCase. Si el nombre se extrae de un label, debe estar escrito en lenguaje natural, y debe tener el idioma del label (en este caso, español ``es'' o ingles ``en'').
-    \item No hay condiciones para el nombre de una clase, sin embargo es preferible que contenga al menos un sustantivo.
-    \item No hay condiciones para el nombre de una propiedad, sin embargo es preferible que contenga al menos un verbo. 
-    
-    No se reconocen verbos implícitos, por lo que si se quiere expresar, por ejemplo, que una clase \emph{está localizada en} algún lugar, la propiedad debería llamarse \emph{estáLocalizadaEn} y no \emph{localizadaEn}. Al igual que los verbos, no es conveniente omitir las preposiciones finales, por ejemplo, en la propiedad \emph{esParte}, es recomendable utilizar \emph{esParteDe}.
-\end{enumerate}
+\section{Diseño}
+El documento de texto debe contener toda la información posible de la ontología, organizado en secciones, subsecciones y párrafos. Para alcanzar el documento final, se crearon módulos teniendo como referencia las actividades de la generación de lenguaje natural nombradas en \ref{sec:tareas_gnl}. Los tres módulos principales son emph{macroplanificación}, \emph{microplanificación} y \emph{realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
 
-Estas condiciones ayudan a mejorar la fluidez del texto y no suponen una gran carga en los desarrolladores de ontologías.
+Si bien en el capítulo anterior se propuso un flujo lineal de información en el organizador de información, en este capítulo, al desarrollar la macroplanificación, se integraron los módulos del organizador de información con los submódulos de la macroplanificación, generando una interacción cíclica entre los módulos. El motivo de esta integración es evitar la creación de interfaces entre los módulos, y el overhead que estas suponen, ya que la creación del árbol de información y la macroplanificación resultan ser procesos equivalentes, por lo que pueden realizarse al mismo tiempo, evitando recorrer el doble de veces la estructura jerárquica. 
 
-\subsection*{Tratamiento sintáctico de los nombres de entidades}
-Para facilitar el entendimiento de las secciones referidas al micro planning, se explicará cómo fueron tratados los nombres de las entidades, desde el punto de vista sintáctico. 
+En la figura \ref{fig:modulos_plan_documento} se puede ver la integración de los módulos. Los pasos de la interacción entre los módulos se encuentran enumerados en orden, siendo los pasos 5 y 6 repetibles hasta que no hayan más grupos de entidades (correspondientes a niveles en la jerarquía de la estructura).
 
-Dado que los nombres de las entidades pueden no corresponderse fielmente con la gramática de un lenguaje (por falta de palabras funcionales, tales como artículos o preposiciones), se optó por no realizar un análisis sintáctico a los nombres. Se consideró, a cada conjunto de palabras que conforman el nombre de una entidad, como un componente incompleto que es parte de una oración más grande. Por este motivo, se divide en dos partes fundamentales: una parte inicial y un complemento, entre los cuales pueden insertarse nexos y cuantificaciones. A continuación se explican cómo se reconocen ambas partes en las clases y propiedades:
-\begin{itemize}
-    \item Los nombres de las propiedades (en los que suponemos existe al menos un verbo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer verbo, incluído el verbo. El complemento se conforma con todas las palabras que siguen al verbo. Por ejemplo: la propiedad \emph{tiene color} se compone de parte inicial: \emph{tiene}, y complemento: \emph{color}. La propiedad \emph{se solapa con} se compone de \emph{se solapa} como parte de inicial, y \emph{con} como complemento.
-    \item Los nombres de las clases (en los que suponemos existe al menos un sustantivo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer sustantivo, incluido el sustantivo. El complemento se conforma con todas las palabras que siguen al sustantivo. Por ejemplo: la clase \emph{agente social}, tiene como parte inicial \emph{agente} y complemento \emph{social}. La clase \emph{cobertura de pizza} se compone de \emph{cobertura} con complemento \emph{de pizza}.
-    \item Los nombres de los individuos son tratados igual que los nombres de las clases.
-\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=12cm, height=5cm]{img/generacion_documento/modulos_plan_documento.pdf}
+    \caption{Integración de módulos para la generación del plan de documento.}
+    \label{fig:modulos_plan_documento}
+\end{figure}
+
+Cabe aclarar que, si bien la estructuración del documento se determina con base en el árbol de entidades, en el documento final la realización de la estructura (secciones y párrafos) se retrasa hasta tener mayor información acerca de su contenido, es decir, luego de la etapa de microplanificación. Estas tareas se encuentran desarrolladas en los módulos de microplanificación y realización, los cuales se muestran en la figura \ref{fig:modulos_documento_final}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=12cm]{img/generacion_documento/modulos_documento_final.pdf}
+    \caption{Módulos para la generación del documento final.}
+    \label{fig:modulos_documento_final}
+\end{figure}
 
 \section{Diseño macro planning}
-En esta tarea se planificará la estructura final del documento, definiendo criterios para decidir si la información organizada se corresponde a secciones o párrafos.
+En esta tarea se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de macro planificación. Por este motivo, se decidió hacer una arquitectura monolítica entre el organizador de información y el macroplanificador. Sin embargo, para evitar seguir trabajando con árboles de entidades, se construyó un conjunto de componentes para comenzar con el documento de texto. De esta manera, el plan de documento, representado en la figura \ref{fig:modulos_plan_documento} con el número 9, se corresponde a un conjunto de clases que definen una representación interna de un documento de texto. 
 
-La organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de macro planificación. 
+Esta representación prepara el terreno para que, luego de la microplanificación, el realizador decida el diseño final del documento.
 
-Para simplificar el documento de salida, solo se consideraron dos niveles de información en el documento: el nivel más alto se corresponde a las secciones (o capítulos) y sub-secciones, y el nivel más bajo a los párrafos. 
-
-Para llevar a cabo esta planificación, se buscó medir la información a verbalizar, por lo que se propuso como métrica principal a la cantidad de sentencias presentes en la descripción de un tópico. Este es el único parámetro para reconocer si a un tópico le corresponde una estructuración asociada a una sección o un párrafo. 
-
-\subsection{Secciones y párrafos}
-Una sección agrupa uno o más párrafos o sub-secciones, por lo que en una sección puede existir más de un tópico, con la condición de que esos tópicos tengan una relación, ya sea de hermanos o de hijos. Estas relaciones se obtienen de la estructura en árbol reconocida en el algoritmo de organización de la información, discutido en el capítulo anterior. 
-
-Para decidir si un tópico es planificado como una sección, se utiliza como medida la cantidad de sentencias que posee y si tiene algún tópico que a su vez deba ser planificado como una sub-sección.
-
-El valor mínimo de sentencias usado para decidir si se planifica como una sección es de cinco sentencias. Para agregar flexibilidad, el algoritmo queda parametrizado con esta unidad de medida, por lo que puede personalizarse para variar la granularidad del texto de salida, forzando a crear secciones con diferentes cantidad de sentencias, variando el formato del documento de salida.
-
-Otro criterio usado en complemento de la cantidad de sentencias, es si para un tópico existe algún sub-tópico que requiera planificarse como sección, permitiendo anidar secciones y sub-secciones. Este concepto de anidamiento de secciones se aplica recursivamente, por lo que la cantidad de niveles de secciones puede ser tan alto como la jerarquía de tópicos reconocidos en el árbol de tópicos. 
-
-Cuando se reconoce a una sección, esta se incluye en el documento final como: \begin{itemize}
-    \item una sección principal
-    \item o como hija (sub-sección) de una sección existente.
+La creación de la representación interna del documento de texto tiene en cuenta los siguientes criterios:
+\begin{itemize}
+    \item A cada clase le corresponde una sección.
+    \item Cada sección está compuesta de al menos un párrafo y un título.
+    \item Cada párrafo trata un único tópico, el cual puede ser una clase o un individuo. También, un párrafo puede o no tener alguna sentencia. Este criterio se debe a que no todas las entidades tienen asociados axiomas que la describan.
+    \item Las \emph{owl:ObjectProperties} solo pueden ser tópico de una sección cuando se utilizan para agrupar información de una clase. Cuando una 
 \end{itemize}
 
-Existe una relación directa entre las secciones y el árbol de tópicos. Todo tópico es una potencial sección, para ser planificado como tal, debe cumplir los criterios propuestos anteriormente. 
+\subsection{Diagrama de clases}
+En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al macroplanificador. El componente principal que integra el macroplanificador con el organizador de información es la clase TextManager. Esta clase se encarga de crear la clase Text, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Sentencias. Cada sentencia tiene como información a su tópico y lo que se dice de su tópico, en forma de entidades OWL.
 
-Si la cantidad de sentencias requeridas para ser considerado una sección, tiende a cero, la planificación del documento será fiel al árbol de tópicos; mientras que si la cantidad de sentencias tiende a infinito, la planificación perderá niveles de jerarquía, y únicamente contemplará como secciones a los tópicos del primer nivel del árbol.   
-
-Si un tópico se planifica como párrafo, significa que ningún tópico que se encuentre en niveles inferiores de esa misma rama del árbol tiene aptitud para ser planificado como sección.
-
-Si bien esto puede diseñar un documento con una gran cantidad de sub-secciones, siendo visualmente antinatural, ayuda a los humanos a reconocer y establecer relaciones entre los tópicos, siendo el objetivo principal no desaprovechar la semántica del dominio modelado, y teniendo como intención principal que el lector comprenda el dominio modelado en la ontología.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm, height=7cm]{img/generacion_documento/diagrama_clases_macroplanificador.pdf}
+    \caption{Diagrama de clases del generador del documento de texto.}
+    \label{fig:diagrama_clases_macroplanificador}
+\end{figure}
 
 \section{Implementación macro panning}
 
@@ -91,6 +83,31 @@ Estos componentes de una oración no intentan ser exhaustivos ni completamente f
 
 \subsection{Tareas del microplanning}
 Separaremos las tareas de microplanning en tres tareas principales: la verbalización de los constructores OWL, en la eliminación de información redundante entre oraciones, y el reemplazo de entidades nombradas por expresiones de referencia.
+
+
+\subsubsection{Consideraciones previas}
+{\bf Convención y suposiciones del nombrado de entidades} \\
+Para no limitar la aplicación a una convención de nombrado, no se requiere una forma estricta para nombrar las entidades en una ontología. Sin embargo, nos basamos en algunas suposiciones que resultan natural al crear una ontología:
+\begin{enumerate}
+    \item Las entidades pueden tener su nombre ya sea en la IRI o en un label\footnote{Estas opciones son excluyentes, al verbalizar una ontología solo se extraen los nombres de un solo lugar, por lo que todos los nombres deben ser extraídos de IRI o de label sin combinarse}. Si el nombre es extraído de una IRI, debe estar escrito con el estilo CamelCase. Si el nombre se extrae de un label, debe estar escrito en lenguaje natural, y debe tener el idioma del label (en este caso, español ``es'' o ingles ``en'').
+    \item No hay condiciones para el nombre de una clase, sin embargo es preferible que contenga al menos un sustantivo.
+    \item No hay condiciones para el nombre de una propiedad, sin embargo es preferible que contenga al menos un verbo. 
+    
+    No se reconocen verbos implícitos, por lo que si se quiere expresar, por ejemplo, que una clase \emph{está localizada en} algún lugar, la propiedad debería llamarse \emph{estáLocalizadaEn} y no \emph{localizadaEn}. Al igual que los verbos, no es conveniente omitir las preposiciones finales, por ejemplo, en la propiedad \emph{esParte}, es recomendable utilizar \emph{esParteDe}.
+\end{enumerate}
+
+Estas condiciones ayudan a mejorar la fluidez del texto y no suponen una gran carga en los desarrolladores de ontologías.
+
+{\bf Tratamiento sintáctico de los nombres de entidades}\\
+Para facilitar el entendimiento de las secciones referidas al micro planning, se explicará cómo fueron tratados los nombres de las entidades, desde el punto de vista sintáctico. 
+
+Dado que los nombres de las entidades pueden no corresponderse fielmente con la gramática de un lenguaje (por falta de palabras funcionales, tales como artículos o preposiciones), se optó por no realizar un análisis sintáctico a los nombres. Se consideró, a cada conjunto de palabras que conforman el nombre de una entidad, como un componente incompleto que es parte de una oración más grande. Por este motivo, se divide en dos partes fundamentales: una parte inicial y un complemento, entre los cuales pueden insertarse nexos y cuantificaciones. A continuación se explican cómo se reconocen ambas partes en las clases y propiedades:
+\begin{itemize}
+    \item Los nombres de las propiedades (en los que suponemos existe al menos un verbo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer verbo, incluído el verbo. El complemento se conforma con todas las palabras que siguen al verbo. Por ejemplo: la propiedad \emph{tiene color} se compone de parte inicial: \emph{tiene}, y complemento: \emph{color}. La propiedad \emph{se solapa con} se compone de \emph{se solapa} como parte de inicial, y \emph{con} como complemento.
+    \item Los nombres de las clases (en los que suponemos existe al menos un sustantivo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer sustantivo, incluido el sustantivo. El complemento se conforma con todas las palabras que siguen al sustantivo. Por ejemplo: la clase \emph{agente social}, tiene como parte inicial \emph{agente} y complemento \emph{social}. La clase \emph{cobertura de pizza} se compone de \emph{cobertura} con complemento \emph{de pizza}.
+    \item Los nombres de los individuos son tratados igual que los nombres de las clases.
+\end{itemize}
+
 
 \subsubsection{Verbalización de constructores OWL}
 Esta tarea se encarga de componer las oraciones según la información de cada constructor OWL. Las oraciones pueden enfocarse ya sea en una \emph{owl:Class} o  \emph{owl:NamedIndividual}. Cuando se enfocan en una \emph{owl:Class}, pueden contener la siguiente información: clases equivalentes, disjuntas, subclases, superclases, sus instancias y las propiedades en las que participa. Cuando se enfoca en un \emph{owl:NamedIndividual}, puede contener información acerca de los valores de sus propiedades.
@@ -217,21 +234,43 @@ Basaremos la agregación en la conjunción por componentes compartidos. El objet
     \item {\bf Agregación entre sentencias}: esta agregación se aplica cuando se recorren las sentencias para armar un párrafo. Además de agrupar las sentencias por función, también se separan por constructor, obteniendo así 7 grupos: \emph{ObjectSomeValuesFrom, ObjectAllValuesFrom, intersection, union, ObjectHasValue, T, ON y SV}. De esta manera, para cada grupo, se realiza la agregación, de manera independiente entre ellos.
 \end{itemize}
 
-\subsection{Diagrama de clases}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=10cm, height=7cm]{img/generacion_documento/diagrama_clases.pdf}
-    \caption{Diagrama de clases del generador del documento de texto.}
-    \label{fig:diagrama_clases_generador_documento}
-\end{figure}
-
 \section{Implementación micro panning}
 
 \subsection{Recursos usados}
 
+\section{Diseño del realizador}
+En esta tarea se diseñará la estructura final del documento, definiendo criterios para decidir si la información organizada se corresponde a secciones o párrafos.
+
+Para simplificar el documento de salida, solo se consideraron dos niveles de información en el documento: el nivel más alto se corresponde a las secciones (o capítulos) y sub-secciones, y el nivel más bajo a los párrafos. 
+
+Para llevar a cabo esta planificación, se buscó medir la información a verbalizar, por lo que se propuso como métrica principal a la cantidad de sentencias presentes en la descripción de un tópico. Este es el único parámetro para reconocer si a un tópico le corresponde una estructuración asociada a una sección o un párrafo. 
+
+\subsection{Secciones y párrafos}
+Una sección agrupa uno o más párrafos o sub-secciones, por lo que en una sección puede existir más de un tópico, con la condición de que esos tópicos tengan una relación, ya sea de hermanos o de hijos. Estas relaciones se obtienen de la estructura en árbol resultado de la macroplanificación. 
+
+Para decidir si un tópico es planificado como una sección, se utiliza como medida la cantidad de sentencias que posee y si tiene algún tópico que a su vez deba ser planificado como una sub-sección.
+
+El valor mínimo de sentencias usado para decidir si se planifica como una sección es de cinco sentencias. Para agregar flexibilidad, el algoritmo queda parametrizado con esta unidad de medida, por lo que puede personalizarse para variar la granularidad del texto de salida, forzando a crear secciones con diferentes cantidad de sentencias, lo que permite variar el diseño del documento de salida.
+
+Otro criterio usado en complemento de la cantidad de sentencias, es si para un tópico existe algún sub-tópico que requiera planificarse como sección, permitiendo anidar secciones y sub-secciones. Este concepto de anidamiento de secciones se aplica recursivamente, por lo que la cantidad de niveles de secciones puede ser tan alto como la jerarquía de tópicos reconocidos en el árbol de tópicos. 
+
+Cuando se reconoce a una sección, esta se incluye en el documento final como: \begin{itemize}
+    \item una sección principal
+    \item o como hija (sub-sección) de una sección existente.
+\end{itemize}
+
+Existe una relación directa entre las secciones y el árbol de tópicos. Todo tópico es una potencial sección, para ser planificado como tal, debe cumplir los criterios propuestos anteriormente. 
+
+Si la cantidad de sentencias requeridas para ser considerado una sección, tiende a cero, la planificación del documento será fiel al árbol de tópicos; mientras que si la cantidad de sentencias tiende a infinito, la planificación perderá niveles de jerarquía, y únicamente contemplará como secciones a los tópicos del primer nivel del árbol.   
+
+Si un tópico se planifica como párrafo, significa que ningún tópico que se encuentre en niveles inferiores de esa misma rama del árbol tiene aptitud para ser planificado como sección.
+
+Si bien esto puede diseñar un documento con una gran cantidad de sub-secciones, siendo visualmente antinatural, ayuda a los humanos a reconocer y establecer relaciones entre los tópicos, siendo el objetivo principal no desaprovechar la semántica del dominio modelado, y teniendo como intención principal que el lector comprenda el dominio modelado en la ontología.
+
+\section{Implementación del realizador}
+
 \section{Casos de estudio}
-\subsection{Macro planning}
-\subsection{Micro planning}
+
 
 \section{Conclusiones}
 
