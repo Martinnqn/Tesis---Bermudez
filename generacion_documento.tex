@@ -86,7 +86,7 @@ Separaremos las tareas de microplanning en tres tareas principales: la verbaliza
 
 
 \subsubsection{Consideraciones previas}
-{\bf Convención y suposiciones del nombrado de entidades} \\
+\noindent {\bf Convención y suposiciones del nombrado de entidades} \\
 Para no limitar la aplicación a una convención de nombrado, no se requiere una forma estricta para nombrar las entidades en una ontología. Sin embargo, nos basamos en algunas suposiciones que resultan natural al crear una ontología:
 \begin{enumerate}
     \item Las entidades pueden tener su nombre ya sea en la IRI o en un label\footnote{Estas opciones son excluyentes, al verbalizar una ontología solo se extraen los nombres de un solo lugar, por lo que todos los nombres deben ser extraídos de IRI o de label sin combinarse}. Si el nombre es extraído de una IRI, debe estar escrito con el estilo CamelCase. Si el nombre se extrae de un label, debe estar escrito en lenguaje natural, y debe tener el idioma del label (en este caso, español ``es'' o ingles ``en'').
@@ -97,8 +97,9 @@ Para no limitar la aplicación a una convención de nombrado, no se requiere una
 \end{enumerate}
 
 Estas condiciones ayudan a mejorar la fluidez del texto y no suponen una gran carga en los desarrolladores de ontologías.
+\\
 
-{\bf Tratamiento sintáctico de los nombres de entidades}\\
+\noindent {\bf Tratamiento sintáctico de los nombres de entidades}\\
 Para facilitar el entendimiento de las secciones referidas al micro planning, se explicará cómo fueron tratados los nombres de las entidades, desde el punto de vista sintáctico. 
 
 Dado que los nombres de las entidades pueden no corresponderse fielmente con la gramática de un lenguaje (por falta de palabras funcionales, tales como artículos o preposiciones), se optó por no realizar un análisis sintáctico a los nombres. Se consideró, a cada conjunto de palabras que conforman el nombre de una entidad, como un componente incompleto que es parte de una oración más grande. Por este motivo, se divide en dos partes fundamentales: una parte inicial y un complemento, entre los cuales pueden insertarse nexos y cuantificaciones. A continuación se explican cómo se reconocen ambas partes en las clases y propiedades:
@@ -164,16 +165,19 @@ Los enlaces elegidos son: \emph{algún/alguna/algo} para el cuantificador existe
 
 Ejemplo: la clase ``Margherita'' que es subclase de ``PizzaConNombre'', tiene el axioma ``tieneCobertura only 
     (CoberturaDeMozzarella or CoberturaDeTomate)'' (siendo only el cuantificador universal), el cual se traduce a ``tiene cobertura de mozzarella o tomate''. También posee dos axiomas equivalentes al anterior: ``tieneCobertura some CoberturaDeMozzarella'' y ``tieneCobertura some CoberturaDeTomate'', (siendo some el cuantificador existencial), los cuales se traducen a ``tiene alguna cobertura de mozzarella'' y ``tiene alguna cobertura de tomate''.
-    
+\\
+
 {\bf Restricción de cuantificación \emph{QuantifiedDataRestriction}}
 \begin{itemize}
     \item ``verbo de la propiedad + enlace + complemento de la propiedad + ``de tipo'' + rango''
     \item ``verbo de la propiedad + complemento de la propiedad + enlace + ``de tipo'' + rango''
 \end{itemize}
 Los enlaces elegidos son: \emph{algún/alguna/algo} para el cuantificador existencial y \emph{exclusivamente} para el cuantificador universal.
+\\
 
-{\bf Restricción N-Ary \emph{UnionOf}} \\
-como representa una secuencia de elementos, en la que uno o más elementos pueden ser verdaderos, se eligió concatenar a todos los elementos con el conector disyuntivo ``o''. Sean e1, e2,...,eN los elementos de la unión, el patrón gramatical elegido es: ``e1, e2, ..., eN-1 \emph{o} eN''.
+{\bf Restricción N-Ary \emph{UnionOf}} 
+\\
+Como representa una secuencia de elementos, en la que uno o más elementos pueden ser verdaderos, se eligió concatenar a todos los elementos con el conector disyuntivo ``o''. Sean e1, e2,...,eN los elementos de la unión, el patrón gramatical elegido es: ``e1, e2, ..., eN-1 \emph{o} eN''.
 \\
 
 {\bf Restricción N-Ary \emph{InterseccionOf}} \\
@@ -234,12 +238,23 @@ Basaremos la agregación en la conjunción por componentes compartidos. El objet
     \item {\bf Agregación entre sentencias}: esta agregación se aplica cuando se recorren las sentencias para armar un párrafo. Además de agrupar las sentencias por función, también se separan por constructor, obteniendo así 7 grupos: \emph{ObjectSomeValuesFrom, ObjectAllValuesFrom, intersection, union, ObjectHasValue, T, ON y SV}. De esta manera, para cada grupo, se realiza la agregación, de manera independiente entre ellos.
 \end{itemize}
 
+\subsection{Diagrama de clases}
+En la figura \ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de micro planificación. Las subclases de \emph{OWLRestriction} tienen la capacidad de generar las oraciones, según el tipo de restricción que represente.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm, height=7cm]{img/generacion_documento/diagrama_clases_microplanificador.pdf}
+    \caption{Diagrama de clases del micro planificador.}
+    \label{fig:diagrama_clases_microplanificador}
+\end{figure}
+
+
 \section{Implementación micro panning}
 
 \subsection{Recursos usados}
 
 \section{Diseño del realizador}
-En esta tarea se diseñará la estructura final del documento, definiendo criterios para decidir si la información organizada se corresponde a secciones o párrafos.
+Este módulo se encarga de la tarea de diseñar la estructura final del documento, definiendo criterios para decidir si la información organizada se corresponde a secciones o párrafos.
 
 Para simplificar el documento de salida, solo se consideraron dos niveles de información en el documento: el nivel más alto se corresponde a las secciones (o capítulos) y sub-secciones, y el nivel más bajo a los párrafos. 
 
@@ -268,6 +283,8 @@ Si un tópico se planifica como párrafo, significa que ningún tópico que se e
 Si bien esto puede diseñar un documento con una gran cantidad de sub-secciones, siendo visualmente antinatural, ayuda a los humanos a reconocer y establecer relaciones entre los tópicos, siendo el objetivo principal no desaprovechar la semántica del dominio modelado, y teniendo como intención principal que el lector comprenda el dominio modelado en la ontología.
 
 \section{Implementación del realizador}
+El realizador está embebido dentro de la clase Section vista en la figura \ref{fig:diagrama_clases_macroplanificador}, en forma de funciones que implementan los criterios vistos para la definición del documento.
+
 
 \section{Casos de estudio}
 

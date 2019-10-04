@@ -146,7 +146,166 @@ En la figura \ref{fig:diagrama_clases_organizador} se muestra el diagrama de cla
 \subsection{blabla}
 
 \section{Casos de estudio}
+En esta sección se presentan tres casos de estudio que muestran el comportamiento de la aplicación ante tres entradas diferentes, abarcando distintos aspectos de la solución propuesta.
+
+Al momento de realizar este trabajo no se reconoce ninguna aplicación que aborde el problema de organización de la información en una ontología, por lo que se expondrán tres casos de estudio sin la posibilidad de compararlos con otros resultados.
+
+\subsection{Organización de Ontología Pizza}
+La ontología pizza cuenta con 100 clases y 8 propiedades.
+
+Según la descripción de la ontología, este dominio representa las pizzas y sus coberturas, por lo que esperamos que las entidades que representen a las pizzas, a las coberturas y la información complementaria tiendan a agruparse en los niveles más altos de la jerarquía, mientras que en los niveles más bajas esperamos encontrar las clases más específicas y que tienen menor impacto sobre el entendimiento del dominio.
+
+En la figura \ref{fig:caso_estudio_pizza} se puede ver el resultado de aplicar el algoritmo teniendo como entrada la ontología pizza. 
+
+Los nombres de las entidades fueron traducidos al español, para poder generar las sentencias en lenguaje español en el siguiente capítulo, pero el idioma no afecta los resultados del algoritmo propuesto.
+
+\begin{figure}
+\begin{multicols}{2}
+\begin{figure}[H]
+\dirtree{%
+.1 Pizza.
+.2 Pizza con nombre.
+.3 Margherita.
+.3 Frutti di mare.
+.3 Giardiniera.
+.3 ....
+.3 Napoletana.
+.2 Pizza con carne.
+.2 Pizza picante.
+.2 ....
+.2 Pizza vegetariana.
+.2 Ingredientes.
+.3 Coberturas.
+.4 Cobertura de pizza.
+.5 Cobertura de verduras.
+.6 Cobertura de pimiento.
+.6 ....
+.6 Cobertura de langostinos.
+.3 Bases.
+.4 Base de pizza.
+.5 Base gruesa.
+.5 Base delgada y crujiente.
+.5 Condimentoes.
+.6 Sales.
+.7 Sal.
+}
+\end{figure}
+
+\begin{figure}[H]
+\dirtree{%
+.1 Otras secciones.
+.2 Domain concept.
+.3 Comida.
+.4 Helado.
+.4 Ingrediente.
+.3 Pais.
+.4 America.
+.4 England.
+.4 Italy.
+.4 France.
+.4 Germany.
+.2 Value partition.
+.3 Picante.
+.4 Poco picante.
+.4 Algo picante.
+.4 Muy picante.
+}
+\end{figure}
+
+\end{multicols}
+\caption{Resultado del organizador de información con la ontología Pizza.}
+\label{fig:caso_estudio_pizza}
+\end{figure}
+
+Como se puede observar, en la primer columna se encuentran los tópicos principales reconocidos por el algoritmo, y en la segunda columna se encuentran los tópicos agregados con el módulo para agregar información marginada.
+
+En la jerarquía de los tópicos principales, se puede ver como toda la información se agrupa como hijas de la entidad pizza, describiendo los tipos de pizzas y sus ingredientes. Inmediato a los ingredientes lista las coberturas, y reconoce a las bases de pizza a la misma altura que las coberturas, asignándoles la misma importancia.
+
+En la jerarquía de \emph{otras secciones}, se aprecian las demás entidades que aportan información secundaria a la descripción del dominio, que no está directamente relacionada con el dominio de las pizzas, como son los países, los tipos de picante y otras comidas.
+
+El resultado obtenido es satisfactorio, cumple con el comportamiento esperado, y se asimila a la propia descripción del dominio. 
+
+De las 8 propiedades, 5 fueron suficiente para clasificar las 100 clases de manera satisfactoria (de las 8, 3 eran inversas a otras 3 por lo que no agregaban información nueva).  
+
 \subsection{Organización de Ontología Wine}
+La ontología wine cuenta con 138 clases y 16 propiedades.
+
+Esta ontología tiene como objetivo describir un dominio de vinos y comidas \footnote{\url{https://protege.stanford.edu/publications/ontology_development/ontology101-noy-mcguinness.html}}, por lo que esperamos que las entidades que se consideren más relevantes sean aquellas afines a los vinos y comidas.
+
+\begin{figure}
+\begin{multicols}{2}
+\begin{figure}[H]
+\dirtree{%
+.1 Wine.
+.2 Italian wine.
+.2 Full bodied wine.
+.2 Petite syrah.
+.2 Bordeaux.
+.3 White bordeaux.
+.3 St emilion.
+.4 Chateau cheval blanc st emilion.
+.3 Medoc.
+.4 Margaux.
+.5 Chateau margaux.
+.2 $...$ (\emph{otros vinos}). 
+.2 Wines descriptor.
+.3 Sugar.
+.4 ....
+.3 Colors.
+.4 ....
+.3 Flavors.
+.4 ....
+.3 Bodies.
+.4 ....
+.2 From grapes.
+.3 ....
+}
+\end{figure}
+
+\begin{figure}[H]
+\dirtree{%
+.1 Otras secciones.
+.2 Region.
+.3 Central texas region.
+.3 Texas region.
+.3 $...$ (\emph{otras regiones}).
+.2 Vintage year.
+.3 Year1998.
+.2 Wine descriptor.
+.3 Wine taste.
+.2 Non consumable thing.
+.2 Vintage.
+.3 Vintage years.
+.2 Fruit.
+.2 Winery.
+.3 Chateau de meursault.
+.3 St genevieve.
+.3 Congress springs.
+.3 $...$ (\emph{otras Winery}).
+.2 Consumable thing.
+.3 Meal.
+.4 Courses.
+.5 Meal course.
+.6 Non spicy red meat course.
+.6 Shellfish course.
+.6 $...$ (\emph{otros meal course}).
+.6 Foods.
+.7 Edible thing.
+.8 $...$ (\emph{otras subclases de Edible thing}).
+.6 Drinks.
+.7 Potable liquid.
+.8 Wine.
+.9 Juice.
+.3 From fruits.
+}
+\end{figure}
+
+\end{multicols}
+\caption{Resultado del organizador de información con la ontología Wine.}
+\label{fig:caso_estudio_wine}
+\end{figure}
+
+
 \subsection{Organización de Ontología SNOMED-CT}
 
 \section{Conclusiones}
