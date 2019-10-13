@@ -47,6 +47,7 @@ Además, se estableció un factor de reducción del umbral, para el caso en el q
 
 Cuando se seleccionan las clases que van a representar los temas principales, puede ocurrir que se elijan clases de una misma rama en la jerarquía de clases. Esto hace que se pierda algo de semántica, pues se incluyen clases en el mismo nivel, siendo que algunas son más específicas y pueden ser alcanzadas desde sus ancestros. Para evitar este problema, se optó por eliminar las subclases que sean seleccionadas en un principio, y que tengan a una clase ancestro dentro de los temas principales.
 
+En la figura \ref{fig:diagrama_secuencia_getMainContent} se presenta un pseudocódigo del algoritmo usado para seleccionar las clases principales.
 
 \begin{figure}[H]
     \centering
@@ -61,6 +62,8 @@ Cuando se seleccionan las clases que van a representar los temas principales, pu
 Una vez elegidas las clases que serán los temas principales del texto, se procede a crear el árbol completo, con toda la información relacionada a estas clases. Para esto se creó un tercer módulo, que agrupa la información de cada entidad en grupos generales, que abarquen con el mayor nivel de abstracción  posible su información. Para esto, para cada clase, se busca reemplazar las propiedades donde participan como dominio, por propiedades en común de más alto nivel en la jerarquía de \emph{ObjectProperties}. Por ejemplo, en la ontología de las pizzas, para la clase \emph{pizza} existen dos propiedades: \emph{tieneCobertura} y \emph{tieneBase}. Como estas dos propiedades tienen a su vez una \emph{superproperty} en común llamada \emph{tieneIngrediente}, se agrupa toda la información que pueda ser alcanzada por las \emph{subproperties} en un único grupo representado por \emph{tieneIngrediente}. 
 
 Además de la información que puede ser alcanzada desde las \emph{ObjectProperties}, la información que poseen las subclases y los individuos también es de suficiente valor para ser agrupada. En este sentido, las unidades de información representadas por las subclases y los individuos de cada clase elegida como tema relevante, son también incluidas en un grupo. En este caso estamos haciendo uso de las relaciones \emph{owl:subClassOf} y \emph{owl:NamedIndividual}.
+
+En la figura \ref{fig:diagrama_secuencia_contentGrouping} se muestra un pseudocódigo del algoritmo usado para agrupar la información de las clases.
 
 Con toda esta información, se crea un primer nivel de grupos que abarcan lo más general posible todos los temas a ser tratados en un texto. Como ejemplo, el primer nivel de la ontología de las pizzas quedaría como en la figura \ref{fig:macro_planning_pizza}.
 \begin{figure}[H]
@@ -151,8 +154,6 @@ En esta sección se presentan tres casos de estudio que muestran el comportamien
 Al momento de realizar este trabajo no se reconoce ninguna aplicación que aborde el problema de organización de la información en una ontología, por lo que se expondrán tres casos de estudio sin la posibilidad de compararlos con otros resultados.
 
 \subsection{Organización de Ontología Pizza}
-La ontología pizza cuenta con 100 clases y 8 propiedades.
-
 Según la descripción de la ontología, este dominio representa las pizzas y sus coberturas, por lo que esperamos que las entidades que representen a las pizzas, a las coberturas y la información complementaria tiendan a agruparse en los niveles más altos de la jerarquía, mientras que en los niveles más bajas esperamos encontrar las clases más específicas y que tienen menor impacto sobre el entendimiento del dominio.
 
 En la figura \ref{fig:caso_estudio_pizza} se puede ver el resultado de aplicar el algoritmo teniendo como entrada la ontología pizza. 
@@ -217,86 +218,104 @@ Los nombres de las entidades fueron traducidos al español, para poder generar l
 \label{fig:caso_estudio_pizza}
 \end{figure}
 
-Como se puede observar, en la primer columna se encuentran los tópicos principales reconocidos por el algoritmo, y en la segunda columna se encuentran los tópicos agregados con el módulo para agregar información marginada.
+La ontología pizza cuenta con 100 clases y 8 propiedades. De las 8 propiedades, 5 fueron usadas  para clasificar las 100 clases (de las 8, 3 eran inversas a otras 3 por lo que no agregaban información nueva). El promedio de información obtenido fue 1.25, siendo la clase Pizza la única en superar este valor, lo que concuerda con el resultado esperado.
 
-En la jerarquía de los tópicos principales, se puede ver como toda la información se agrupa como hijas de la entidad pizza, describiendo los tipos de pizzas y sus ingredientes. Inmediato a los ingredientes lista las coberturas, y reconoce a las bases de pizza a la misma altura que las coberturas, asignándoles la misma importancia.
+Como se puede observar en la figura \ref{fig:caso_estudio_pizza}, en la primer columna se encuentran los tópicos principales reconocidos por el algoritmo, y en la segunda columna se encuentran los tópicos agregados con el módulo para agregar información marginada.
+
+En la jerarquía de los tópicos principales, se puede ver como toda la información se agrupa como hijas de la entidad Pizza, describiendo los tipos de pizzas y sus ingredientes. Inmediato a los ingredientes lista las coberturas, y reconoce a las bases de pizza a la misma altura que las coberturas, asignándoles la misma importancia.
 
 En la jerarquía de \emph{otras secciones}, se aprecian las demás entidades que aportan información secundaria a la descripción del dominio, que no está directamente relacionada con el dominio de las pizzas, como son los países, los tipos de picante y otras comidas.
 
-El resultado obtenido es satisfactorio, cumple con el comportamiento esperado, y se asimila a la propia descripción del dominio. 
-
-De las 8 propiedades, 5 fueron suficiente para clasificar las 100 clases de manera satisfactoria (de las 8, 3 eran inversas a otras 3 por lo que no agregaban información nueva).  
+Respecto al resultado esperado, la organización de la información es satisfactoria, ya que se asimila a la propia descripción del dominio. 
 
 \subsection{Organización de Ontología Wine}
-La ontología wine cuenta con 138 clases y 16 propiedades.
+Esta ontología tiene como objetivo describir un dominio de vinos y comidas\footnote{\url{https://protege.stanford.edu/publications/ontology_development/ontology101-noy-mcguinness.html}}, por lo que esperamos que las entidades que se consideren más relevantes sean aquellas afines a los vinos y comidas.
 
-Esta ontología tiene como objetivo describir un dominio de vinos y comidas \footnote{\url{https://protege.stanford.edu/publications/ontology_development/ontology101-noy-mcguinness.html}}, por lo que esperamos que las entidades que se consideren más relevantes sean aquellas afines a los vinos y comidas.
+En la figura \ref{fig:caso_estudio_wine} se puede ver el resultado de aplicar el algoritmo teniendo como entrada la ontología Wine.
 
 \begin{figure}
 \begin{multicols}{2}
+{\small
 \begin{figure}[H]
 \dirtree{%
 .1 Wine.
 .2 Italian wine.
-.2 Full bodied wine.
-.2 Petite syrah.
-.2 Bordeaux.
-.3 White bordeaux.
-.3 St emilion.
-.4 Chateau cheval blanc st emilion.
-.3 Medoc.
-.4 Margaux.
-.5 Chateau margaux.
-.2 $...$ (\emph{otros vinos}). 
+.3 Chianti.
+.4 Chianti classico.
+.2 $...$ \emph{(otras subclases de Wine)}.
 .2 Wines descriptor.
 .3 Sugar.
-.4 ....
+.4 Wine sugar.
+.5 Dry.
+.5 Off dry.
+.5 Sweet.
 .3 Colors.
-.4 ....
+.4 Wine color.
+.5 White.
+.5 Rose.
+.5 Red.
 .3 Flavors.
-.4 ....
+.4 Wine flavor.
+.5 Moderate.
+.5 Strong.
+.5 Delicate.
 .3 Bodies.
-.4 ....
+.4 Wine body.
+.5 Medium.
+.5 Full.
+.5 Light.
 .2 From grapes.
-.3 ....
+.3 Wine grape.
+.4 Chenin blanc grape.
+.4 $...$ \emph{(otras subclases de Wine grape)}.
 }
-\end{figure}
+\end{figure}}  
 
 \begin{figure}[H]
 \dirtree{%
 .1 Otras secciones.
-.2 Region.
-.3 Central texas region.
-.3 Texas region.
-.3 $...$ (\emph{otras regiones}).
-.2 Vintage year.
-.3 Year1998.
-.2 Wine descriptor.
-.3 Wine taste.
-.2 Non consumable thing.
-.2 Vintage.
-.3 Vintage years.
-.2 Fruit.
-.2 Winery.
-.3 Chateau de meursault.
-.3 St genevieve.
-.3 Congress springs.
-.3 $...$ (\emph{otras Winery}).
-.2 Consumable thing.
-.3 Meal.
-.4 Courses.
-.5 Meal course.
-.6 Non spicy red meat course.
-.6 Shellfish course.
-.6 $...$ (\emph{otros meal course}).
-.6 Foods.
-.7 Edible thing.
-.8 $...$ (\emph{otras subclases de Edible thing}).
-.6 Drinks.
-.7 Potable liquid.
-.8 Wine.
-.9 Juice.
-.3 From fruits.
+.1 Region.
+.2 Central texas region.
+.2 $...$ \emph{(otras subclases de Region)}.
+.1 Vintage year.
+.2 Year1998.
+.1 Wine descriptor.
+.2 Wine taste.
+.1 Non consumable thing.
+.1 Vintage.
+.2 Vintage years.
+.1 Fruit.
+.1 Winery.
+.2 Chateau de meursault.
+.2 $...$ \emph{(otras subclases de Winery)}.
+.1 Consumable thing.
+.2 Meal.
+.3 Courses.
+.4 Meal course.
+.5 Cheese nuts dessert course.
+.5 $...$ \emph{(otras subclases de Meal course)}.
+.5 Foods.
+.6 Edible thing.
+.7 Fowl.
+.8 $...$.
+.7 Dessert.
+.8 $...$.
+.7 Meat.
+.8 $...$.
+.7 Seafood.
+.8 $...$.
+.7 Sweet fruit.
+.8 Grape.
+.8 $...$.
+.7 Pasta.
+.8 $...$.
+.7 Non sweet fruit.
+.5 Drinks.
+.6 Potable liquid.
+.7 Juice.
+.7 Wine.
+.8 Wines descriptor.
+.8 From fruits.
 }
 \end{figure}
 
@@ -305,6 +324,8 @@ Esta ontología tiene como objetivo describir un dominio de vinos y comidas \foo
 \label{fig:caso_estudio_wine}
 \end{figure}
 
+
+La ontología Wine cuenta con 138 clases y 16 propiedades. De las 16 propiedades, 12 fueron usadas para verificar qué clases superan el umbral promedio para ser seleccionadas como las principales. El promedio fue de 2.5 y la única clase que lo superó fue Wine, lo que cumple parcialmente el resultado esperado, ya que parte del objetivo de la ontología es describir el dominio de los \emph{Wines}. Respecto a la sección que describe las comidas, quedó desplazada a \emph{otras secciones}, siendo un resultado no esperado según el objetivo de la ontología. Sin embargo, analizando manualmente la ontología, se puede apreciar que el porcentaje de  información que describe a las comidas es significativamente menor en relación a la información referida a los vinos, factor por el cual resulta aceptable que no aparezcan como sección principal.
 
 \subsection{Organización de Ontología SNOMED-CT}
 

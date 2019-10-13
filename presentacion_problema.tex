@@ -1,14 +1,14 @@
 \chapter{Presentación del problema}
 
-Para cumplir con el objetivo propuesto, se dividirá el desarrollo del sistema de generación de texto en dos problemas diferentes. El primero consiste en crear un módulo que preprocese la entrada para organizar y estructurar la información de forma más significativa. La salida de este módulo servirá como entrada para el segundo módulo. Reiter E. ha propuesto esta etapa previa de preprocesamiento  ~\cite{reiter2007architecture} para el análisis y la interpretación de datos, aunque fue aplicada en una entrada de datos en bruto en lugar de una base de conocimiento.
+Para cumplir con el objetivo propuesto, se dividirá el desarrollo del sistema de generación de texto en dos problemas. El primero consiste en crear un módulo que preprocese la entrada para organizar y estructurar la información de forma más significativa. Reiter E. ha propuesto esta etapa previa de preprocesamiento~\cite{reiter2007architecture} para el análisis y la interpretación de datos, aunque fue aplicada en una entrada de datos en bruto en lugar de una base de conocimiento.
 
-El segundo problema consiste en diseñar e implementar el módulo que toma como entrada la información organizada y la convierte en un documento de texto. Para esto usaremos como referencia las tareas descritas en \ref{sec:tareas_gnl}.
+El segundo problema consiste en diseñar e implementar el módulo que toma como entrada la información organizada y la convierte en un documento de texto. Para esto usaremos como referencia las tareas descritas en la Sección~\ref{sec:tareas_gnl}.
 
-Se puede apreciar la composición del sistema de generación de lenguaje natural en la figura \ref{fig:modulos_sgln}.
+Se puede apreciar la composición de nuestro sistema de generación de lenguaje natural en la Figura~\ref{fig:modulos_sgln}.
 
 \begin{figure}
     \centering
-    \includegraphics[width=10cm, height=4cm]{img/presentacion_problema/modulos_sgln.pdf}
+    \includegraphics[width=12cm, height=4cm]{img/presentacion_problema/modulos_sgln.pdf}
     \caption{Módulos que componen el sistema de generación de lenguaje natural}
     \label{fig:modulos_sgln}
 \end{figure}
@@ -25,7 +25,7 @@ Este salto entre diferentes temas dificulta la interpretación del texto. Consid
 Para encarar esta problemática, existen diferentes investigaciones que buscan organizar sentencias midiendo la fuerza de sus relaciones [referenciar a alguna de las investigaciones en macroplanning]. 
 \\
 
-Las ontologías utilizan grafos semánticos como estructura subyacente para la representación del conocimiento. La información se representa en forma de entidades relacionadas con otras entidades. Podemos valernos de la estructura con la que se relacionan las entidades, para medir el grado de relación entre ellas, sin necesidad de generar las proposiciones y sentencias. Se pueden utilizar diferentes criterios para medir el grado de relación. A continuación veremos un ejemplo a partir de la figura \ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de la ontología pizza.owl\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}.
+En una ontología, la información se representa en forma de entidades relacionadas con otras entidades. Una manera de representar visualmente un conjunto de entidades, sus relaciones y atributos es mediante el uso de grafos \ref{escarza2005visualizacion}. Podemos valernos de la estructura del grafo, para medir el grado de relación entre las entidades, antes del proceso de verbalización. Se pueden utilizar diferentes criterios para medir el grado de relación. A continuación veremos un ejemplo a partir de la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de la ontología pizza.owl\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}.
 
 \begin{figure}
 \centering
@@ -34,11 +34,11 @@ Las ontologías utilizan grafos semánticos como estructura subyacente para la r
 \caption{Subconjunto de la ontología de pizzas.} \label{fig:pizza.owl}
 \end{figure}
 
-Aún antes de generar las proposiciones que reflejan la información del grafo, se puede ver que hay formas más adecuadas que otras para comenzar a transmitirle a un receptor toda la información del grafo. Algunos de los posibles tópicos que engloban o relacionan a la mayoría de los datos expuestos son ``Tipo de comidas'', o ``Ingredientes de la pizza'', siendo que, la mayor cantidad de información está relacionada a la pizza, donde se puede omitir a Helado, ya que tiene una cantidad despreciable de información. 
+Aún antes de generar las proposiciones que reflejan la información del grafo, se puede ver que hay formas más adecuadas que otras para comenzar a transmitirle a un receptor toda la información del grafo. Algunos de los posibles tópicos que engloban o relacionan a la mayoría de los datos expuestos son ``Tipo de comidas'', o ``Ingredientes de la pizza'', siendo que, la mayor cantidad de información está relacionada a la pizza. 
 
 Para identificar los nodos más relevantes, pueden usarse diferentes criterios sobre la estructura del grafo, tal como la disposición jerárquica, o la cantidad de relaciones (el grado) de cada nodo. También se puede hacer uso de la jerarquía de las propiedades, para reconocer su tipo más general, como en \emph{tiene cobertura} y \emph{tiene base}, con el fin de referirse a ellas como ``Ingredientes''.
 
-Para mostrar un ejemplo, supondremos una ontología que represente el texto de la compra de la máquina de escribir. Puede verse el grafo de la ontología en la figura \ref{fig:maquina_escr}.
+Para mostrar un ejemplo, supondremos una ontología que represente el texto de la compra de la máquina de escribir. Puede verse el grafo de la ontología en la Figura~\ref{fig:maquina_escr}.
 
 \begin{figure}
     \centering
@@ -47,10 +47,10 @@ Para mostrar un ejemplo, supondremos una ontología que represente el texto de l
     \label{fig:maquina_escr}
 \end{figure}
 
-Basándonos en el texto propuesto, puede verse que para reproducirlo a partir de la ontología propuesta, se debe recorrer el grafo en profundidad, comenzando desde la clase Persona. De esta manera, aunque los datos tengan una relación semántica, en la generación del texto no queda claro el objetivo o la finalidad del texto. 
+Basándonos en el texto propuesto, puede verse que para reproducirlo a partir de la ontología propuesta, se debe recorrer el grafo en profundidad, comenzando desde la clase \emph{Persona}. De esta manera, aunque los datos tengan una relación semántica, en la generación del texto no queda claro el objetivo o la finalidad del texto. 
 
-Si en lugar de recorrer el grafo en profundidad, se recorre en anchura, se produce un texto con más sentido, ya que centra como tópico principal a la máquina de escribir. Por ejemplo, si comenzamos desde Persona, podemos formar el texto ``Compré una máquina de escribir. es de marca X y modelo Y, con color negro. Fue fabricada en New York''.
-\\
+Si en lugar de recorrer el grafo en profundidad, se recorre en anchura, se produce un texto con más sentido, ya que centra como tópico principal a la máquina de escribir. Por ejemplo, si comenzamos desde \emph{Persona}, podemos formar el texto ``Compré una máquina de escribir. Es de marca X y modelo Y, con color negro. Fue fabricada en New York''.
+
 
 En estos ejemplos hemos presentado dos problemáticas a tratar: la obtención de los tópicos más relevantes para tratar en el texto, que en nuestro caso son unidades de información representadas por \emph{owl:Class} y \emph{owl:NamedIndividual}; y el recorrido del grafo para obtener las unidades de información adecuada que maximicen la relación semántica respecto a los tópicos del texto. En este caso, las unidades de información que se tienen en cuenta para el recorrido del grafo son ambas \emph{owl:Class} y \emph{owl:ObjectProperty}.
  
