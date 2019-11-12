@@ -3,9 +3,9 @@
 \section{Diseño}
 La información se organiza en una estructura  jerárquica. La estructura se compone de las entidades presentes en la ontología, de manera que las entidades más relevantes se encuentran en el primer nivel de jerarquía, y a medida que se desciende por los niveles la importancia de las entidades disminuye.
 
-Para alcanzar esta estructura, se crearon una serie de módulos que transforman la entrada hasta alcanzar un árbol con toda la información que posee la ontología. El primer módulo recibe la entrada y crea una representación interna de la ontología, luego esta representación es enviada a otros dos módulos: uno se encarga de extraer las entidades más relevantes; el otro, con la representación interna de la ontología y las entidades más relevantes, se encarga de generar un árbol de entidades. Para finalizar, un último módulo se asegura de agregar aquellas entidades que no han sido utilizadas en ninguna rama del árbol, creando una rama especial del árbol en el que se insertan las entidades que no han sido relacionadas con las demás.
+Para alcanzar esta estructura, se crearon una serie de módulos que transforman la ontología de entrada en un árbol con toda la información contenida en la misma. El primer módulo recibe la entrada y crea una representación interna de la ontología, luego esta representación es enviada a otros dos módulos: uno se encarga de extraer las entidades más relevantes; el otro, con la representación interna de la ontología y las entidades más relevantes, se encarga de generar un árbol de entidades. Para finalizar, un último módulo se asegura de agregar aquellas entidades que no han sido utilizadas en ninguna rama del árbol, creando una rama especial del árbol en el que se insertan las entidades que no han sido relacionadas con las demás.
 
-En la figura \ref{fig:modulos_organizador_inf} se muestran los módulos que transforman la entrada en la jerarquía esperada.
+En la Figura~\ref{fig:modulos_organizador_inf} se muestran los módulos que transforman la entrada en la jerarquía esperada.
 
 \begin{figure}[H]
     \centering
@@ -13,6 +13,7 @@ En la figura \ref{fig:modulos_organizador_inf} se muestran los módulos que tran
     \caption{Módulos que componen el organizador de información}
     \label{fig:modulos_organizador_inf}
 \end{figure}
+
 
 \subsection{Representación interna de la ontología}
 
@@ -22,12 +23,12 @@ El módulo que crea la representación interna de la ontología se encarga de ca
 Una vez creada la representación de la ontología, el segundo módulo debe clasificar las entidades y extraer las más relevantes. A continuación se explicará cómo son extraídas estas entidades.
 
 \subsubsection{Criterio de clasificación}
-Para este trabajo, asumimos que los grafos subyacentes a las ontologías usadas en la web semántica están caracterizados por ser grafos libres de escala ~\cite{zhang2008scale}. Considerando esta hipótesis, esperamos que la naturaleza de las relaciones brinden información suficiente para discriminar entre el contenido principal y el menos relevante.
+  En un grafo libre de escala, algunos nodos están altamente conectados, es decir, poseen un gran número de enlaces a otros nodos, aunque el grado de conexión de casi todos los nodos es bastante bajo. Para este trabajo, asumimos que los grafos subyacentes a las ontologías usadas en la web semántica están caracterizados por ser grafos libres de escala~\cite{zhang2008scale}.
+Considerando esta hipótesis, esperamos que la naturaleza de las relaciones brinden información suficiente para discriminar entre el contenido principal y el menos relevante.
 
 El criterio principal para establecer una clasificación sobre las clases de una ontología, y que tal clasificación sirva para seleccionar las clases más relevantes para la verbalización de la ontología, se basa en cuánta información posee una clase respecto al resto de las clases en la ontología. En este trabajo se considera la mayor cantidad de información, a aquellas clases que están presentes en la mayor cantidad de dominios de \emph{ObjectProperties}. Esto permite obtener las clases que tengan mayor cantidad de conexiones con otras clases, y que a su vez sean el núcleo de la relación. Teniendo en cuenta a las clases mejor clasificadas, se puede centrar lo que se dice en el texto alrededor de estas clases.
 
-Visualizando la ontología como un grafo, se puede considerar el grado del nodo como valor para clasificar las clases, pero teniendo en cuenta para el cálculo del grado únicamente los arcos que  
-unen a los nodos a través de la relación \emph{rdf:domain}.
+Visualizando la ontología como un grafo, se puede considerar el grado del nodo como valor (criterio) para clasificar las clases, pero teniendo en cuenta para el cálculo del grado únicamente los arcos que  unen a los nodos a través de la relación \emph{rdf:domain}.
 
 Algunas ventajas de este enfoque son:
 \begin{itemize}
@@ -47,7 +48,7 @@ Además, se estableció un factor de reducción del umbral, para el caso en el q
 
 Cuando se seleccionan las clases que van a representar los temas principales, puede ocurrir que se elijan clases de una misma rama en la jerarquía de clases. Esto hace que se pierda algo de semántica, pues se incluyen clases en el mismo nivel, siendo que algunas son más específicas y pueden ser alcanzadas desde sus ancestros. Para evitar este problema, se optó por eliminar las subclases que sean seleccionadas en un principio, y que tengan a una clase ancestro dentro de los temas principales.
 
-En la figura \ref{fig:diagrama_secuencia_getMainContent} se presenta un pseudocódigo del algoritmo usado para seleccionar las clases principales.
+En la figura~\ref{fig:diagrama_secuencia_getMainContent} se presenta un pseudocódigo del algoritmo usado para seleccionar las clases principales.
 
 \begin{figure}[H]
     \centering
@@ -63,9 +64,9 @@ Una vez elegidas las clases que serán los temas principales del texto, se proce
 
 Además de la información que puede ser alcanzada desde las \emph{ObjectProperties}, la información que poseen las subclases y los individuos también es de suficiente valor para ser agrupada. En este sentido, las unidades de información representadas por las subclases y los individuos de cada clase elegida como tema relevante, son también incluidas en un grupo. En este caso estamos haciendo uso de las relaciones \emph{owl:subClassOf} y \emph{owl:NamedIndividual}.
 
-En la figura \ref{fig:diagrama_secuencia_contentGrouping} se muestra un pseudocódigo del algoritmo usado para agrupar la información de las clases.
+En la Figura~\ref{fig:diagrama_secuencia_contentGrouping} se muestra un pseudocódigo del algoritmo usado para agrupar la información de las clases.
 
-Con toda esta información, se crea un primer nivel de grupos que abarcan lo más general posible todos los temas a ser tratados en un texto. Como ejemplo, el primer nivel de la ontología de las pizzas quedaría como en la figura \ref{fig:macro_planning_pizza}.
+Con toda esta información, se crea un primer nivel de grupos que abarcan lo más general posible todos los temas a ser tratados en un texto. Como ejemplo, el primer nivel de la ontología de las pizzas quedaría como en la figura~\ref{fig:macro_planning_pizza}.
 \begin{figure}[H]
 %no borrar el % de dirtree porque es necesario.
 \dirtree{%
@@ -88,13 +89,13 @@ Con toda esta información, se crea un primer nivel de grupos que abarcan lo má
 
 
 \subsubsection{Recorriendo la ontología}
-Luego de obtener el primer grupo de información, queda pendiente tratar el segundo problema nombrado en \ref{sec:problema_coherencia-texto}: recorrer la ontología obteniendo y agrupando la información relacionada a los temas elegidos. 
+Luego de obtener el primer grupo de información, queda pendiente tratar el segundo problema nombrado en~\ref{sec:problema_coherencia-texto}: recorrer la ontología obteniendo y agrupando la información relacionada a los temas elegidos. 
 
 El objetivo es establecer una jerarquía de grupos de información, comenzando desde los elementos del primer grupo, que abarcan la información más general, e ir creando nuevos grupos con información más específica. De esta manera, se garantiza que entre los elementos pertenecientes a una rama haya una relación semántica.
 
-Partiendo desde el primer nivel (como los de la figura \ref{fig:macro_planning_pizza}), se aplica el mismo algoritmo usado en \ref{sec:agrupando_info} para obtener el contenido principal, pero esta vez sobre cada elemento del primer nivel. Como ahora es posible que un elemento sea una \emph{ObjectProperty}, para continuar el recorrido de la ontología se buscan sus subproperties, para luego continuar obteniendo información de ellas. Las subproperties elegidas deben contener en su dominio, a la clase que haya sido elegida como tópico para ese grupo de información que se está creando. La búsqueda de subproperties debe ser exhaustiva, pues si no se encuentran subproperties que tengan en su dominio a la clase tópico, debe continuar la búsqueda bajando en la jerarquía de propiedades hasta hallar alguna, ya que es el proceso inverso a la búsqueda de superproperties en común usadas para agrupar la información de manera más general. Si no hay subproperties, entonces la nueva información para agregar en el texto se basa en el rango de la \emph{ObjectProperty} inicial. En este último caso, empleamos la relación \emph{rdf:Range}.
+Partiendo desde el primer nivel (como los de la figura~\ref{fig:macro_planning_pizza}), se aplica el mismo algoritmo usado en~\ref{sec:agrupando_info} para obtener el contenido principal, pero esta vez sobre cada elemento del primer nivel. Como ahora es posible que un elemento sea una \emph{ObjectProperty}, para continuar el recorrido de la ontología se buscan sus subproperties, para luego continuar obteniendo información de ellas. Las subproperties elegidas deben contener en su dominio, a la clase que haya sido elegida como tópico para ese grupo de información que se está creando. La búsqueda de subproperties debe ser exhaustiva, pues si no se encuentran subproperties que tengan en su dominio a la clase tópico, debe continuar la búsqueda bajando en la jerarquía de propiedades hasta hallar alguna, ya que es el proceso inverso a la búsqueda de superproperties en común usadas para agrupar la información de manera más general. Si no hay subproperties, entonces la nueva información para agregar en el texto se basa en el rango de la \emph{ObjectProperty} inicial. En este último caso, empleamos la relación \emph{rdf:Range}.
 
-Continuando con el ejemplo de la ontología de la pizza, expandimos la figura \ref{fig:macro_planning_pizza} con el siguiente nivel de información, en la figura \ref{fig:macro_planning_pizza_n2}. 
+Continuando con el ejemplo de la ontología de la pizza, expandimos la figura~\ref{fig:macro_planning_pizza} con el siguiente nivel de información, en la figura~\ref{fig:macro_planning_pizza_n2}. 
 \begin{figure}[H]
 %no borrar el % de dirtree porque es necesario.
 \dirtree{%
@@ -120,7 +121,7 @@ De esta manera, el mismo algoritmo se aplica recursivamente para cada elemento d
 \subsection{Agregando información marginada}
 Con el recorrido de la ontología para formar los grupos de información, existe la posibilidad de que hayan clases que no sean parte de un grupo. Es el caso, por ejemplo, de la clase \emph{Comida}, y sus subclases \emph{Helado} y \emph{Condimento}, en la ontología \emph{pizza}. Para no dejar información del dominio excluida en el árbol, se ejecuta un cuarto módulo, que crea un nuevo grupo menos importante, y se agregan todas las clases que habían quedado marginadas. El proceso de creación de subgrupos para este nuevo grupo es idéntico al explicado en las sección anterior.
 
-Continuando con el ejemplo de la pizza, el resultado de agregar la  información marginada se muestra en la figura \ref{fig:macro_planning_pizza_marg}
+Continuando con el ejemplo de la pizza, el resultado de agregar la  información marginada se muestra en la figura~\ref{fig:macro_planning_pizza_marg}
 
 \begin{figure}[H]
 %no borrar el % de dirtree porque es necesario.
@@ -136,7 +137,7 @@ Continuando con el ejemplo de la pizza, el resultado de agregar la  información
 \end{figure}
 
 \subsection{Diagrama de clases}
-En la figura \ref{fig:diagrama_clases_organizador} se muestra el diagrama de clases correspondiente al organizador de información. El primer módulo tiene asociado las clases \emph{Ontology} y \emph{OWLIntClass}. El segundo módulo está representado por la clases \emph{ContentClasification}; y el tercer y cuarto módulo están asociados a la clase \emph{ContentGrouping}.
+En la Figura~\ref{fig:diagrama_clases_organizador} se muestra el diagrama de clases correspondiente al organizador de información. El primer módulo tiene asociado las clases \emph{Ontology} y \emph{OWLIntClass}. El segundo módulo está representado por la clases \emph{ContentClasification}; y el tercer y cuarto módulo están asociados a la clase \emph{ContentGrouping}.
 
 \begin{figure}[H]
     \centering
@@ -156,7 +157,7 @@ Al momento de realizar este trabajo no se reconoce ninguna aplicación que abord
 \subsection{Organización de Ontología Pizza}
 Según la descripción de la ontología, este dominio representa las pizzas y sus coberturas, por lo que esperamos que las entidades que representen a las pizzas, a las coberturas y la información complementaria tiendan a agruparse en los niveles más altos de la jerarquía, mientras que en los niveles más bajas esperamos encontrar las clases más específicas y que tienen menor impacto sobre el entendimiento del dominio.
 
-En la figura \ref{fig:caso_estudio_pizza} se puede ver el resultado de aplicar el algoritmo teniendo como entrada la ontología pizza. 
+En la Figura~\ref{fig:caso_estudio_pizza} se puede ver el resultado de aplicar el algoritmo teniendo como entrada la ontología pizza. 
 
 Los nombres de las entidades fueron traducidos al español, para poder generar las sentencias en lenguaje español en el siguiente capítulo, pero el idioma no afecta los resultados del algoritmo propuesto.
 
@@ -220,7 +221,7 @@ Los nombres de las entidades fueron traducidos al español, para poder generar l
 
 La ontología pizza cuenta con 100 clases y 8 propiedades. De las 8 propiedades, 5 fueron usadas  para clasificar las 100 clases (de las 8, 3 eran inversas a otras 3 por lo que no agregaban información nueva). El promedio de información obtenido fue 1.25, siendo la clase Pizza la única en superar este valor, lo que concuerda con el resultado esperado.
 
-Como se puede observar en la figura \ref{fig:caso_estudio_pizza}, en la primer columna se encuentran los tópicos principales reconocidos por el algoritmo, y en la segunda columna se encuentran los tópicos agregados con el módulo para agregar información marginada.
+Como se puede observar en la Figura~\ref{fig:caso_estudio_pizza}, en la primer columna se encuentran los tópicos principales reconocidos por el algoritmo, y en la segunda columna se encuentran los tópicos agregados con el módulo para agregar información marginada.
 
 En la jerarquía de los tópicos principales, se puede ver como toda la información se agrupa como hijas de la entidad Pizza, describiendo los tipos de pizzas y sus ingredientes. Inmediato a los ingredientes lista las coberturas, y reconoce a las bases de pizza a la misma altura que las coberturas, asignándoles la misma importancia.
 
@@ -231,7 +232,7 @@ Respecto al resultado esperado, la organización de la información es satisfact
 \subsection{Organización de Ontología Wine}
 Esta ontología tiene como objetivo describir un dominio de vinos y comidas\footnote{\url{https://protege.stanford.edu/publications/ontology_development/ontology101-noy-mcguinness.html}}, por lo que esperamos que las entidades que se consideren más relevantes sean aquellas afines a los vinos y comidas.
 
-En la figura \ref{fig:caso_estudio_wine} se puede ver el resultado de aplicar el algoritmo teniendo como entrada la ontología Wine.
+En la Figura~\ref{fig:caso_estudio_wine} se puede ver el resultado de aplicar el algoritmo teniendo como entrada la ontología Wine.
 
 \begin{figure}
 \begin{multicols}{2}
@@ -327,6 +328,6 @@ En la figura \ref{fig:caso_estudio_wine} se puede ver el resultado de aplicar el
 
 La ontología Wine cuenta con 138 clases y 16 propiedades. De las 16 propiedades, 12 fueron usadas para verificar qué clases superan el umbral promedio para ser seleccionadas como las principales. El promedio fue de 2.5 y la única clase que lo superó fue Wine, lo que cumple parcialmente el resultado esperado, ya que parte del objetivo de la ontología es describir el dominio de los \emph{Wines}. Respecto a la sección que describe las comidas, quedó desplazada a \emph{otras secciones}, siendo un resultado no esperado según el objetivo de la ontología. Sin embargo, analizando manualmente la ontología, se puede apreciar que el porcentaje de  información que describe a las comidas es significativamente menor en relación a la información referida a los vinos, factor por el cual resulta aceptable que no aparezcan como sección principal.
 
-\subsection{Organización de Ontología SNOMED-CT}
+%\subsection{Organización de Ontología SNOMED-CT}
 
 \section{Conclusiones}
