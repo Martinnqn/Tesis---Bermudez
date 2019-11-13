@@ -69,12 +69,16 @@ La representación de datos como un grafo beneficia el PNL poniendo a disposici�
 \subsection{Representación de Ontologías}
 Tanto en la academia como en la industria~\cite{soylu2018navigating} se han utilizado grafos para la representación de conocimiento. Este enfoque permite explotar las propiedades de un grafo dentro del área de la visualización de la información, por ejemplo para la representación y navegación de ontologías~\cite{escarza2005visualizacion}.
 
-El uso de herencia múltiple en ontologías genera estructuras de datos en forma de grafos dirigidos, sin embargo se pueden usar diferentes criterios para mostrar el contenido de una ontología, por ejemplo Protégé utiliza una jerarquía en forma de árbol para mostrar la jerarquía de clases, donde cada nodo del árbol es una clase\footnote{citar http://protegeproject.github.io/protege/views/class-hierarchy/}. 
+El uso de herencia múltiple en ontologías genera estructuras de datos en forma de grafos dirigidos, sin embargo se pueden usar diferentes criterios para mostrar el contenido de una ontología, por ejemplo Protégé utiliza una jerarquía en forma de árbol para mostrar la jerarquía de clases, donde cada nodo del árbol es una clase\footnote{citar http://protegeproject.github.io/protege/views/class-hierarchy/}. Como es posible que un nodo sea hijo de más de un padre, existe redundancia en la visualización, ya que un nodo puede repetirse en dos ramas diferentes.
 
 En~\cite{mellish2008natural} presentan una investigación acerca de \emph{Natural Language Directed Inference from Ontologies} (NLDI), en el cual buscan determinar el contenido para describir una entidad presente en una ontología. Los axiomas elegidos para tal descripción surgen de aplicar un algoritmo \emph{best-fist search} sobre un grafo generado a partir de los axiomas de la ontología.
 
+En~\cite{crampes2007ontology} comparan dos aplicaciones que utilizan ontologías para soportar y dirigir la navegación conceptual. En ellas, aplican criterios de selección y ordenamientos de conceptos a partir de las relaciones de las entidades en la ontología del dominio y de reglas específicas de una ontología pedagógica. 
+
 De estos trabajos se observan dos aspectos importantes para integrar la teoría de grafos y la representación de las ontologías:
 \begin{itemize}
-    \item Determinar qué información de la ontología será usada para crear los nodos del grafo y los enlaces entre ellos, evitando desperdiciar la semántica de las relaciones.
-    \item Establecer un método de navegación del grafo, que maximice la coherencia entre las entidades transitadas.
+    \item Determinar qué información de la ontología será usada para crear los nodos y los enlaces del grafo.
+    \item Establecer un método de navegación del grafo.
 \end{itemize}
+
+Dado que se trabaja con grafos semánticos, es deseable aprovechar al máximo la semántica de las relaciones, ya que cada ruta entre los axiomas corresponden a diferentes transiciones posibles en un texto coherente~\cite{mellish2008natural}.
