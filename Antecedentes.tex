@@ -67,8 +67,14 @@ La representación de datos como un grafo beneficia el PNL poniendo a disposici�
 \end{itemize}
 
 \subsection{Representación de Ontologías}
-La teoría de grafos también se utiliza dentro del área de la visualización de la información, para la representación y navegación de ontologías. 
+Tanto en la academia como en la industria~\cite{soylu2018navigating} se han utilizado grafos para la representación de conocimiento. Este enfoque permite explotar las propiedades de un grafo dentro del área de la visualización de la información, por ejemplo para la representación y navegación de ontologías~\cite{escarza2005visualizacion}.
 
-%https://www.researchgate.net/publication/331300464_Navigating_OWL_2_Ontologies_Through_Graph_Projection_12th_International_Conference_MTSR_2018_Limassol_Cyprus_October_23-26_2018_Revised_Selected_Papers
+El uso de herencia múltiple en ontologías genera estructuras de datos en forma de grafos dirigidos, sin embargo se pueden usar diferentes criterios para mostrar el contenido de una ontología, por ejemplo Protégé utiliza una jerarquía en forma de árbol para mostrar la jerarquía de clases, donde cada nodo del árbol es una clase\footnote{citar http://protegeproject.github.io/protege/views/class-hierarchy/}. 
 
+En~\cite{mellish2008natural} presentan una investigación acerca de \emph{Natural Language Directed Inference from Ontologies} (NLDI), en el cual buscan determinar el contenido para describir una entidad presente en una ontología. Los axiomas elegidos para tal descripción surgen de aplicar un algoritmo \emph{best-fist search} sobre un grafo generado a partir de los axiomas de la ontología.
 
+De estos trabajos se observan dos aspectos importantes para integrar la teoría de grafos y la representación de las ontologías:
+\begin{itemize}
+    \item Determinar qué información de la ontología será usada para crear los nodos del grafo y los enlaces entre ellos, evitando desperdiciar la semántica de las relaciones.
+    \item Establecer un método de navegación del grafo, que maximice la coherencia entre las entidades transitadas.
+\end{itemize}
