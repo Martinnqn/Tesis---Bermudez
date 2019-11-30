@@ -44,7 +44,7 @@ La eficacia de este enfoque depende fuertemente de que las \emph{ObjectPropertie
 \label{sec:select_class}
 Una vez calculado el valor de cada clase, se pueden seleccionar las clases que superen cierto umbral para remover las menos importantes. En este trabajo, se recorren todas las clases y se seleccionan las que superen el valor promedio entre cantidad de propiedades y cantidad de clases.
 
-Además, se estableció un factor de reducción del umbral, para el caso en el que no exista ninguna clase que supere el umbral seleccionado. Este factor reduce el umbral en 10\%, y se recorren todas las clases nuevamente. Iterativamente, el umbral es reducido hasta encontrar alguna clase que lo supere, o hasta llegar a cero.
+Además, se estableció un factor de reducción del umbral, para el caso en el que no exista ninguna clase que supere el umbral seleccionado. Este factor reduce el umbral en 10\%, y se recorren todas las clases nuevamente. Iterativamente, el umbral es reducido hasta encontrarhttps://www.overleaf.com/5787956283tmrrsxqxsvnf alguna clase que lo supere, o hasta llegar a cero.
 
 Cuando se seleccionan las clases que van a representar los temas principales, puede ocurrir que se elijan clases de una misma rama en la jerarquía de clases. Esto hace que se pierda algo de semántica, pues se incluyen clases en el mismo nivel, siendo que algunas son más específicas y pueden ser alcanzadas desde sus ancestros. Para evitar este problema, se optó por eliminar las subclases que sean seleccionadas en un principio, y que tengan a una clase ancestro dentro de los temas principales.
 
@@ -67,22 +67,27 @@ Además de la información que puede ser alcanzada desde las \emph{ObjectPropert
 En la Figura~\ref{fig:diagrama_secuencia_contentGrouping} se muestra un pseudocódigo del algoritmo usado para agrupar la información de las clases.
 
 Con toda esta información, se crea un primer nivel de grupos que abarcan lo más general posible todos los temas a ser tratados en un texto. Como ejemplo, el primer nivel de la ontología de las pizzas quedaría como en la figura~\ref{fig:macro_planning_pizza}.
+
 \begin{figure}[H]
+\begin{minipage}[c]{0.7\textwidth}
 %no borrar el % de dirtree porque es necesario.
+{\small 
 \dirtree{%
 .1 pizza.
 .2 tieneIngrediente.
 .2 pizzaConCarne.
 .2 pizzaConNombre.
 .2 $...$ las restantes subclases de pizza.
-}
+}}
 \caption{Organización del contenido de la ontología \emph{pizza}.}
 \label{fig:macro_planning_pizza}
+\end{minipage}
 \end{figure}
+
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=8cm, height=7cm]{img/organizacion_informacion/secuencia_contentGrouping.pdf}
+    \includegraphics[width=8cm, height=7cm]{img/organizacion_informacion/secuencia_contentGrouping}
     \caption{Diagrama de secuencia para agrupar la información de las clases}
     \label{fig:diagrama_secuencia_contentGrouping}
 \end{figure}
