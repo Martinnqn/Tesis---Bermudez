@@ -56,19 +56,16 @@ Cada arquitectura se enfoca en dos aspectos fundamentales: la independencia de l
 
 Una descripción más detallada de cada arquitectura se encuentra  en~\cite{ibanez2004arquitectura}.
 
-\subsection{Enfoques para abordar la GNL}
+\subsection{Enfoque para abordar la GNL: Teoría de Centrado}
 En la generación de texto automática, además de desear cumplir ciertas características léxicas y sintácticas del lenguaje destino, se requiere que las oraciones del texto posean una conexión semántica, para dar pie a la coherencia del texto. 
 
-Se han desarrollado teorías para describir y construir de forma coherente las estructuras del texto, como la Teoría de Estructuración Retórica (RST)~\cite{mann1987rhetorical} y la Teoría de Centrado~\cite{grosz1986towards}, entre otras.
+Se han desarrollado teorías para describir y construir de forma coherente las estructuras del texto, como la Teoría de Centrado~\cite{grosz1986towards}.
 
-\subsubsection{Teoría de Estructuración Retórica}
+La Teoría de Centrado es una teoría de coherencia y saliencia de discurso. Por un lado, intenta caracterizar los discursos coherentes entre entidades, teniendo en cuenta la forma en la que se introducen y discuten sus entidades. Por otro lado, se encarga de predecir qué entidades serán más destacadas en un momento dado~\cite{poesio2004centering}.
 
+Esta teoría propone un conjunto de reglas, que de aplicarlas favorece la coherencia del discurso. La afirmación más fundamental de la Teoría de Centrado es que, en la medida en que un discurso se adhiera a las restricciones centrales, su coherencia aumentará y la carga de inferencia sobre el oyente disminuirá~\cite{kruijff1997topics}. Esta característica que aclama, resulta conveniente para el objetivo que busca nuestro trabajo, respecto a minimizar los esfuerzos de un usuario para comprender el dominio modelado en una ontología.
 
-
-\subsubsection{Teoría de centrado}
-Esta teoría propone un conjunto de reglas, las cuales deben cumplirse para favorecer la coherencia del discurso. La afirmación más fundamental de la Teoría de Centrado es que, en la medida en que un discurso se adhiera a las restricciones centrales, su coherencia aumentará y la carga de inferencia sobre el oyente disminuirá\cite{kruijff1997topics}. Esta característica que aclama la teoría, resulta conveniente para el objetivo que busca nuestro trabajo, respecto al hecho de minimizar los esfuerzos de un usuario para comprender el dominio modelado en una ontología.
-
-Según \cite{vicente2015generacion}, ``Un elemento de una parte del discurso a nivel local se constituye como el foco de atención o centro de ese contexto, como la entidad más relevante a la que se refiere el resto de proferencias.''. Desde el punto de vista de la lingüística computacional, esto resulta útil para abordar el problema de la anáfora\footnote{Una anáfora es una figura retórica que consiste en la repetición de una o varias palabras al principio de un verso o enunciado.}. 
+Según~\cite{vicente2015generacion}, ``Un elemento de una parte del discurso a nivel local se constituye como el foco de atención o centro de ese contexto, como la entidad más relevante a la que se refiere el resto de proferencias.''. Desde el punto de vista de la lingüística computacional, esto resulta útil para abordar el problema de la anáfora\footnote{Una anáfora es una figura retórica que consiste en la repetición de una o varias palabras al principio de un verso o enunciado.}. 
 
 
 \section{Teoría de grafos}
