@@ -56,17 +56,22 @@ Cada arquitectura se enfoca en dos aspectos fundamentales: la independencia de l
 
 Una descripción más detallada de cada arquitectura se encuentra  en~\cite{ibanez2004arquitectura}.
 
-\subsection{Enfoque para abordar la GNL: Teoría de Centrado}
-En la generación de texto automática, además de desear cumplir ciertas características léxicas y sintácticas del lenguaje destino, se requiere que las oraciones del texto posean una conexión semántica, para dar pie a la coherencia del texto. 
+\subsection{Enfoque para abordar la GNL: coherencia local y global}
+En la generación de texto automática, además de desear cumplir ciertas características léxicas y sintácticas del lenguaje destino, se requiere que el texto sea coherente. Para alcanzar esta coherencia textual, se puede dividir el estudio de coherencia en dos: la coherencia local, asociada a la conexión semántica entre oraciones; y la coherencia global, asociada al asunto del texto~\cite{van2005estructuras}.
 
-Se han desarrollado teorías para describir y construir de forma coherente las estructuras del texto, como la Teoría de Centrado~\cite{grosz1986towards}.
+Para abordar el problema de la coherencia local, nos basaremos en lo postulado por la Teoría de Centrado~\cite{grosz1986towards}.
 
+En cuanto a la coherencia global, utilizaremos como recurso a la Teoría de Veins~\cite{cristea1998veins}.
+
+\subsubsection{Teoría de Centrado}
 La Teoría de Centrado es una teoría de coherencia local y saliencia de discurso. Por un lado, intenta caracterizar los discursos coherentes entre entidades, teniendo en cuenta la forma en la que se introducen y discuten sus entidades. Por otro lado, se encarga de predecir qué entidades serán más destacadas en un momento dado~\cite{poesio2004centering}.
 
 Esta teoría propone un conjunto de reglas, que de aplicarlas favorece la coherencia del discurso. La afirmación más fundamental de la Teoría de Centrado es que, en la medida en que un discurso se adhiera a las restricciones centrales, su coherencia aumentará y la carga de inferencia sobre el oyente disminuirá~\cite{kruijff1997topics}. Esta característica que aclama, resulta conveniente para el objetivo que busca nuestro trabajo, respecto a minimizar los esfuerzos de un usuario para comprender el dominio modelado en una ontología.
 
 Según~\cite{vicente2015generacion}, ``Un elemento de una parte del discurso a nivel local se constituye como el foco de atención o centro de ese contexto, como la entidad más relevante a la que se refiere el resto de proferencias.''. Desde el punto de vista de la lingüística computacional, esto resulta útil para abordar el problema de la anáfora\footnote{Una anáfora es una figura retórica que consiste en la repetición de una o varias palabras al principio de un verso o enunciado.}. 
 
+\subsubsection{Teoría de Veins}
+La Teoría de Veins es una extensión de la Teoría de Centrado. Esta teoría propone un modelo para la descripción de la coherencia global. La estructura jerárquica del texto permite la relación (a través de referencias) entre unidades textuales aún cuando no se encuentran en una disposición lineal~\cite{cristea2005motivations}, garantizando que se mantiene la coherencia del texto.
 
 \section{Teoría de grafos}
 La teoría de grafos se encarga de estudiar las propiedades de los grafos. Un grafo es una estructura de datos que consiste de un conjunto de vértices conectados por un conjunto de arcos que pueden ser usados para modelar relaciones entre los objetos en una colección~\cite{mihalcea2011graph}.

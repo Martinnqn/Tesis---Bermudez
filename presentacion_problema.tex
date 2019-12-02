@@ -16,13 +16,17 @@ Se puede apreciar la composición de nuestro sistema de generación de lenguaje 
 \section{Presentación del problema de la organización de la información para la coherencia del texto}
 \label{sec:problema_coherencia-texto}
 
-Basándonos en la Teoría de Centrado, tenemos una base para elegir cómo presentar en lenguaje natural y de manera coherente la información de cada entidad contenida en la ontología. 
+Basándonos en la Teoría de Centrado, tenemos una base para elegir cómo presentar en lenguaje natural y de manera coherente la información de cada entidad contenida en la ontología. No es el objetivo de este trabajo implementar una solución basada estrictamente en las reglas propuestas por la Teoría de Centrado, más bien, pretendemos alcanzar una cierta coherencia local motivados por la idea que subyace a esta teoría.
 
-Dado una entidad, se puede recorrer la estructura de grafo asociada a la ontología para recuperar la información necesaria para describir esa entidad. Sin embargo, aún queda decidir cómo recorrer el grafo, ya que cada recorrido genera un resultado diferente. 
+Dado una entidad, se puede recorrer la estructura de grafo asociada a la ontología para recuperar la información necesaria para describir esa entidad. Es necesario definir cómo recorrer el grafo, ya que cada recorrido genera un resultado diferente. 
 
 Como hipótesis, consideramos que para mantener una coherencia local, es necesario recorrer el grafo en anchura, obteniendo la máxima cantidad de información posible acerca de una única entidad \emph{E}, de manera que el foco de atención solo salte hacia otras entidades cuando no haya nada más para decir acerca de \emph{E}.
 
-En cuanto a la coherencia global, podemos valernos de la estructura del grafo, para medir el grado de relación entre las entidades, aún antes del proceso de selección de información para describir las entidades. Se pueden utilizar diferentes criterios para medir el grado de relación. A continuación veremos un ejemplo a partir de la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de la ontología pizza.owl\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}.
+En cuanto a la coherencia global, considerando lo propuesto por la Teoría de Veins, podemos valernos de la estructura jerárquica de la ontología para presentar las entidades en orden, reconociendo qué entidades deben aparecer primero en la estructura del texto, para permitir que futuras entidades puedan referenciarlas manteniendo la coherencia.
+
+Como la coherencia global se refiere al sentido del texto, es necesario reconocer qué entidades son más sobresalientes que otras, para poder usarlas como hilo conductores de la estructura del texto. Suponemos que aquellas entidades que tienen mayor impacto en la ontología son las que deberían ser nombradas primero en el texto, y a partir de ellas comenzar a estructurar el texto.
+
+Se puede medir el grado de relación entre las entidades, aún antes del proceso de selección de información para describirlas. A continuación veremos un ejemplo a partir de la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de la ontología pizza.owl\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}.
 
 \begin{figure}
 \centering
@@ -36,8 +40,15 @@ Aún antes de generar las proposiciones que reflejan la información del grafo, 
 Para identificar los nodos más relevantes, pueden usarse la disposición jerárquica del grafo o las medidas de centralidad de los nodos.
 
 También se puede hacer uso de la jerarquía de las propiedades, para reconocer su tipo más general a través de la relación de generalización, como en el caso de las relaciones \emph{tiene cobertura} y \emph{tiene base}, con el fin de referirse a ellas como ``Ingredientes''.
+\\
 
-En estos ejemplos hemos presentado dos problemáticas a tratar: la obtención de los tópicos más relevantes para tratar en el texto (para abordar la coherencia global), que en nuestro caso son unidades de información representadas por \emph{owl:Class} y \emph{owl:NamedIndividual}; y el recorrido del grafo para obtener las unidades de información adecuada que maximicen la relación semántica respecto a los tópicos del texto (para abordar la cohesión local). En este caso, las unidades de información que se tienen en cuenta para el recorrido del grafo son \emph{owl:Class}, \emph{owl:ObjectProperty} y \emph{owl:DataProperty}.
+En esta sección hemos presentado dos problemáticas a tratar:
+
+\begin{itemize}
+    \item La obtención de los tópicos más relevantes para tratar en el texto.%, que en nuestro caso son unidades de información representadas por \emph{owl:Class} y \emph{owl:NamedIndividual}.
+    \item El recorrido del grafo para obtener las unidades de información adecuada que maximicen la relación semántica respecto a los tópicos del texto (para abordar la cohesión global y local).% En este caso, las unidades de información que se tienen en cuenta para el recorrido del grafo son \emph{rdfs:subClassOf}, \emph{owl:ObjectProperty} y \emph{owl:DataProperty}.
+\end{itemize}
+
  
 \section{Presentación del problema de verbalización}
 %Como presentamos en \ref{sec:tareas_gnl}, existen ciertas tareas a desarrollar en un sistema de generación de texto.
