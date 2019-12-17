@@ -36,11 +36,11 @@ En el ámbito de la Generación de Lenguaje Natural, se engloban las tareas de c
     \item \emph{Micro planning:} es la etapa asociada a la construcción de sentencias, agrupa las tareas de nivel de abstracción intermedio. Dado un conjunto de datos que deben estar presentes en una sentencia, el \emph{micro planning} decide en qué orden aparecerán y cómo se combinarán para producir una oración cohesiva. 
     Para esto, se selecciona las configuraciones léxicas de las palabras, se elige qué entidades se reemplazarán por una expresión de referencia, y qué oraciones se pueden combinar para mejorar la fluidez del texto.
     \item \emph{Realización gramatical y expresiones de referencia:} es la última etapa, donde se seleccionan las palabras adecuadas según lo establecido en el \emph{micro planning}. Puede involucrar, por ejemplo, el uso de algoritmos de conjugación de verbos. Expresiones de referencia se refiere a la descripción de objetos.
-\end{itemize}
+\end{itemize}|
 
 \subsection{Arquitecturas de SGLN}
 %https://pdfs.semanticscholar.org/bfc1/44401be9cb93493b0974afb561b8d3c2d1ec.pdf
-La forma en que se comunican las tareas descritas en la Sección anterior definen la arquitectura del sistema~\cite{ibanez2004arquitectura}. La arquitectura más generalizada es el \emph{pipeline}~\cite{hervas2008descripcion}, representado en la Figura \ref{fig:arq_pipeline}.
+La forma en que se comunican las tareas descritas en la sección anterior definen la arquitectura del sistema~\cite{ibanez2004arquitectura}. La arquitectura más generalizada es el \emph{pipeline}~\cite{hervas2008descripcion}, representado en la Figura~\ref{fig:arq_pipeline}.
 %https://pdfs.semanticscholar.org/6cd2/54a9a4ea49aee61c3add58c11c29162428ae.pdf
 Esta arquitectura tiene la ventaja de ser simple de implementar, pero es poco flexible, por lo que las decisiones tomadas en etapas tempranas deben mantenerse a lo largo del pipeline sin posibilidad de mejora.
 
@@ -53,22 +53,20 @@ Esta arquitectura tiene la ventaja de ser simple de implementar, pero es poco fl
  
 
 Cada arquitectura se enfoca en dos aspectos fundamentales: la independencia de los módulos (qué tan acoplado/desacoplado está el sistema) y el flujo de control entre ellos. Desde el punto de vista de la separación de los módulos, se pueden encontrar arquitecturas integradas (o monolíticas) donde todo el sistema está formado por un único módulo, hasta sistemas en los que a cada tarea se le asocia un módulo separado~\cite{hervas2008descripcion}. Desde el punto de vista del flujo de control, se encuentran arquitecturas como pipeline donde la información fluye en un único sentido a través de los módulos, hasta arquitecturas de pizarra, donde la información se escribe en un sitio en común a todos los módulos.
-
 Una descripción más detallada de cada arquitectura se encuentra  en~\cite{ibanez2004arquitectura}.
 
 \subsection{Enfoque para abordar la GNL: coherencia local y global}
-En la generación de texto automática, además de desear cumplir ciertas características léxicas y sintácticas del lenguaje destino, se requiere que el texto sea coherente. Para alcanzar esta coherencia textual, se puede dividir el estudio de coherencia en dos: la coherencia local, asociada a la conexión semántica entre oraciones; y la coherencia global, asociada al asunto del texto~\cite{van2005estructuras}.
+En la generación de texto automática, además de desear cumplir ciertas características léxicas y sintácticas del lenguaje destino, se requiere que el texto sea coherente. Para alcanzar esta coherencia textual, se puede dividir el estudio de coherencia en dos~\cite{van2005estructuras}: la coherencia local, asociada a la conexión semántica entre oraciones; y la coherencia global, asociada al asunto del texto.
 
 Para abordar el problema de la coherencia local, nos basaremos en lo postulado por la Teoría de Centrado~\cite{grosz1986towards}.
-
 En cuanto a la coherencia global, utilizaremos como recurso a la Teoría de Veins~\cite{cristea1998veins}.
 
 \subsubsection{Teoría de Centrado}
-La Teoría de Centrado es una teoría de coherencia local y saliencia de discurso. Por un lado, intenta caracterizar los discursos coherentes entre entidades, teniendo en cuenta la forma en la que se introducen y discuten sus entidades. Por otro lado, se encarga de predecir qué entidades serán más destacadas en un momento dado~\cite{poesio2004centering}.
+La Teoría de Centrado es una teoría de coherencia local y tópicos de discurso. Por un lado, intenta caracterizar los discursos coherentes entre entidades, teniendo en cuenta la forma en la que se introducen y discuten sus entidades. Por otro lado, se encarga de predecir qué entidades serán más destacadas en un momento dado~\cite{poesio2004centering}.
 
 Esta teoría propone un conjunto de reglas, que de aplicarlas favorece la coherencia del discurso. La afirmación más fundamental de la Teoría de Centrado es que, en la medida en que un discurso se adhiera a las restricciones centrales, su coherencia aumentará y la carga de inferencia sobre el oyente disminuirá~\cite{kruijff1997topics}. Esta característica que aclama, resulta conveniente para el objetivo que busca nuestro trabajo, respecto a minimizar los esfuerzos de un usuario para comprender el dominio modelado en una ontología.
 
-Según~\cite{vicente2015generacion}, ``Un elemento de una parte del discurso a nivel local se constituye como el foco de atención o centro de ese contexto, como la entidad más relevante a la que se refiere el resto de proferencias.''. Desde el punto de vista de la lingüística computacional, esto resulta útil para abordar el problema de la anáfora\footnote{Una anáfora es una figura retórica que consiste en la repetición de una o varias palabras al principio de un verso o enunciado.}. 
+Según~\cite{vicente2015generacion}, ``Un elemento de una parte del discurso a nivel local se constituye como el foco de atención o centro de ese contexto, como la entidad más relevante a la que se refiere el resto de proferencias\footnote{Se entiende como proferencia al conjunto de ténicas o herramientas que nos permiten adelantar acontecimientos o hechos futuros a partir de datos del pasado}''. Desde el punto de vista de la lingüística computacional, esto resulta útil para abordar el problema de la anáfora\footnote{Una anáfora es una figura retórica que consiste en la repetición de una o varias palabras al principio de un verso o enunciado.}. 
 
 \subsubsection{Teoría de Veins}
 La Teoría de Veins es una extensión de la Teoría de Centrado. Esta teoría propone un modelo para la descripción de la coherencia global. La estructura jerárquica del texto permite la relación (a través de referencias) entre unidades textuales aún cuando no se encuentran en una disposición lineal~\cite{cristea2005motivations}, garantizando que se mantiene la coherencia del texto.
@@ -76,7 +74,7 @@ La Teoría de Veins es una extensión de la Teoría de Centrado. Esta teoría pr
 \section{Teoría de grafos}
 La teoría de grafos se encarga de estudiar las propiedades de los grafos. Un grafo es una estructura de datos que consiste de un conjunto de vértices conectados por un conjunto de arcos que pueden ser usados para modelar relaciones entre los objetos en una colección~\cite{mihalcea2011graph}.
 
-Algunos aspectos que se estudian de los grafos son su estructura (jerárquica, árbol, conexos, bipartitos, etc.), las medidas de sus nodos (centralidad relativa, absoluta~\cite{freeman1978centrality}), los algoritmos de recorridos (profundidad, anchura, etc.), etc.
+Algunos aspectos que se estudian de los grafos son su estructura (jerárquica, árbol, conexos, bipartitos, etc.), las medidas de sus nodos (centralidad relativa, absoluta~\cite{freeman1978centrality}), los algoritmos de recorridos (profundidad, anchura, etc.), entre otros.
 
 La teoría de grafos tiene diversas aplicaciones, por ejemplo el análisis de redes sociales, representación de mapas conceptuales, diseño de circuitos eléctricos, topologías de redes de computadoras, etc. Actualmente se estudia la teoría de grafos y el procesamiento de lenguaje natural en conjunto, para hallar solución a diferentes problemas del procesamiento de texto, como el etiquetado léxico, clasificación de texto y clustering~\cite{mihalcea2011graph}, desambiguación semántica de palabras~\cite{MihalceaSinhaDisambiguation}\cite{ArabJahromiDisambiguation}, extracción de keywords~\cite{Litvak:2008:GKE:1613172.1613178}\cite{beliga2015overview}, generación de resúmenes~\cite{plaza2011uso}, entre otras.
 
@@ -125,3 +123,10 @@ De estos trabajos se observan dos aspectos importantes para integrar la teoría 
 \end{itemize}
 
 Dado que se trabaja con grafos semánticos, en el contexto de la generación de lenguaje natural es deseable aprovechar al máximo la semántica de las relaciones, ya que cada ruta entre los axiomas corresponden a diferentes transiciones posibles en un texto coherente~\cite{mellish2008natural}.
+
+
+\section{Web Semántica y Teoría de Redes}
+%https://riunet.upv.es/bitstream/handle/10251/86297/SOLARES%20-%20Redes%20aleatorias%2C%20de%20peque%C3%B1o%20mundo%20y%20libres%20de%20escala.pdf?sequence=1
+La Teoría de las Redes surge de la Teoría de Grafos, enfocándose en el estudio de la estructura topológica del grafo~\cite{solares2017redes}. Dentro del estudio de las redes, se distinguen las redes aleatorias, redes de pequeños mundos y las redes libres de escala. Estas últimas son de nuestro interés, ya que las ontologías de la Web Semántica se caracterizan por ser redes libres de escala~\cite{zhang2008scale}.
+
+En una red libre de escala, ``la distribución de los grados de la red obedece a una ley de potencia, debido a la presencia de ciertos tipos de nodos llamados \emph{hubs} que se caracterizan por estar conectados a un gran número de otros nodos, es decir, que el grado de estos nodos es muy grande en relación a los demás nodos de toda la red''~\cite{solares2017redes}.

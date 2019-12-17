@@ -1,14 +1,17 @@
 \chapter{Presentación del problema}
 
-Para cumplir con el objetivo propuesto, se dividirá el desarrollo del sistema de generación de texto en dos problemas. El primero consiste en crear un módulo que preprocese la entrada para organizar y estructurar la información de forma más significativa. Reiter E. ha propuesto esta etapa previa de preprocesamiento~\cite{reiter2007architecture} para el análisis y la interpretación de datos, aunque fue aplicada en una entrada de datos en bruto (generada directamente de sensores) en lugar de una base de conocimiento.
-
+Para cumplir con el objetivo propuesto, se dividirá el desarrollo del sistema de generación de texto en dos problemas. El primero consiste en crear un módulo que preprocese la entrada para organizar y estructurar la información de forma más significativa. Reiter E.~\cite{reiter2007architecture} ha propuesto esta etapa previa de preprocesamiento para el análisis y la interpretación de datos, aunque fue aplicada en una entrada de datos en crudo (generada directamente de sensores) en lugar de una base de conocimiento.
 El segundo problema consiste en diseñar e implementar el módulo que toma como entrada la información organizada y la convierte en un documento de texto. Para esto usaremos como referencia las tareas descritas en la Sección~\ref{sec:tareas_gnl}.
 
-Se puede apreciar la composición de nuestro sistema de generación de lenguaje natural en la Figura~\ref{fig:modulos_sgln}.
+%Se puede apreciar la composición de nuestro sistema de generación de lenguaje natural en la Figura~\ref{fig:modulos_sgln}. En la misma se puede ver plasmado la división de los dos problemas descripta anteriormente.
+
+Esta división puede verse plasmada en la Figura~\ref{fig:modulos_sgln}, en la cual se puede apreciar la composición de nuestro sistema.
+
+%Se puede apreciar la composición de nuestro sistema de generación de lenguaje natural en la Figura~\ref{fig:modulos_sgln}.
 
 \begin{figure}
     \centering
-    \includegraphics[width=12cm, height=4cm]{img/presentacion_problema/modulos_sgln.pdf}
+    \includegraphics[width=11cm, height=4cm]{img/presentacion_problema/modulos_sgln.pdf}
     \caption{Módulos que componen el sistema de generación de lenguaje natural}
     \label{fig:modulos_sgln}
 \end{figure}
@@ -16,7 +19,9 @@ Se puede apreciar la composición de nuestro sistema de generación de lenguaje 
 \section{Presentación del problema de la organización de la información para la coherencia del texto}
 \label{sec:problema_coherencia-texto}
 
-Basándonos en la Teoría de Centrado, tenemos una base para elegir cómo presentar en lenguaje natural y de manera coherente la información de cada entidad contenida en la ontología. No es el objetivo de este trabajo implementar una solución basada estrictamente en las reglas propuestas por la Teoría de Centrado, más bien, pretendemos alcanzar una cierta coherencia local motivados por la idea que subyace a esta teoría.
+Tomando algunos postulados básicos de la Teoría de Centrado, contamos con una base inicial para elegir cómo presentar en lenguaje natural y de manera coherente la información de cada entidad contenida en la ontología. No es el objetivo de este trabajo implementar una solución basada estrictamente en las reglas propuestas por dicha Teoría, más bien, se pretende alcanzar una cierta coherencia local motivados por la idea que subyace en la misma.
+
+%Basándonos en la Teoría de Centrado, tenemos una base para elegir cómo presentar en lenguaje natural y de manera coherente la información de cada entidad contenida en la ontología. No es el objetivo de este trabajo implementar una solución basada estrictamente en las reglas propuestas por la Teoría de Centrado, más bien, pretendemos alcanzar una cierta coherencia local motivados por la idea que subyace a esta teoría.
 
 Dado una entidad, se puede recorrer la estructura de grafo asociada a la ontología para recuperar la información necesaria para describir esa entidad. Es necesario definir cómo recorrer el grafo, ya que cada recorrido genera un resultado diferente. 
 
@@ -26,20 +31,32 @@ En cuanto a la coherencia global, considerando lo propuesto por la Teoría de Ve
 
 Como la coherencia global se refiere al sentido del texto, es necesario reconocer qué entidades son más sobresalientes que otras, para poder usarlas como hilo conductores de la estructura del texto. Suponemos que aquellas entidades que tienen mayor impacto en la ontología son las que deberían ser nombradas primero en el texto, y a partir de ellas comenzar a estructurar el texto.
 
-Se puede medir el grado de relación entre las entidades, aún antes del proceso de selección de información para describirlas. A continuación veremos un ejemplo a partir de la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de la ontología pizza.owl\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}.
+Se puede medir el grado de relación entre las entidades, aún antes del proceso de selección de información para describirlas. A continuación veremos un ejemplo a partir de la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de la ontología {\tt pizza.owl}\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}.
+
+%\begin{figure}
+%\centering
+%\subfigure[b]{\includegraphics[scale=0.7]{img/presentacion_problema/onto_pizza.pdf}\caption{Jerarquía de clases de la ontología pizza}}
+%\subfigure[b]{\includegraphics[scale=0.7]{img/presentacion_problema/onto_pizza_properties.pdf}\caption{Jerarquía de propiedades de la ontología pizza}}
+%\caption{Subconjunto de la ontología de pizzas.} \label{fig:pizza.owl}
+%\end{figure}
 
 \begin{figure}
 \centering
-\subfigure[Jerarquía de clases de la ontología pizza]{\includegraphics[width=70mm]{img/presentacion_problema/onto_pizza.pdf}}
-\subfigure[Jerarquía de propiedades de la ontología pizza]{\includegraphics[width=3cm]{img/presentacion_problema/onto_pizza_properties.pdf}}
+
+\subfigure[Jerarquía de clases de la ontología pizza]{%\fbox{
+\includegraphics[scale=0.9]{img/presentacion_problema/onto_pizza.pdf}}%}
+
+\subfigure[Jerarquía de propiedades de la ontología pizza]{\includegraphics[scale=0.9]{img/presentacion_problema/onto_pizza_properties.pdf}}
 \caption{Subconjunto de la ontología de pizzas.} \label{fig:pizza.owl}
 \end{figure}
 
-Aún antes de generar las proposiciones que reflejan la información del grafo, se puede ver que hay formas más adecuadas que otras para comenzar a transmitirle a un receptor toda la información del grafo. Algunos de los posibles tópicos que engloban o relacionan a la mayoría de los datos expuestos son ``Tipo de comidas'', o ``Ingredientes de la pizza'', siendo que, la mayor cantidad de información está relacionada a la pizza. 
+Aún antes de generar las proposiciones que reflejan la información del grafo, se puede notar que hay formas más adecuadas que otras para comenzar a transmitirle a un receptor toda la información del grafo. Algunos de los posibles tópicos que engloban o relacionan a la mayoría de los datos expuestos son ``Tipo de comidas'', o ``Ingredientes de la pizza'', siendo que, la mayor cantidad de información está relacionada a la pizza. 
 
 Para identificar los nodos más relevantes, pueden usarse la disposición jerárquica del grafo o las medidas de centralidad de los nodos.
 
 También se puede hacer uso de la jerarquía de las propiedades, para reconocer su tipo más general a través de la relación de generalización, como en el caso de las relaciones \emph{tiene cobertura} y \emph{tiene base}, con el fin de referirse a ellas como ``Ingredientes''.
+
+Considerando que las ontologías de la Web Semántica son redes libres de escala, esperamos que la naturaleza de las relaciones brinden información suficiente para discriminar entre el contenido principal y el menos relevante.
 \\
 
 En esta sección hemos presentado dos problemáticas a tratar:
@@ -52,8 +69,8 @@ En esta sección hemos presentado dos problemáticas a tratar:
  
 \section{Presentación del problema de verbalización}
 %Como presentamos en \ref{sec:tareas_gnl}, existen ciertas tareas a desarrollar en un sistema de generación de texto.
-Como presentamos en el Objetivo, se esperan alcanzar dos cualidades principales en el texto de salida:
+Como presentamos en el Objetivo (Sección~\ref{Intro:objetivo}), se esperan alcanzar dos cualidades principales en el texto de salida:
 \begin{enumerate}
-    \item A nivel macro, el texto debe tener una estructura que permita visualizar los principales temas, presentándolos de manera aislada (secciones, párrafos), pero que en conjunto se complementen para que el lector pueda establecer las relaciones adecuadas entre ellos. Como objetivo principal se espera alcanzar una estructura que presente la información más importante y necesaria cuanto antes, preparando al lector para que pueda comprender información nueva.
+    \item A nivel macro: el texto debe tener una estructura que permita visualizar los principales temas, presentándolos de manera aislada (secciones, párrafos), pero que en conjunto se complementen para que el lector pueda establecer las relaciones adecuadas entre ellos. Como objetivo principal se espera alcanzar una estructura que presente la información más importante y necesaria lo más temprana posible, preparando al lector para que pueda comprender información nueva.
     \item A nivel micro, el texto debe cumplir con cierta fluidez, utilizando frases que tengan una gramática aceptable, tratando de maximizar la cohesión.
-\end{enumerate}{}
+\end{enumerate}
