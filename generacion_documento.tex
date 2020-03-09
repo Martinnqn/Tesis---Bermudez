@@ -1,7 +1,7 @@
 \chapter{Generación del documento de texto}
 
 \section{Diseño}
-El documento de texto debe contener toda la información posible de la ontología, organizado en secciones, subsecciones y párrafos. Para alcanzar el documento final, se crearon módulos teniendo como referencia las actividades de la generación de lenguaje natural nombradas en \ref{sec:tareas_gnl}. Los tres módulos principales son emph{macroplanificación}, \emph{microplanificación} y \emph{realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
+El documento de texto debe contener toda la información de la ontología, organizado en secciones, subsecciones y párrafos. Para alcanzar el documento final, se crearon módulos teniendo como referencia las actividades de la generación de lenguaje natural nombradas en la Sección \ref{sec:tareas_gnl}. Los tres módulos principales son \emph{macroplanificación}, \emph{microplanificación} y \emph{realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
 
 Si bien en el capítulo anterior se propuso un flujo lineal de información en el organizador de información, en este capítulo, al desarrollar la macroplanificación, se integraron los módulos del organizador de información con los submódulos de la macroplanificación, generando una interacción cíclica entre los módulos. El motivo de esta integración es evitar la creación de interfaces entre los módulos, y el overhead que estas suponen, ya que la creación del árbol de información y la macroplanificación resultan ser procesos equivalentes, por lo que pueden realizarse al mismo tiempo, evitando recorrer el doble de veces la estructura jerárquica. 
 
@@ -30,14 +30,14 @@ Esta representación prepara el terreno para que, luego de la microplanificació
 
 La creación de la representación interna del documento de texto tiene en cuenta los siguientes criterios:
 \begin{itemize}
-    \item A cada clase le corresponde una sección.
+    \item A cada \emph{OWL:Class} le corresponde una sección.
     \item Cada sección está compuesta de al menos un párrafo y un título.
     \item Cada párrafo trata un único tópico, el cual puede ser una clase o un individuo. También, un párrafo puede o no tener alguna sentencia. Este criterio se debe a que no todas las entidades tienen asociados axiomas que la describan.
-    \item Las \emph{owl:ObjectProperties} solo pueden ser tópico de una sección cuando se utilizan para agrupar información de una clase. Cuando una 
+    \item Una \emph{owl:ObjectProperty} solo puede ser tópico en una sección cuando agrupa información de la clase correspondiente a esa sección. 
 \end{itemize}
 
 \subsection{Diagrama de clases}
-En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al macroplanificador. El componente principal que integra el macroplanificador con el organizador de información es la clase TextManager. Esta clase se encarga de crear la clase Text, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Sentencias. Cada sentencia tiene como información a su tópico y lo que se dice de su tópico, en forma de entidades OWL.
+En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al macroplanificador. El componente principal que integra el macroplanificador con el organizador de información es la clase TextManager. Esta clase se encarga de crear la clase Text, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Sentencias. Cada Sentencia tiene asociada entidades \emph{OWL} que describen a un único tópico.
 
 \begin{figure}[H]
     \centering
@@ -51,21 +51,17 @@ En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama 
 \section{Diseño micro planning}
 %El objetivo de esta etapa es organizar el contenido de cada axioma para crear una sentencia gramaticalmente aceptable.
 
-Como ya organizamos y planificamos el documento, ahora debemos centraremos en describir en lenguaje natural a una entidad, a partir de los axiomas que la describen en la ontología. Esta descripción en lenguaje natural se alcanza a través de uno o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
+Como ya organizamos y planificamos el documento, ahora debemos centrarnos en describir en lenguaje natural a una entidad, a partir de los axiomas que la describen en la ontología. Esta descripción en lenguaje natural se alcanza a través de uno o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
 
 Como existen diversas estructuras sintácticas para expresar un mismo contenido, a modo de simplificación se asoció a cada constructor OWL solo algunas formas de verbalización. Se trató de generar oraciones que sean fieles al significado expresado en los axiomas y de evitar ambigüedades.
 
-\subsection{Tipos de oraciones}
-Teniendo en cuenta la naturaleza jerárquica de las construcciones OWL, se puede verbalizar un axioma considerando dos tipos de oraciones, las compuestas y las complejas. Sabiendo qué información contiene cada uno de los axiomas (\emph{equivalentClass, disjointWith, subClass, superClass, domain y range}), se pueden unir las oraciones, generando oraciones compuestas, a través de una relación de coordinación o yuxtaposición.
 
-En un nivel de mayor granularidad, se tienen las restricciones (\emph{cardinalidad, complemento, unión, intersección}, etc.) con las cuales es posible generar oraciones complejas, subordinando las expresiones que se encuentran anidadas.
-
-\subsection{Flujo de información y sintaxis del texto}
-Como la oración se compone de varios niveles jerárquicos de relaciones entre entidades OWL, hay que determinar cómo es el flujo de información durante la exploración jerárquica y qué información requiere cada constructor para poder componer una oración gramaticalmente aceptable. 
-
+\subsection{Verbalización de la definición de una Clase}
 %Algunos operadores, como la intersección, requieren información anterior y posterior para tomar una decisión adecuada, por lo que el flujo de información debe hacerse en ambos sentidos durante el análisis del grafo de la ontología: top-down y bottom-up. 
 %Una forma de resolver este problema, es recorrer recursivamente desde la raíz enviando información hacia las hojas, y al llegar a una hoja comenzar a crear las partes de la oración, componiendo una oración desde atrás hacia adelante. De esta manera, en la secuencia de invocación a la llamada recursiva se puede heredar información, y durante el retorno de la llamada recursiva se puede sintetizar información acerca de cómo se está componiendo la oración, y se puede tener conocimiento de qué se está diciendo para tomar mejores decisiones gramaticales.
 %Al momento de decidir cómo verbalizar un operador, se requiere saber qué  operador es el ancestro inmediato, por lo que la información heredara debe contener al menos al operador que está en el nivel superior inmediato. 
+Teniendo en cuenta que la sintaxis OWL está compuesta por constructores y axiomas que se traducen a operadores lógicos, existen precedencia de operadores, lo que impone una jerarquía en la evaluación de los operandos de las definiciones de las clases. Esta jerarquía es usada para acceder de manera sistemática a la información de las construcciones OWL, transfiriendo información entre los distintos niveles de la jerarquía.
+
 El enfoque adoptado para crear la sintaxis de las oraciones se basa en un recorrido bottom-up de la jerarquía de un axioma, sintetizando la información reunida en cada constructor. Además, la oración comienza a construirse desde atrás hacia adelante, es decir que la oración se va componiendo de derecha a izquierda a medida que se sube en los niveles de la jerarquía.
 
 La principal información requerida en los niveles superiores es qué función cumple la oración parcialmente formada en los niveles inferiores, por lo que la información sintetizada debe estar compuesta al menos del tipo de componente oracional que genera cada operador. Los componentes que retorna cada operador se definen a continuación:
@@ -81,8 +77,18 @@ La principal información requerida en los niveles superiores es qué función c
 
 Estos componentes de una oración no intentan ser exhaustivos ni completamente fieles a la sintaxis del español, sino que intentan acaparar de la forma más general los posibles resultados de cada operador, para mantener una sintaxis sencilla y aceptable. Una clase, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una clase, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas.
 
+\subsection{Tipos de oraciones}
+Teniendo en cuenta la naturaleza jerárquica de las construcciones OWL, se puede verbalizar un axioma considerando dos tipos de oraciones, las compuestas y las complejas. Sabiendo qué información contiene cada uno de los axiomas (\emph{equivalentClass, disjointWith, subClass, superClass, domain y range}), se pueden unir las oraciones, generando oraciones compuestas, a través de una relación de coordinación o yuxtaposición.
+
+En un nivel de mayor granularidad, se tienen las restricciones (\emph{cardinalidad, complemento, unión, intersección}, etc.) con las cuales es posible generar oraciones complejas, subordinando las expresiones que se encuentran anidadas.
+
 \subsection{Tareas del microplanning}
-Separaremos las tareas de microplanning en tres tareas principales: la verbalización de los constructores OWL, en la eliminación de información redundante entre oraciones, y el reemplazo de entidades nombradas por expresiones de referencia.
+Separaremos las tareas de microplanning en tres tareas principales: 
+\begin{itemize}
+    \item Verbalización de los constructores OWL.
+    \item Eliminación de información redundante entre oraciones
+    \item Reemplazo de entidades nombradas por expresiones de referencia.
+\end{itemize}
 
 
 \subsubsection{Consideraciones previas}
@@ -215,7 +221,7 @@ Teniendo en cuenta que cada párrafo trata centralmente un único tópico, el co
 
 Para dar lugar a las expresiones de referencia, se hereda un atributo con el nombre de la clase descrita en el párrafo durante el recorrido jerárquico de cada axioma, para poder usarla o reemplzarla por la expresión adecuada. %Sin embargo, no es muy común (y por lo tanto no es tan necesario) crear expresiones de referencia dentro de la verbalización de los axiomas, ya que por lo general no son largas explicaciones, y no se cambia el tópico principal durante la composición de las sentencias. 
 %Por el contrario, cuando se tratan diferentes axiomas acerca de un mismo tópico, existen momentos en los que resulta adecuado utilizar una expresión de referencia, para retomar con énfasis el tema principal.
-Además de la posibilidad de referenciar una entidad durante el recorrido jerárquico dentro de un axioma, también se requiere la referenciación entre axiomas, lo que resulta trivial, al estar agrupados bajo un mismo párrafo. 
+También se requiere la referenciación entre axiomas, lo que resulta trivial, al estar agrupados bajo un mismo párrafo. 
 
 Para llevar a cabo la referenciación, se tuvo en cuenta el uso de pronombres demostrativos, a veces, acompañados por el primer sustantivo (si posee) del nombre de la entidad.
 

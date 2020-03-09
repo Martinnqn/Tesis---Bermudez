@@ -17,6 +17,56 @@ Por estos motivo, en este trabajo se propone diseñar un algoritmo que agrupe la
 
 Con esto en mente, se propone diseñar e implementar una herramienta genérica para elegir, ordenar y generar un texto en lenguaje natural a partir de una ontología en OWL, con el fin de facilitar el entendimiento del dominio modelado, y asistir durante el proceso de modelado. Este trabajo hará foco principalmente en generación de texto en lenguaje español, y presentará un prototipo en lenguaje inglés.
 
+\section{Ontologías}
+Las ontologías definen conceptos y relaciones de algún dominio, de forma compartida y consensuada; y  esta conceptualización debe ser representada de una manera formal, legible y utilizable por los ordenadores~\cite{tello2001ontologias}. 
+
+Las ontologías se componen de~\cite{llop2007especificacion}:
+\begin{itemize}
+    \item Clases: representan un conjunto de objetos.
+    \item Instancias: cada instancia representa un objeto específico, que pertenece a una única clase.
+    \item Propiedades: definen las propiedades que pueden tener los objetos.
+    \item Relaciones: representan las relaciones que pueden haber entre los objetos.
+\end{itemize}
+Las ontologías para la Web Semántica, adicionalmente consisten  de reglas de inferencia~\cite{SWBernersLee}, que permiten obtener conocimiento implícito para la toma de decisiones.
+
+Dado que deben estar representadas formalmente, se expresan en lenguajes formales, tal como OWL.
+
+\subsection{Lenguaje OWL}
+El lenguaje OWL (\emph{Web Ontology Language}) es un lenguaje ontológico basado en lógicas descriptivas y RDF. 
+
+Tiene una sintaxis robusta, con constructores y axiomas que permiten definir Clases.
+
+Como existen varios tipos de Lógicas Descriptivas, la sintaxis OWL permite definir tres niveles de expresividad, limitando los constructores usados en cada nivel, para tener control sobre la complejidad computacional a la hora de inferir conocimiento~\cite{tello2001ontologias}. Las tres sintaxis son OWL Lite, OWL DL y OWL Full, de menor a mayor expresividad respectivamente. Los constructores y axiomas disponibles son: 
+\begin{multicols}{3}
+\begin{itemize}
+    \item owl:Class
+    \item rdfs:subClassOf
+    \item rdfs:subPropertyOf
+    \item rdfs:domain
+    \item rdfs:range
+    \item owl:Individual 
+    \item owl:ObjectProperty
+    \item owl:DatatypeProperty
+    \item rdfs:subClassOf
+    \item owl:intersectionOf
+    \item owl:minCardinality
+    \item owl:maxCardinality
+    \item owl:Cardinality
+    \item owl:complementOf
+    \item owl:unionOf
+    \item owl:equivalentClass
+    \item owl:disjointWith
+    \item owl:oneOf
+    \item owl:hasValue
+    \item owl:AllDifferent
+    \item owl:allValuesFrom
+    \item owl:someValuesFrom 
+    \item owl:disjointWith
+    \item owl:inverseOf
+\end{itemize}
+\end{multicols}
+
+ 
 \section{Generación de lenguaje natural}
 \label{sec:tareas_gnl}
 La generación de lenguaje natural es un proceso que tiene como principal objetivo la generación de texto a partir de datos de entrada.
@@ -35,8 +85,8 @@ En el ámbito de la Generación de Lenguaje Natural, se engloban las tareas de c
     \item  \emph{Macro planning:} agrupa las tareas de nivel más abstracto. Se encarga de seleccionar la información que se usará en la generación de texto y de organizarla a nivel de capítulos, secciones, párrafos, y sentencias.
     \item \emph{Micro planning:} es la etapa asociada a la construcción de sentencias, agrupa las tareas de nivel de abstracción intermedio. Dado un conjunto de datos que deben estar presentes en una sentencia, el \emph{micro planning} decide en qué orden aparecerán y cómo se combinarán para producir una oración cohesiva. 
     Para esto, se selecciona las configuraciones léxicas de las palabras, se elige qué entidades se reemplazarán por una expresión de referencia, y qué oraciones se pueden combinar para mejorar la fluidez del texto.
-    \item \emph{Realización gramatical y expresiones de referencia:} es la última etapa, donde se seleccionan las palabras adecuadas según lo establecido en el \emph{micro planning}. Puede involucrar, por ejemplo, el uso de algoritmos de conjugación de verbos. Expresiones de referencia se refiere a la descripción de objetos.
-\end{itemize}|
+    \item \emph{Realización gramatical y expresiones de referencia:} es la última etapa, donde se seleccionan las palabras adecuadas según lo establecido en el \emph{micro planning}. Puede involucrar, por ejemplo, el uso de algoritmos de conjugación de verbos. Expresiones de referencia se refiere a la referenciación de entidades a través de expresiones que las identifiquen.
+\end{itemize}
 
 \subsection{Arquitecturas de SGLN}
 %https://pdfs.semanticscholar.org/bfc1/44401be9cb93493b0974afb561b8d3c2d1ec.pdf
@@ -66,7 +116,7 @@ La Teoría de Centrado es una teoría de coherencia local y tópicos de discurso
 
 Esta teoría propone un conjunto de reglas, que de aplicarlas favorece la coherencia del discurso. La afirmación más fundamental de la Teoría de Centrado es que, en la medida en que un discurso se adhiera a las restricciones centrales, su coherencia aumentará y la carga de inferencia sobre el oyente disminuirá~\cite{kruijff1997topics}. Esta característica que aclama, resulta conveniente para el objetivo que busca nuestro trabajo, respecto a minimizar los esfuerzos de un usuario para comprender el dominio modelado en una ontología.
 
-Según~\cite{vicente2015generacion}, ``Un elemento de una parte del discurso a nivel local se constituye como el foco de atención o centro de ese contexto, como la entidad más relevante a la que se refiere el resto de proferencias\footnote{Se entiende como proferencia al conjunto de ténicas o herramientas que nos permiten adelantar acontecimientos o hechos futuros a partir de datos del pasado}''. Desde el punto de vista de la lingüística computacional, esto resulta útil para abordar el problema de la anáfora\footnote{Una anáfora es una figura retórica que consiste en la repetición de una o varias palabras al principio de un verso o enunciado.}. 
+Según~\cite{vicente2015generacion}, ``Un elemento de una parte del discurso a nivel local se constituye como el foco de atención o centro de ese contexto, como la entidad más relevante a la que se refiere el resto de proferencias\footnote{Se entiende como proferencia al conjunto de técnicas o herramientas que nos permiten adelantar acontecimientos o hechos futuros a partir de datos del pasado}''. Desde el punto de vista de la lingüística computacional, esto resulta útil para abordar el problema de la anáfora\footnote{Una anáfora es una figura retórica que consiste en la repetición de una o varias palabras al principio de un verso o enunciado.}. 
 
 \subsubsection{Teoría de Veins}
 La Teoría de Veins es una extensión de la Teoría de Centrado. Esta teoría propone un modelo para la descripción de la coherencia global. La estructura jerárquica del texto permite la relación (a través de referencias) entre unidades textuales aún cuando no se encuentran en una disposición lineal~\cite{cristea2005motivations}, garantizando que se mantiene la coherencia del texto.
