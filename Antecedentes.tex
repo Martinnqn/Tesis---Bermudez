@@ -45,38 +45,37 @@ Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gram
 
 Como existen varios tipos de Lógicas Descriptivas basadas en su complejidad computacional, la sintaxis OWL permite definir tres niveles de expresividad, para tener control sobre la complejidad computacional a la hora de inferir conocimiento~\cite{tello2001ontologias}. En el nivel menos expresivo está OWL Lite, luego están OWL DL y OWL Full, quienes extienden OWL Lite con nuevos constructores para agregar expresividad al lenguaje.
 
-En la figura X se agrupan los constructores según pertenezcan a expresiones de clases o a axiomas.
-Los constructores y axiomas disponibles son: 
-\begin{multicols}{3}
-\begin{itemize}
-    \item owl:Class
+En la lista \ref{list:constructores_axiomas} se agrupan los constructores del de axiomas, en la lista \ref{list:constructores_expresiones} los constructores de expresiones de clases y en la lista \ref{list:constructores_entity} los constructores de nivel de entidades.
+
+ \begin{itemize}
+  \label{list:constructores_axiomas}
+    \captionof{listCap}{Constructores Axiomas}
     \item rdfs:subClassOf
-    \item rdfs:subPropertyOf
+    \item owl:equivalentClass
+    \item owl:disjointWith
     \item rdfs:domain
     \item rdfs:range
-    \item owl:Individual 
-    \item owl:ObjectProperty
-    \item owl:DatatypeProperty
-    \item rdfs:subClassOf
+\end{itemize}
+
+\begin{itemize}
+ \label{list:constructores_expresiones}
+\captionof{listCap}{Constructores Expresiones de Clase}
+\begin{multicols}{2}
     \item owl:intersectionOf
+    \item owl:unionOf
+    \item owl:complementOf
+    \item owl:allValuesFrom
+    \item owl:someValuesFrom 
     \item owl:minCardinality
     \item owl:maxCardinality
     \item owl:Cardinality
-    \item owl:complementOf
-    \item owl:unionOf
-    \item owl:equivalentClass
-    \item owl:disjointWith
     \item owl:oneOf
     \item owl:hasValue
-    \item owl:AllDifferent
-    \item owl:allValuesFrom
-    \item owl:someValuesFrom 
-    \item owl:disjointWith
-    \item owl:inverseOf
+    \end{multicols}
 \end{itemize}
-\end{multicols}
 
- 
+
+
 \section{Generación de lenguaje natural}
 \label{sec:tareas_gnl}
 La generación de lenguaje natural es un proceso que tiene como principal objetivo la generación de texto a partir de datos de entrada.
