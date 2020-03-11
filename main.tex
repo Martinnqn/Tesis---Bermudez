@@ -18,14 +18,32 @@
 \usepackage{multicol}
 \usepackage{tikz}
 \usepackage{adjustbox}
-
-\DeclareCaptionType{listCap}[Lista]
-
+%para gramatica bnf
+\usepackage{bnf}
+%para definir nuevo environment
+\usepackage{newfloat}
 %para insertar pdf
 \usepackage[final]{pdfpages}
-
 %para el arbol de directorios
 \usepackage{dirtree}
+
+%para el caption de las listas
+\DeclareCaptionType{listCap}[Lista]
+\DeclareCaptionType{grammarCap}[Gramática]
+
+% declare the floating environment {Grammar}
+% this will also define \listofGrammars:
+\DeclareFloatingEnvironment[
+  % the file extension for the file used to create the list:
+  fileext   = logr,% don't use log here!
+  % the heading for the list:
+  listname  = {List of Grammars},
+  % the name used in captions:
+  name      = GrammarEnv,
+  % the default floating parameters if the environment is used
+  % without optional argument:
+  placement = htp
+]{GrammarEnv}
 
 \newtheorem{definition}{{\bf\sc Definición }}[section]
 \newtheorem{theorem}{Teorema}[section]

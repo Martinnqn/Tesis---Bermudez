@@ -54,15 +54,146 @@ Como ya organizamos y planificamos el documento, ahora debemos centrarnos en des
 
 Como existen diversas estructuras sintácticas para expresar un mismo contenido, a modo de simplificación se asoció a cada constructor OWL solo algunas formas de verbalización. Se trató de generar oraciones que sean fieles al significado expresado en los axiomas y de evitar ambigüedades.
 
+\subsection{Sintaxis OWL 2}
+\label{sec:gen_doc_sintaxis_owl}
+Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gramática BNF y de los diagramas de clases de su documentación~\cite{OWL2W3C}), podemos agrupar en diferentes niveles de abstracción las tres categorías sintácticas: en el nivel inferior se encuentran las Entidades, en el nivel intermedio las Expresiones de Clases, y en el nivel superior los Axiomas. Esta separación en niveles de abstracción será útil para organizar la verbalización. El conjunto de constructores elegido para verbalizar se encuentra en las siguientes listas: en la lista~\ref{list:constructores_axiomas} se agrupan los constructores del nivel de Axiomas, en la lista~\ref{list:constructores_expresiones} los constructores de Expresiones de Clases y en la lista~\ref{list:constructores_entity} los constructores de nivel de Entidades.
+\begin{figure}
+\begin{multicols}{2}
+\captionof{listCap}{Constructores de Entidades}
+\label{list:constructores_entity}
+    \begin{itemize}
+        \item owl:class
+        \item owl:objectProperty
+        \item owl:dataProperty
+        \item owl:individual
+        \item[\vspace{\fill}]
+    \end{itemize}
+
+\captionof{listCap}{Constructores de Axiomas}
+\label{list:constructores_axiomas}
+    \begin{itemize}
+        \item rdfs:subClassOf
+        \item owl:equivalentClass
+        \item owl:disjointWith
+        \item rdfs:domain
+        \item rdfs:range
+    \end{itemize}
+    \end{multicols}
+\end{figure}
 
 
+\begin{figure}
+\captionof{listCap}{Constructores de Expresiones de Clase}
+\label{list:constructores_expresiones}
+    \begin{itemize}
+    \begin{multicols}{2}
+        \item owl:intersectionOf
+        \item owl:unionOf
+        \item owl:complementOf
+        \item owl:allValuesFrom
+        \item owl:someValuesFrom 
+        \item owl:minCardinality
+        \item owl:maxCardinality
+        \item owl:Cardinality
+        \item owl:oneOf
+        \item owl:hasValue
+        \end{multicols}
+    \end{itemize}
+\end{figure}
+
+\subsection{Orden de la verbalización}
+Ordenaremos la verbalización basados en la separación en niveles de abstracción presente en la Sección~\ref{sec:gen_doc_sintaxis_owl}. 
+
+Con el objetivo de comenzar a formar las oraciones parciales, el primer paso a realizar es verbalizar las Entidades, ya que están directamente relacionadas con las IRIs (o tienen acceso al \emph{label}, en caso de extraer los nombres desde los labels).
+
+En la Gramática~\ref{gram:entity} se muestra una porción de la gramática BNF del lenguaje OWL 2 asociada a las entidades.
+\begin{GrammarEnv}
+%detecta un error de sintaxis pero es mentira.
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+%<expression> : <number> ; <number>, [\{"asd"\}], <relational\_operator>, <number>.
+%<number> : <digit> ; <digit> , <number>.
+%<digit> : "0";"1";"2";"3";"4";"5";"6";"7";"8";"9".
+%<relational\_operator> : $"="$;"$\lessthan \greaterthan$";"$\lessthan$";"$\greaterthan$"; "$\lessthan=$";"$\greaterthan=$";"in".
+\fbox{\begin{minipage}{14cm}
+<Entity> : <Class> ; <ObjectProperty> ; <DataProperty> ; <NamedIndividual> ; <AnnotationProperty>.
+<Class> : <IRI> .
+<ObjectProperty> : <IRI> .
+<DataProperty> : <IRI> .
+<AnnotationProperty> : <IRI> .
+<NamedIndividual> : <IRI> .
+\end{minipage}
+}
+\end{grammar}
+\captionof{grammarCap}{Porción de gramática asociada a las Entidades.}\label{gram:entity}
+\end{GrammarEnv}
+
+En el siguiente nivel se tienen los constructores de Expresiones de Clase, con las cuales es posible generar oraciones complejas subordinando las expresiones que se encuentran anidadas, o componer nuevas oraciones parciales teniendo en cuenta los tipos de componentes involucrados.
+
+En la Gramática~\ref{gram:expr_clases} se muestra a modo de ejemplo una sección de la gramática con constructores de este nivel.
+\begin{GrammarEnv}
+%detecta un error de sintaxis pero es mentira.
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+%<expression> : <number> ; <number>, [\{"asd"\}], <relational\_operator>, <number>.
+%<number> : <digit> ; <digit> , <number>.
+%<digit> : "0";"1";"2";"3";"4";"5";"6";"7";"8";"9".
+%<relational\_operator> : $"="$;"$\lessthan \greaterthan$";"$\lessthan$";"$\greaterthan$"; "$\lessthan=$";"$\greaterthan=$";"in".
+\fbox{\begin{minipage}{14cm}
+<ClassExpression> : <Class> ; <ObjectIntersectionOf> ; <ObjectSomeValuesFrom> .
+<ObjectSomeValuesFrom> : "ObjectSomeValuesFrom" "(" <ObjectPropertyExpression> <ClassExpression> ")" .
+<ObjectPropertyExpression> : <ObjectProperty> .
+\end{minipage}}
+\end{grammar}
+\captionof{grammarCap}{Porción de gramática asociada a las Expresiones de Clases.}\label{gram:expr_clases}
+\end{GrammarEnv}
+
+Puede apreciarse en la gramática que existe recursividad entre los constructores, lo que produce que un constructor aparezca en diferentes niveles y pueda combinarse con cualquier otro constructor del nivel de Expresiones de Clases. En este punto es importante que cada constructor pueda componerse con los demás, para asegurar cualquier combinación posible.
+
+
+Por último en el nivel más abtracto se encuentran los constructores de Axiomas. Estos constructores tienen la característica de no ser recursivos entre ellos, por lo que es posible generar oraciones independientes, yuxtapuestas o coordinadas. Un ejemplo de esta gramática se ve en~\ref{gram:axiom}.
+\begin{GrammarEnv}
+%detecta un error de sintaxis pero es mentira.
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+%<expression> : <number> ; <number>, [\{"asd"\}], <relational\_operator>, <number>.
+%<number> : <digit> ; <digit> , <number>.
+%<digit> : "0";"1";"2";"3";"4";"5";"6";"7";"8";"9".
+%<relational\_operator> : $"="$;"$\lessthan \greaterthan$";"$\lessthan$";"$\greaterthan$"; "$\lessthan=$";"$\greaterthan=$";"in".
+\fbox{\begin{minipage}{14cm}
+<ClassAxiom> : <SubClassOf> ; <EquivalentClasses> ; <DisjointClasses> ; <DisjointUnion> .
+<EquivalentClasses> : "EquivalentClasses" "(" <axiomAnnotations> <ClassExpression> <ClassExpression> \{ <ClassExpression> \} ")"
+\end{minipage}}
+\end{grammar}
+\captionof{grammarCap}{Porción de gramática asociada a los Axiomas.}\label{gram:axiom}
+\end{GrammarEnv}
 
 \subsection{Verbalización de la definición de una Clase}
-La sintaxis de las definiciones de las clases en OWL impone una jerarquía en la evaluación de los operandos. Esta jerarquía es usada para acceder de manera sistemática a la información de las construcciones OWL (operadores con sus respectivos operandos), verbalizando cada operador de mayor a menor precedencia y transfiriendo información entre los distintos niveles de la jerarquía.
+La jerarquía presente en la sintaxis del Lenguaje OWL 2 es usada para acceder de manera sistemática a la información de las construcciones OWL (operadores con sus respectivos operandos), verbalizando cada operador de mayor a menor precedencia y transfiriendo información entre los distintos niveles de la jerarquía. 
 
-El enfoque adoptado para crear la sintaxis de las oraciones se basa en un recorrido bottom-up de la jerarquía de un axioma, construyendo oraciones parciales, hasta alcanzar la raíz de la jerarquía, donde se termina de construir la oración final.
+El enfoque adoptado para crear la sintaxis de las oraciones se basa en un recorrido bottom-up de la jerarquía de un axioma, construyendo oraciones parciales a partir de sus constructores de Expresiones de Clases, hasta alcanzar la raíz de la jerarquía, donde se termina de construir la oración final. 
 
-La principal información requerida en los niveles superiores es qué función cumple la oración parcialmente formada en los niveles inferiores, por lo que la información sintetizada debe estar compuesta al menos del tipo de componente oracional que genera cada operador. Los componentes que retorna cada operador se definen a continuación:
+Luego, entre todas las oraciones construidas desde los Axiomas, se procede a crear los párrafos, ordenando las oraciones, eliminando la información redundante y agregando expresiones de referencia. Adicionalmente, para completar la información de una Clase, se agregaron oraciones indicando en qué propiedades participa como dominio.
+
+\subsection{Componentes y oraciones parciales}
+Durante la creación de una oración, se recorren los constructores de Expresiones de Clases creando oraciones parciales y componiéndolas entre ellas. Dado que cada constructor puede componerse con cualquier otro y en cualquier nivel de profundidad, para evitar una exhaustiva programación de composiciones, se decidió asociar a cada Expresión de Clases un tipo de componente oracional. Estos tipos de componentes definen un sistema de tipos, en el que cada tipo puede componerse con otro y dan como resultado un tipo de componente nuevo. En la mayoría de los casos el tipo de componente es predecible, a excepción de la \emph{intersección}.
+
+Los componentes que retorna cada constructor se definen a continuación:
 \begin{itemize}
     \item Clase: término (T).
     \item Propiedad: sintagma verbal (SV).
@@ -73,12 +204,7 @@ La principal información requerida en los niveles superiores es qué función c
     \item Complemento: oración negativa (ON).
 \end{itemize}
 
-Estos componentes de una oración no intentan ser exhaustivos ni completamente fieles a la sintaxis del español, sino que intentan acaparar de la forma más general los posibles resultados de cada operador, para mantener una sintaxis sencilla y aceptable. Una clase, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una clase, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas.
-
-\subsection{Tipos de oraciones}
-Teniendo en cuenta la naturaleza jerárquica de las construcciones OWL, se puede verbalizar un axioma considerando dos tipos de oraciones, las compuestas y las complejas. Sabiendo qué información contiene cada uno de los axiomas (\emph{equivalentClass, disjointWith, subClass, superClass, domain y range}), se pueden unir las oraciones, generando oraciones compuestas, a través de una relación de coordinación o yuxtaposición.
-
-En un nivel de mayor granularidad, se tienen las restricciones (\emph{cardinalidad, complemento, unión, intersección}, etc.) con las cuales es posible generar oraciones complejas, subordinando las expresiones que se encuentran anidadas.
+Estos componentes no intentan ser exhaustivos ni completamente fieles a la sintaxis del español, sino que intentan acaparar de la forma más general los posibles resultados de cada operador, para mantener una sintaxis sencilla y aceptable. Una clase, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una clase, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas.
 
 \subsection{Tareas del microplanning}
 Separaremos las tareas de microplanning en tres tareas principales: 

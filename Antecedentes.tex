@@ -34,44 +34,13 @@ Dado que deben estar representadas formalmente, se expresan en lenguajes formale
 \subsection{Lenguaje OWL 2}
 El lenguaje OWL (\emph{Web Ontology Language}) es un lenguaje ontológico basado en Lógicas Descriptivas y RDF. 
 
+Como existen varios tipos de Lógicas Descriptivas, basadas en su complejidad computacional, la sintaxis OWL permite definir tres niveles de expresividad, para tener control sobre la complejidad computacional a la hora de inferir conocimiento~\cite{tello2001ontologias}. En el nivel menos expresivo está OWL Lite, luego están OWL DL y OWL Full, quienes extienden OWL Lite con nuevos constructores para agregar expresividad al lenguaje.
+
 Las ontologías escritas en OWL 2 consisten de tres categorías sintácticas diferentes~\cite{OWL2W3C}:
 \begin{itemize}
     \item Entidades: clases, propiedades e individuos, identificados cada uno por una URI.
     \item Expresiones: representan nociones complejas en el dominio que se describe.
     \item Axiomas: declaraciones que son verdaderas en el dominio modelado.
-\end{itemize}
-
-Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gramática BNF y de los diagramas de clases de su documentación~\cite{OWL2W3C}), podemos agrupar en diferentes niveles de abstracción las tres categorías sintácticas: en el nivel inferior se encuentran las entidades, en el nivel intermedio las expresiones de clases, y en el nivel superior los axiomas. Esta separación en niveles de abstracción será útil para organizar la verbalización.
-
-Como existen varios tipos de Lógicas Descriptivas basadas en su complejidad computacional, la sintaxis OWL permite definir tres niveles de expresividad, para tener control sobre la complejidad computacional a la hora de inferir conocimiento~\cite{tello2001ontologias}. En el nivel menos expresivo está OWL Lite, luego están OWL DL y OWL Full, quienes extienden OWL Lite con nuevos constructores para agregar expresividad al lenguaje.
-
-En la lista \ref{list:constructores_axiomas} se agrupan los constructores del de axiomas, en la lista \ref{list:constructores_expresiones} los constructores de expresiones de clases y en la lista \ref{list:constructores_entity} los constructores de nivel de entidades.
-
- \begin{itemize}
-  \label{list:constructores_axiomas}
-    \captionof{listCap}{Constructores Axiomas}
-    \item rdfs:subClassOf
-    \item owl:equivalentClass
-    \item owl:disjointWith
-    \item rdfs:domain
-    \item rdfs:range
-\end{itemize}
-
-\begin{itemize}
- \label{list:constructores_expresiones}
-\captionof{listCap}{Constructores Expresiones de Clase}
-\begin{multicols}{2}
-    \item owl:intersectionOf
-    \item owl:unionOf
-    \item owl:complementOf
-    \item owl:allValuesFrom
-    \item owl:someValuesFrom 
-    \item owl:minCardinality
-    \item owl:maxCardinality
-    \item owl:Cardinality
-    \item owl:oneOf
-    \item owl:hasValue
-    \end{multicols}
 \end{itemize}
 
 
