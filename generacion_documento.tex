@@ -54,6 +54,16 @@ Como ya organizamos y planificamos el documento, ahora debemos centrarnos en des
 
 Como existen diversas estructuras sintácticas para expresar un mismo contenido, a modo de simplificación se asoció a cada constructor OWL solo algunas formas de verbalización. Se trató de generar oraciones que sean fieles al significado expresado en los axiomas y de evitar ambigüedades.
 
+\subsection{Verbalización de la definición de una Clase}
+Se decidió definir a cada Clase en lenguaje natural a partir de los axiomas que la describen y agregando además las propiedades en las que participa como dominio.
+
+Esta etapa se divide en tres tareas principales:
+\begin{itemize}
+    \item Verbalizar los constructores OWL.
+    \item Eliminar información redundante entre oraciones a través del proceso de agragación.
+    \item Reemplazar con expresiones de referencia a los nombres de las Clases en oraciones consecutivas evitando que se repitan y que genere un texto poco fluido.
+\end{itemize}
+
 \subsection{Sintaxis OWL 2}
 \label{sec:gen_doc_sintaxis_owl}
 Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gramática BNF y de los diagramas de clases de su documentación~\cite{OWL2W3C}), podemos agrupar en diferentes niveles de abstracción las tres categorías sintácticas: en el nivel inferior se encuentran las Entidades, en el nivel intermedio las Expresiones de Clases, y en el nivel superior los Axiomas. Esta separación en niveles de abstracción será útil para organizar la verbalización. El conjunto de constructores elegido para verbalizar se encuentra en las siguientes listas: en la lista~\ref{list:constructores_axiomas} se agrupan los constructores del nivel de Axiomas, en la lista~\ref{list:constructores_expresiones} los constructores de Expresiones de Clases y en la lista~\ref{list:constructores_entity} los constructores de nivel de Entidades.
@@ -103,6 +113,8 @@ Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gram
 
 \subsection{Orden de la verbalización}
 Ordenaremos la verbalización basados en la separación en niveles de abstracción presente en la Sección~\ref{sec:gen_doc_sintaxis_owl}. 
+
+El enfoque adoptado para crear la sintaxis de las oraciones se basa en un recorrido bottom-up de la jerarquía de un Axioma, construyendo oraciones parciales a partir de los constructores de Expresiones de Clases y de Entidades, hasta alcanzar la raíz de la jerarquía, donde se termina de construir la oración final. 
 
 Con el objetivo de comenzar a formar las oraciones parciales, el primer paso a realizar es verbalizar las Entidades, ya que están directamente relacionadas con las IRIs (o tienen acceso al \emph{label}, en caso de extraer los nombres desde los labels).
 
@@ -161,7 +173,8 @@ En la Gramática~\ref{gram:expr_clases} se muestra a modo de ejemplo una secció
 Puede apreciarse en la gramática que existe recursividad entre los constructores, lo que produce que un constructor aparezca en diferentes niveles y pueda combinarse con cualquier otro constructor del nivel de Expresiones de Clases. En este punto es importante que cada constructor pueda componerse con los demás, para asegurar cualquier combinación posible.
 
 
-Por último en el nivel más abtracto se encuentran los constructores de Axiomas. Estos constructores tienen la característica de no ser recursivos entre ellos, por lo que es posible generar oraciones independientes, yuxtapuestas o coordinadas. Un ejemplo de esta gramática se ve en~\ref{gram:axiom}.
+Por último en el nivel más abtracto se encuentran los constructores de Axiomas. Estos constructores tienen la característica de no ser recursivos entre ellos, por lo que es posible generar oraciones independientes, yuxtapuestas o coordinadas. Un ejemplo de estos constructores se ve en la Gramática~\ref{gram:axiom}.
+
 \begin{GrammarEnv}
 %detecta un error de sintaxis pero es mentira.
 \begin{grammar}
@@ -183,15 +196,8 @@ Por último en el nivel más abtracto se encuentran los constructores de Axiomas
 \captionof{grammarCap}{Porción de gramática asociada a los Axiomas.}\label{gram:axiom}
 \end{GrammarEnv}
 
-\subsection{Verbalización de la definición de una Clase}
-La jerarquía presente en la sintaxis del Lenguaje OWL 2 es usada para acceder de manera sistemática a la información de las construcciones OWL (operadores con sus respectivos operandos), verbalizando cada operador de mayor a menor precedencia y transfiriendo información entre los distintos niveles de la jerarquía. 
-
-El enfoque adoptado para crear la sintaxis de las oraciones se basa en un recorrido bottom-up de la jerarquía de un axioma, construyendo oraciones parciales a partir de sus constructores de Expresiones de Clases, hasta alcanzar la raíz de la jerarquía, donde se termina de construir la oración final. 
-
-Luego, entre todas las oraciones construidas desde los Axiomas, se procede a crear los párrafos, ordenando las oraciones, eliminando la información redundante y agregando expresiones de referencia. Adicionalmente, para completar la información de una Clase, se agregaron oraciones indicando en qué propiedades participa como dominio.
-
 \subsection{Componentes y oraciones parciales}
-Durante la creación de una oración, se recorren los constructores de Expresiones de Clases creando oraciones parciales y componiéndolas entre ellas. Dado que cada constructor puede componerse con cualquier otro y en cualquier nivel de profundidad, para evitar una exhaustiva programación de composiciones, se decidió asociar a cada Expresión de Clases un tipo de componente oracional. Estos tipos de componentes definen un sistema de tipos, en el que cada tipo puede componerse con otro y dan como resultado un tipo de componente nuevo. En la mayoría de los casos el tipo de componente es predecible, a excepción de la \emph{intersección}.
+Durante la creación de una oración, se recorren los constructores de Expresiones de Clases y de Entidades, creando oraciones parciales y componiéndolas entre ellas. Dado que cada constructor puede componerse con cualquier otro y en cualquier nivel de profundidad, se decidió asociar a cada constructor un tipo de componente oracional. De esta manera se evita una exhaustiva programación de composiciones. Estos tipos de componentes definen un sistema de tipos, en el que cada tipo puede componerse con otro y dan como resultado un tipo de componente nuevo. %En la mayoría de los casos el tipo de componente es predecible, a excepción de la \emph{intersección}.
 
 Los componentes que retorna cada constructor se definen a continuación:
 \begin{itemize}
@@ -204,19 +210,13 @@ Los componentes que retorna cada constructor se definen a continuación:
     \item Complemento: oración negativa (ON).
 \end{itemize}
 
-Estos componentes no intentan ser exhaustivos ni completamente fieles a la sintaxis del español, sino que intentan acaparar de la forma más general los posibles resultados de cada operador, para mantener una sintaxis sencilla y aceptable. Una clase, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una clase, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas.
-
-\subsection{Tareas del microplanning}
-Separaremos las tareas de microplanning en tres tareas principales: 
-\begin{itemize}
-    \item Verbalización de los constructores OWL.
-    \item Eliminación de información redundante entre oraciones
-    \item Reemplazo de entidades nombradas por expresiones de referencia.
-\end{itemize}
+El beneficio de este sistema es que cada constructor sabe cómo componer sus operandos en función del tipo que retornan, lo que reduce la cantidad de combinaciones a programar (en contraste con tener que programar cómo se compondrían los operandos de un constructor con cada uno de los otros constructores). Además, incorporar un sistema como este, evita el uso de \emph{templates} prediseñados para cada caso particular, y apoya el uso de patrones más cercanos a la lingüística teórica, apoyando el uso de teorías linguísticas en el campo del Procesamiento de Lenguaje Natural, que se han visto relegadas por enfoques probabilísticos~\ref{perinan2012defensa}.
 
 
-\subsubsection{Consideraciones previas}
-\noindent {\bf Convención y suposiciones del nombrado de entidades} \\
+Sin embargo, estos componentes no intentan ser exhaustivos ni completamente fieles a la sintaxis del español, sino que intentan acaparar de la forma más general los posibles resultados de cada operador, para mantener una sintaxis sencilla y aceptable. Una clase, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una clase, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas.
+
+
+\subsection{Convención y suposiciones del nombrado de entidades}
 Para no limitar la aplicación a una convención de nombrado, no se requiere una forma estricta para nombrar las entidades en una ontología. Sin embargo, nos basamos en algunas suposiciones que resultan natural al crear una ontología:
 \begin{enumerate}
     \item Las entidades pueden tener su nombre ya sea en la IRI o en un label\footnote{Estas opciones son excluyentes, al verbalizar una ontología solo se extraen los nombres de un solo lugar, por lo que todos los nombres deben ser extraídos de IRI o de label sin combinarse}. Si el nombre es extraído de una IRI, debe estar escrito con el estilo CamelCase. Si el nombre se extrae de un label, debe estar escrito en lenguaje natural, y debe tener el idioma del label (en este caso, español ``es'' o ingles ``en'').
@@ -229,7 +229,7 @@ Para no limitar la aplicación a una convención de nombrado, no se requiere una
 Estas condiciones ayudan a mejorar la fluidez del texto y no suponen una gran carga en los desarrolladores de ontologías.
 \\
 
-\noindent {\bf Tratamiento sintáctico de los nombres de entidades}\\
+\subsection{Tratamiento sintáctico de los nombres de entidades}
 Para facilitar el entendimiento de las secciones referidas al micro planning, se explicará cómo fueron tratados los nombres de las entidades, desde el punto de vista sintáctico. 
 
 Dado que los nombres de las entidades pueden no corresponderse fielmente con la gramática de un lenguaje (por falta de palabras funcionales, tales como artículos o preposiciones), se optó por no realizar un análisis sintáctico a los nombres. Se consideró, a cada conjunto de palabras que conforman el nombre de una entidad, como un componente incompleto que es parte de una oración más grande. Por este motivo, se divide en dos partes fundamentales: una parte inicial y un complemento, entre los cuales pueden insertarse nexos y cuantificaciones. A continuación se explican cómo se reconocen ambas partes en las clases y propiedades:
@@ -340,7 +340,7 @@ En caso de asociar la intersección al conector \emph{y} sin tener en cuenta el 
 %\subsubsection{Eliminación de información redundante}
 %En ocasiones la verbalización de axiomas diferentes presentan la misma información, lo que vuelve al texto redundante. Para evitar la redundancia, se eliminan las sentencias que contengan información en común entre los distintos tipos de relaciones owl. Por ejemplo: en la ontología wine se listan las propiedades que tienen como dominio wine ``wine has body, has sugar, etc...'' pero también se listan las superclases anónimas, por ejemplo el siguiente axioma: ''wine hasBody exactly 1 owl:Thing'', lo que se traduce en ``wine has one body''. Luego de verbalizar las propiedades y las superclases anónimas, se tienen oraciones como ``wine has body'' y ``wine has one body'', por lo que se puede omitir la primera que es menos específica. Como criterio, se verbalizan las superclases anónimas y luego las propiedades que no fueron usadas se agregan para complementar la información.
 
-\subsubsection{Expresiones de referencia}
+\subsection{Expresiones de referencia}
 Teniendo en cuenta que cada párrafo trata centralmente un único tópico, el conjunto de oraciones perteneciente a ese párrafo hacen referencia a una única entidad. Esto facilita la referenciación, dado que al no intercalar tópicos como focos de atención se reduce la posibilidad de ambigüedad.
 
 Para dar lugar a las expresiones de referencia, se hereda un atributo con el nombre de la clase descrita en el párrafo durante el recorrido jerárquico de cada axioma, para poder usarla o reemplzarla por la expresión adecuada. %Sin embargo, no es muy común (y por lo tanto no es tan necesario) crear expresiones de referencia dentro de la verbalización de los axiomas, ya que por lo general no son largas explicaciones, y no se cambia el tópico principal durante la composición de las sentencias. 
@@ -351,7 +351,7 @@ Para llevar a cabo la referenciación, se tuvo en cuenta el uso de pronombres de
 
 %Otro tipo de referencias, se da en el momento de explicar una clase. Cuando se crea una sección hablando acerca de una clase \emph{A}, esa sección no vuelve a crearse si existe una clase \emph{B} cuya descripción requiere que se explique la clase \emph{A}, sino que en la clase \emph{B} se hace referencia a la sección donde ya fue explicada la clase \emph{A}. Esto permite reutilizar las secciones y evita agregar información redundante en el texto.
 
-\subsubsection{Agregación de sentencias}
+\subsection{Agregación de sentencias}
 La agregación de sentencias ocurre en dos lugares. Uno es durante el proceso de producción de una oración en el constructor NAry; el otro es durante el proceso de creación de párrafos, es decir, agregación inter-oraciones.
 
 %de marco metodologico para la gnl
