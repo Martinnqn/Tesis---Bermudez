@@ -142,14 +142,13 @@ En la Gramática~\ref{gram:entity} se muestra una porción de la gramática BNF 
 \end{minipage}
 }
 \end{grammar}
-\captionof{grammarCap}{Porción de gramática asociada a las Entidades.}\label{gram:entity}
+\caption{Porción de gramática asociada a las Entidades.}\label{gram:entity}
 \end{GrammarEnv}
 
 En el siguiente nivel se tienen los constructores de Expresiones de Clase, con las cuales es posible generar oraciones complejas subordinando las expresiones que se encuentran anidadas, o componer nuevas oraciones parciales teniendo en cuenta los tipos de componentes involucrados.
 
 En la Gramática~\ref{gram:expr_clases} se muestra a modo de ejemplo una sección de la gramática con constructores de este nivel.
 \begin{GrammarEnv}
-%detecta un error de sintaxis pero es mentira.
 \begin{grammar}
 [(colon){$\rightarrow$}]
 [(semicolon)$|$]
@@ -167,7 +166,7 @@ En la Gramática~\ref{gram:expr_clases} se muestra a modo de ejemplo una secció
 <ObjectPropertyExpression> : <ObjectProperty> .
 \end{minipage}}
 \end{grammar}
-\captionof{grammarCap}{Porción de gramática asociada a las Expresiones de Clases.}\label{gram:expr_clases}
+\caption{Porción de gramática asociada a las Expresiones de Clases.}\label{gram:expr_clases}
 \end{GrammarEnv}
 
 Puede apreciarse en la gramática que existe recursividad entre los constructores, lo que produce que un constructor aparezca en diferentes niveles y pueda combinarse con cualquier otro constructor del nivel de Expresiones de Clases. En este punto es importante que cada constructor pueda componerse con los demás, para asegurar cualquier combinación posible.
@@ -176,7 +175,6 @@ Puede apreciarse en la gramática que existe recursividad entre los constructore
 Por último en el nivel más abtracto se encuentran los constructores de Axiomas. Estos constructores tienen la característica de no ser recursivos entre ellos, por lo que es posible generar oraciones independientes, yuxtapuestas o coordinadas. Un ejemplo de estos constructores se ve en la Gramática~\ref{gram:axiom}.
 
 \begin{GrammarEnv}
-%detecta un error de sintaxis pero es mentira.
 \begin{grammar}
 [(colon){$\rightarrow$}]
 [(semicolon)$|$]
@@ -190,10 +188,10 @@ Por último en el nivel más abtracto se encuentran los constructores de Axiomas
 %<relational\_operator> : $"="$;"$\lessthan \greaterthan$";"$\lessthan$";"$\greaterthan$"; "$\lessthan=$";"$\greaterthan=$";"in".
 \fbox{\begin{minipage}{14cm}
 <ClassAxiom> : <SubClassOf> ; <EquivalentClasses> ; <DisjointClasses> ; <DisjointUnion> .
-<EquivalentClasses> : "EquivalentClasses" "(" <axiomAnnotations> <ClassExpression> <ClassExpression> \{ <ClassExpression> \} ")"
+<EquivalentClasses> : "EquivalentClasses" "(" <axiomAnnotations> <ClassExpression> <ClassExpression> \{ <ClassExpression> \} ")".
 \end{minipage}}
 \end{grammar}
-\captionof{grammarCap}{Porción de gramática asociada a los Axiomas.}\label{gram:axiom}
+\caption{Porción de gramática asociada a los Axiomas.}\label{gram:axiom}
 \end{GrammarEnv}
 
 \subsection{Componentes y oraciones parciales}
@@ -232,7 +230,7 @@ Estas condiciones ayudan a mejorar la fluidez del texto y no suponen una gran ca
 \subsection{Tratamiento sintáctico de los nombres de entidades}
 Para facilitar el entendimiento de las secciones referidas al micro planning, se explicará cómo fueron tratados los nombres de las entidades, desde el punto de vista sintáctico. 
 
-Dado que los nombres de las entidades pueden no corresponderse fielmente con la gramática de un lenguaje (por falta de palabras funcionales, tales como artículos o preposiciones), se optó por no realizar un análisis sintáctico a los nombres. Se consideró, a cada conjunto de palabras que conforman el nombre de una entidad, como un componente incompleto que es parte de una oración más grande. Por este motivo, se divide en dos partes fundamentales: una parte inicial y un complemento, entre los cuales pueden insertarse nexos y cuantificaciones. A continuación se explican cómo se reconocen ambas partes en las clases y propiedades:
+Dado que los nombres de las entidades pueden no corresponderse fielmente con la gramática de un lenguaje (por falta de palabras funcionales, tales como artículos o preposiciones), se optó por no realizar un análisis sintáctico a los nombres. Se consideró, a cada conjunto de palabras que conforman el nombre de una entidad, como un componente incompleto (oración parcial) que es parte de una oración más grande. Por este motivo, se divide en dos partes fundamentales: una parte inicial y un complemento, entre los cuales pueden insertarse nexos y cuantificaciones. A continuación se explican cómo se reconocen ambas partes en las clases y propiedades:
 \begin{itemize}
     \item Los nombres de las propiedades (en los que suponemos existe al menos un verbo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer verbo, incluído el verbo. El complemento se conforma con todas las palabras que siguen al verbo. Por ejemplo: la propiedad \emph{tiene color} se compone de parte inicial: \emph{tiene}, y complemento: \emph{color}. La propiedad \emph{se solapa con} se compone de \emph{se solapa} como parte de inicial, y \emph{con} como complemento.
     \item Los nombres de las clases (en los que suponemos existe al menos un sustantivo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer sustantivo, incluido el sustantivo. El complemento se conforma con todas las palabras que siguen al sustantivo. Por ejemplo: la clase \emph{agente social}, tiene como parte inicial \emph{agente} y complemento \emph{social}. La clase \emph{cobertura de pizza} se compone de \emph{cobertura} con complemento \emph{de pizza}.
@@ -240,77 +238,121 @@ Dado que los nombres de las entidades pueden no corresponderse fielmente con la 
 \end{itemize}
 
 
-\subsubsection{Verbalización de constructores OWL}
+\subsection{Verbalización de constructores OWL}
 Esta tarea se encarga de componer las oraciones según la información de cada constructor OWL. Las oraciones pueden enfocarse ya sea en una \emph{owl:Class} o  \emph{owl:NamedIndividual}. Cuando se enfocan en una \emph{owl:Class}, pueden contener la siguiente información: clases equivalentes, disjuntas, subclases, superclases, sus instancias y las propiedades en las que participa. Cuando se enfoca en un \emph{owl:NamedIndividual}, puede contener información acerca de los valores de sus propiedades.
 
 Para cada uno de estos tipos de información, se pueden presentar una o varias oraciones. Las oraciones que tratan el mismo tipo de información se organizan adyacentemente entre ellas.
 \\
 
-En algunos constructores, tener un único patrón gramatical resulta insuficiente, debido a que pueden recibir distintas estructuras gramaticales como entrada, que requieren diferentes formas de componerse. Por lo tanto, se diseñó más de una forma de componer la información en algunos constructores, mejorando la fluidez e interpretación de las oraciones. 
+En algunos constructores, tener un único patrón gramatical resulta insuficiente, debido a que pueden recibir distintas estructuras gramaticales como entrada, que requieren diferentes formas de componerse. Por lo tanto, se diseñó más de una forma de componer la información en algunos constructores, mejorando la variabilidad, fluidez e interpretación de las oraciones. 
 
-Para reconocer cómo componer las oraciones en cada constructor, se revisó empíricamente los axiomas de algunas ontologías, y se buscó utilizar oraciones que sean lo más genéricas posibles, que permitan la comprensión de los axiomas, sin requerir una definición exhaustiva de todas las posibles composiciones. 
+Para reconocer cómo componer las oraciones en cada constructor, se revisó empíricamente los axiomas de algunas ontologías, y se buscó utilizar oraciones que sean lo más genéricas posibles, que permitan la comprensión de los axiomas. 
 
-Se tienen en cuenta los siguientes descriptores de clases: cardinalidad, complemento, unión, intersección y cuantificación. A continuación se explican los patrones gramaticales usados para cada constructor. El signo $+$ corresponde a la concatenación de cadenas.
-\\
+A continuación se explican los patrones gramaticales usados para cada constructor. %El signo $+$ corresponde a la concatenación de cadenas de texto.
 
-{\bf Restricción de cardinalidad \emph{ObjectCardinalityRestriction}}
-\begin{itemize}
-    \item ``parte inicial de la propiedad + complemento de la propiedad + enlace + cardinalidad + clases sobre las que se aplica la restricción''.
+\subsection{Restricción de cardinalidad \emph{ObjectCardinalityRestriction}}
 
-    \item ``parte inicial de la propiedad + enlace + cardinalidad + complemento de la propiedad''
+La gramática~\ref{gram:object_card_rest} muestra los patrones diseñados para las restricciones de cardinalidad sobre \emph{objectProperty}. En los casos donde sea posible, si la clase sobre la que se aplica la restricción es \emph{owl:Thing}, se reemplaza por el rango de la propiedad, el complemento de la propiedad (como el patron$_2$) o por último por la palabra ``cosa''.
 
-    \item ``parte inicial de la propiedad + enlace + cardinalidad + clases sobre las que se aplica la restricción''
-\end{itemize}
-
-En los casos donde sea posible, si la clase sobre la que se aplica la restricción es \emph{owl:Thing}, se reemplaza por el rango de la propiedad, el complemento de la propiedad o por último por la palabra ``cosa''.
-
-El enlace hace referencia a los siguientes enlaces: \emph{como mínimo}, \emph{como máximo} y \emph{exactamente}, dependiendo del operador \emph{MinCardinality}, \emph{MaxCardinality} y \emph{ExactCardinality} respectivamente.
+El enlace es seleccionado dependiendo del operador \emph{MinCardinality}, \emph{MaxCardinality} y \emph{ExactCardinality}.
 
 Ejemplo: para la clase ``pizza interesante'', se tiene el axioma: ``tieneCobertura min 3 owl:Thing'', que puede verbalizarse como ``tiene como mínimo 3 coberturas de pizza''. La parte de la oración que se corresponde a \emph{coberturas de pizza}, es extraída del rango de la propiedad.
-\\
 
-{\bf Restricción de cardinalidad \emph{DataCardinalityRestriction}}
+\begin{GrammarEnv}
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+\fbox{\begin{minipage}{14cm}
+<RestriccionCard> : <patron$_1$> ; <patron$_2$> ; <patron$_3$>.
+<patron$_1$> : <parteInicialPropiedad> <complementoPropiedad> <enlace> <cardinalidad> <clases> .
+<patron$_2$> : <parteInicialPropiedad> <enlace> <cardinalidad> <complementoPropiedad>.
+<patron$_3$> : <parteInicialPropiedad> <enlace> <cardinalidad> <clases>.
+<enlace> : "como mínimo" ; "como máximo"; "exactamente".
+\end{minipage}}
+\end{grammar}
+\caption{Patrones para ObjectCardinalityRestriction.}\label{gram:object_card_rest}
+\end{GrammarEnv}
 
-\begin{itemize}
-    \item ``parte inicial de la propiedad + enlace + cardinalidad + complemento de la propiedad''.
+\subsubsection{Restricción de cardinalidad \emph{DataCardinalityRestriction}}
+La gramática~\ref{gram:data_card_rest} muestra los patrones diseñados para las restricciones de cardinalidad sobre \emph{dataProperty}. El patron$_2$ es específico para cuando la propiedad no tiene verbo. 
 
-    \item ``parte inicial de la propiedad + enlace + cardinalidad + complemento de la propiedad''
+\begin{GrammarEnv}
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+\fbox{\begin{minipage}{14cm}
+<RestriccionCard> : <patron$_1$> ; <patron$_2$>.
+<patron$_1$> : <parteInicialPropiedad> <enlace> <cardinalidad> <complementoPropiedad> .
+<patron$_2$> : "tiene" <enlace> <cardinalidad> <nombrePropiedad>.
+<enlace> : "al menos" ; "como máximo"; "exactamente".
+\end{minipage}}
+\end{grammar}
+\caption{Patrones para DataCardinalityRestriction.}\label{gram:data_card_rest}
+\end{GrammarEnv}
 
-    \item ````tiene'' + enlace + cardinalidad + nombre completo de la propiedad'' (en caso de que no tenga verbo)
-\end{itemize}
+\subsubsection{Restricción de cuantificación \emph{QuantifiedObjectRestriction}}
+La gramática~\ref{gram:quant_obj_rest} muestra los patrones diseñados para las cuantificaciones sobre \emph{objectProperty}.
 
-Los enlaces elegidos son: \emph{al menos}, \emph{como máximo} y \emph{exactamente}, dependiendo del operador \emph{MinCardinality}, \emph{MaxCardinality} y \emph{ExactCardinality} respectivamente.
-\\
+\begin{GrammarEnv}
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+\fbox{\begin{minipage}{14cm}
+<RestriccionQuant> : <patron$_1$> ; <patron$_2$> ; <patron$_3$> ; <patron$_4$> ; <patron$_5$> .
+<patron$_1$> : <verboPropiedad> "como" <complementoPropiedad> <enlace> <clases> .
+<patron$_2$> : <verboPropiedad> <enlace> <clases> .
+<patron$_3$> : <verboPropiedad> <enlace> "a" <clases> .
+<patron$_4$> : <verboPropiedad> "a" <enlace> <clases> .
+<patron$_5$> : <verboPropiedad> <complementoPropiedad> <enlace> <clases> .
+<enlace> : "algún" ; "alguna"; "algo"; "exclusivamente" .
+\end{minipage}}
+\end{grammar}
+\caption{Patrones para QuantifiedObjectRestriction.}\label{gram:quant_obj_rest}
+\end{GrammarEnv}
 
-{\bf Restricción de cuantificación \emph{QuantifiedObjectRestriction}}
-\begin{itemize}
-    \item ``verbo de la propiedad + ``como'' + complemento de la propiedad + enlace + clases sobre las que se aplica la restricción''
-    \item ``verbo de la propiedad + enlace + clases sobre las que se aplica la restricción''
-    \item ``verbo de la propiedad + enlace + ``a'' + clases sobre las que se aplica la restricción''
-    \item ``verbo de la propiedad + ``a'' + enlace + clases sobre las que se aplica la restricción''
-    \item ``verbo de la propiedad + complemento de la propiedad + enlace + clases sobre las que se aplica la restricción''
-    \item ``verbo de la propiedad + enlace + ``algunos/algunas de los/las siguientes:''+ clases sobre las que se aplica la restricción''
-\end{itemize}
-Los enlaces elegidos son: \emph{algún/alguna/algo} para el cuantificador existencial y \emph{exclusivamente} para el cuantificador universal.
+Los enlaces dependen del tipo de cuantificador existencial o universal.
 
 Ejemplo: la clase ``Margherita'' que es subclase de ``PizzaConNombre'', tiene el axioma ``tieneCobertura only 
     (CoberturaDeMozzarella or CoberturaDeTomate)'' (siendo only el cuantificador universal), el cual se traduce a ``tiene cobertura de mozzarella o tomate''. También posee dos axiomas equivalentes al anterior: ``tieneCobertura some CoberturaDeMozzarella'' y ``tieneCobertura some CoberturaDeTomate'', (siendo some el cuantificador existencial), los cuales se traducen a ``tiene alguna cobertura de mozzarella'' y ``tiene alguna cobertura de tomate''.
-\\
 
-{\bf Restricción de cuantificación \emph{QuantifiedDataRestriction}}
-\begin{itemize}
-    \item ``verbo de la propiedad + enlace + complemento de la propiedad + ``de tipo'' + rango''
-    \item ``verbo de la propiedad + complemento de la propiedad + enlace + ``de tipo'' + rango''
-\end{itemize}
-Los enlaces elegidos son: \emph{algún/alguna/algo} para el cuantificador existencial y \emph{exclusivamente} para el cuantificador universal.
-\\
 
-{\bf Restricción N-Ary \emph{UnionOf}} 
-\\
+\subsubsection{Restricción de cuantificación \emph{QuantifiedDataRestriction}}
+La gramática~\ref{gram:quant_data_rest} muestra los patrones diseñados para las cuantificaciones sobre \emph{dataProperty}.
+
+\begin{GrammarEnv}
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+\fbox{\begin{minipage}{14cm}
+<RestriccionQuant> : <patron$_1$> ; <patron$_2$> .
+<patron$_1$> : <verboPropiedad> <enlace> <complementoPropiedad> "de tipo" <rangoPropiedad> .
+<patron$_2$> : <verboPropiedad> <complementoPropiedad> <enlace> "de tipo" <rangoPropiedad> .
+<enlace> : "algún" ; "alguna"; "algo"; "exclusivamente" .
+\end{minipage}}
+\end{grammar}
+\caption{Patrones para QuantifiedDataRestriction.}\label{gram:quant_data_rest}
+\end{GrammarEnv}
+
+\subsubsection{Restricción N-Ary \emph{UnionOf}} 
 Como representa una secuencia de elementos, en la que uno o más elementos pueden ser verdaderos, se eligió concatenar a todos los elementos con el conector disyuntivo ``o''. Sean e1, e2,...,eN los elementos de la unión, el patrón gramatical elegido es: ``e1, e2, ..., eN-1 \emph{o} eN''.
-\\
 
-{\bf Restricción N-Ary \emph{InterseccionOf}} \\
+\subsubsection{Restricción N-Ary \emph{InterseccionOf}}
 La intersección da lugar tanto a la adición como a la subordinación de oraciones. Antes de verbalizar una intersección, se ordenan sus componentes de mayor a menor prioridad, teniendo en cuenta que: T, ON, union, intersection tienen la misma prioridad, y SV tiene menor prioridad. 
 
 Para determinar cómo verbalizar una intersección, se tienen en cuenta las siguientes condiciones:
@@ -323,10 +365,9 @@ Para determinar cómo verbalizar una intersección, se tienen en cuenta las sigu
             ``contenido primer operando + ``y'' + contenido segundo operando''
         \end{itemize}
         \item Si la intersección tiene más de dos operandos, se agrupan según el tipo  (T, SV, ON) y luego se coordinan con la conjunción ``y''.
-        
 \end{itemize}
 
-Ejemplo, el axioma de clase equivalente ``Pizza and (tieneCobertura some (CoberturaDePizza and (tienePicante some MuyPicante)))'' de la clase pizzaPicanteEquivalente, contiene dos intersecciones las cuales poseen los mismos componentes: T$+$SV, por lo que utilizamos el conector \emph{que} para subordinar el segundo operando. Con este criterio, el axioma anterior sería ``pizza picante es una pizza \emph{que} tiene alguna cobertura de pizza \emph{que} tiene algún picante muy picante''.
+Ejemplo, el axioma de clase equivalente ``Pizza and (tieneCobertura some (CoberturaDePizza and (tienePicante some MuyPicante)))'' de la clase pizzaPicanteEquivalente, contiene dos intersecciones las cuales poseen los mismos componentes: T$+$SV, por lo que utilizamos el conector ``que'' para subordinar el segundo operando. Con este criterio, el axioma anterior sería ``pizza picante es una pizza \emph{que} tiene alguna cobertura de pizza \emph{que} tiene algún picante muy picante''.
 
 En caso de asociar la intersección al conector \emph{y} sin tener en cuenta el contexto, se generaría una oración como la siguiente ``pizza picante es una pizza \emph{y} tiene alguna cobertura de pizza \emph{y} tiene algo muy picante'', dando lugar a ambigüedad, pues la segunda ``y'' podría cumplir la función de adición, interpretándose que la pizza tiene algo picante, en lugar de cumplir una función de subordinación, donde la interpretación correcta es que la cobertura de la pizza es picante. 
         %\item OWLObjectOneOf sirve para la enumeración de los individuos, por lo que se toma el mismo criterio que en la Unión para verbalizarlo.
@@ -336,36 +377,26 @@ En caso de asociar la intersección al conector \emph{y} sin tener en cuenta el 
         %\item OWLObjectInverseOf ..
 
 
-%no es informacion estrictamente redundante.
-%\subsubsection{Eliminación de información redundante}
-%En ocasiones la verbalización de axiomas diferentes presentan la misma información, lo que vuelve al texto redundante. Para evitar la redundancia, se eliminan las sentencias que contengan información en común entre los distintos tipos de relaciones owl. Por ejemplo: en la ontología wine se listan las propiedades que tienen como dominio wine ``wine has body, has sugar, etc...'' pero también se listan las superclases anónimas, por ejemplo el siguiente axioma: ''wine hasBody exactly 1 owl:Thing'', lo que se traduce en ``wine has one body''. Luego de verbalizar las propiedades y las superclases anónimas, se tienen oraciones como ``wine has body'' y ``wine has one body'', por lo que se puede omitir la primera que es menos específica. Como criterio, se verbalizan las superclases anónimas y luego las propiedades que no fueron usadas se agregan para complementar la información.
-
 \subsection{Expresiones de referencia}
-Teniendo en cuenta que cada párrafo trata centralmente un único tópico, el conjunto de oraciones perteneciente a ese párrafo hacen referencia a una única entidad. Esto facilita la referenciación, dado que al no intercalar tópicos como focos de atención se reduce la posibilidad de ambigüedad.
+El proceso de referenciación se ve facilitado por el uso de la Teoría de Centrado. 
+Teniendo en cuenta que cada párrafo (y por lo tanto cada oración que lo compone) trata centralmente una única Clase o Individuo, no se intercalan tópicos como focos de atención, por lo que se reduce la posibilidad de ambigüedad. Las expresiones de referencia solo fueron implementadas para las Clases.
 
-Para dar lugar a las expresiones de referencia, se hereda un atributo con el nombre de la clase descrita en el párrafo durante el recorrido jerárquico de cada axioma, para poder usarla o reemplzarla por la expresión adecuada. %Sin embargo, no es muy común (y por lo tanto no es tan necesario) crear expresiones de referencia dentro de la verbalización de los axiomas, ya que por lo general no son largas explicaciones, y no se cambia el tópico principal durante la composición de las sentencias. 
-%Por el contrario, cuando se tratan diferentes axiomas acerca de un mismo tópico, existen momentos en los que resulta adecuado utilizar una expresión de referencia, para retomar con énfasis el tema principal.
-También se requiere la referenciación entre axiomas, lo que resulta trivial, al estar agrupados bajo un mismo párrafo. 
-
-Para llevar a cabo la referenciación, se tuvo en cuenta el uso de pronombres demostrativos, a veces, acompañados por el primer sustantivo (si posee) del nombre de la entidad.
+Para llevar a cabo la referenciación, se tuvo en cuenta el uso de pronombres demostrativos (``este/esta''), a veces, acompañados por el primer sustantivo (si posee) del nombre de la Clase. Por ejemplo: sean las oraciones ``Una Rosa es una pizza con nombre. Una Rosa tiene como cobertura a alguna cobertura de gorgonzola, mozzarella Y tomate.'' en la segunda oración en lugar de repetir ``una Rosa'', se reemplaza por una expresión de referencia ``Una Rosa es una pizza con nombre. \emph{esta} tiene como cobertura a alguna cobertura de gorgonzola, mozzarella Y tomate.''. Otro ejemplo en el que el pronombre es acompañado por el sustantivo de la Clase es: ``una cobertura de salsa de chile tabasco es una cobertura de salsa. \emph{Esta cobertura} tiene como picante algo muy picante.''
 
 %Otro tipo de referencias, se da en el momento de explicar una clase. Cuando se crea una sección hablando acerca de una clase \emph{A}, esa sección no vuelve a crearse si existe una clase \emph{B} cuya descripción requiere que se explique la clase \emph{A}, sino que en la clase \emph{B} se hace referencia a la sección donde ya fue explicada la clase \emph{A}. Esto permite reutilizar las secciones y evita agregar información redundante en el texto.
 
 \subsection{Agregación de sentencias}
-La agregación de sentencias ocurre en dos lugares. Uno es durante el proceso de producción de una oración en el constructor NAry; el otro es durante el proceso de creación de párrafos, es decir, agregación inter-oraciones.
+La agregación de sentencias ocurre en dos lugares. Uno es durante el proceso de producción de una oración en el constructor \emph{N-Ary}, es decir dentro de una oración; el otro es durante el proceso de creación de párrafos, es decir, entre oraciones.
 
 %de marco metodologico para la gnl
-Basaremos la agregación en la conjunción por componentes compartidos. El objetivo es que los elementos en común aparezcan una sola vez, mediante elipsis del componente repetido, por ejemplo:
-\begin{itemize}
-    \item Sean las oraciones: \emph{la casa tiene color rojo}, \emph{la casa tiene color azul} y \emph{la casa tiene color verde}, al comparar linealmente las oraciones, se elimina de las consecutivas oraciones la parte inicial que tengan en común. El resultado de esta agregación es: \emph{la casa tiene color rojo, azul y verde}.
-\end{itemize}
+Basaremos la agregación en la conjunción por componentes compartidos~\cite{bernardos2003marco}. El objetivo es que los elementos en común aparezcan una sola vez, mediante elipsis del componente repetido, por ejemplo: sean las oraciones: ``la casa tiene color rojo'', ``la casa tiene color azul'' y ``la casa tiene color verde'', al comparar linealmente las oraciones, se elimina de las consecutivas oraciones la parte inicial que tengan en común. El resultado de esta agregación es: ``la casa tiene color rojo, azul y verde''.
     
 \begin{itemize}
-    \item {\bf Agregación en constructor NAry}: en las situaciones en las que este constructor se utiliza para enumerar sentencias, como el orden de los elementos enumerados no altera el significado de la oración, se optó por agrupar los elementos según su función (T, SV, ON). Para el grupo de sentencias T, se omitió información inicial de la sentencia, que se corresponda léxicamente con el complemento del tópico al que describen. 
+    \item {\bf Agregación en constructor NAry}: en las situaciones en las que este constructor se utiliza para enumerar sentencias, como el orden de los elementos enumerados no altera el significado de la oración, se optó por agrupar los elementos según su función (T, SV, ON). Para el grupo de sentencias T, se omitió información inicial de cada sentencia. Por ejemplo: las oraciones ``pizza con carne'', ``pizza picante'' y ``pizza no vegetariana'', se convierten en la oración ``pizza con carne, picante y no vegetariana''.
     
-    Para los grupos SV y ON, se ordenaron por verbo, y cada verbo aparece una sola vez, acompañado por la enumeración de los complementos de cada elemento. Para mejorar más la calidad del texto, también se omitieron las partes iniciales de los complementos que coinciden léxicamente.
+    Para los grupos SV y ON, se ordenaron por verbo, y cada verbo aparece una sola vez, acompañado por la enumeración de los complementos de cada elemento. Por ejemplo: las oraciones ``no tiene como cobertura alguna cobertura de carne'' y ``no tiene como cobertura alguna cobertura de pescado'' se convierten en ``no tiene como cobertura alguna cobertura de carne ni pescado''.
     
-    \item {\bf Agregación entre sentencias}: esta agregación se aplica cuando se recorren las sentencias para armar un párrafo. Además de agrupar las sentencias por función, también se separan por constructor, obteniendo así 7 grupos: \emph{ObjectSomeValuesFrom, ObjectAllValuesFrom, intersection, union, ObjectHasValue, T, ON y SV}. De esta manera, para cada grupo, se realiza la agregación, de manera independiente entre ellos.
+    \item {\bf Agregación entre sentencias}: esta agregación se aplica cuando se recorren las sentencias para armar un párrafo. Además de agrupar las sentencias por función (T, SV, ON), también se separan por constructor, obteniendo así 7 grupos: \emph{ObjectSomeValuesFrom, ObjectAllValuesFrom, intersection, union, ObjectHasValue, T, ON y SV}. De esta manera, para cada grupo, se realiza la agregación, de manera independiente entre ellos.
 \end{itemize}
 
 \subsection{Diagrama de clases}

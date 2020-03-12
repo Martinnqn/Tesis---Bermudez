@@ -26,10 +26,11 @@
 \usepackage[final]{pdfpages}
 %para el arbol de directorios
 \usepackage{dirtree}
+\usepackage{verbatim} 
 
 %para el caption de las listas
 \DeclareCaptionType{listCap}[Lista]
-\DeclareCaptionType{grammarCap}[Gramática]
+
 
 % declare the floating environment {Grammar}
 % this will also define \listofGrammars:
@@ -39,7 +40,7 @@
   % the heading for the list:
   listname  = {List of Grammars},
   % the name used in captions:
-  name      = GrammarEnv,
+  name      = Gramática,
   % the default floating parameters if the environment is used
   % without optional argument:
   placement = htp
