@@ -197,7 +197,18 @@ Por último en el nivel más abstracto se encuentran los constructores de Axioma
 \end{GrammarEnv}
 
 \subsection{Componentes y oraciones parciales}
-Durante la creación de una oración, se recorren los constructores de Expresiones de Clases y de Entidades, creando oraciones parciales y componiéndolas entre ellas. Dado que cada constructor puede componerse con cualquier otro y en cualquier nivel de profundidad, se decidió asociar a cada constructor un tipo de componente oracional. De esta manera se evita una exhaustiva programación de composiciones. Estos tipos de componentes definen un sistema de tipos, en el que cada tipo puede componerse con otro y dan como resultado un tipo de componente nuevo. %En la mayoría de los casos el tipo de componente es predecible, a excepción de la \emph{intersección}.
+Durante la creación de una oración, se recorren los constructores de Expresiones de Clases y de Entidades, creando oraciones parciales y componiéndolas entre ellas. Dado que cada constructor puede componerse con cualquier otro y en cualquier nivel de profundidad, se decidió asociar a cada constructor un tipo de componente oracional, de esta manera se evita una exhaustiva programación de composiciones.
+Los tipos de componentes son los siguientes:
+\begin{itemize}
+    \item Término (T): caracterizado por no poseer verbo. Pueden contener adverbios, sustantivos y adjetivos.
+    \item Sintagma Verbal (SV): debe poseer un verbo.
+    \item Oración Negativa (ON): representa la negación de un verbo.
+    \item Unión: representa una disyunción de oraciones parciales.
+    \item Intersección: representa una adición o subordinación de oraciones parciales.
+\end{itemize}
+
+Estos tipos de componentes definen un sistema de tipos, en el que cada tipo puede componerse con otro y dan como resultado un nuevo componente. La particularidad de este sistema es que el tipo de una composición no depende de sus componentes, sino del constructor que opere con esos componentes.
+%En la mayoría de los casos el tipo de componente es predecible, a excepción de la \emph{intersección}.
 
 Los componentes que retorna cada constructor se definen a continuación:
 \begin{itemize}
@@ -482,7 +493,9 @@ La verbalización se muestra en la figura~\ref{fig:ejemplo_verb_ingles}.
 Los pasos del proceso se encuentran enumerados desde el 1 al 4. Las gramáticas utilizadas son similares a las explicadas para lenguaje español, con la diferencia que los enlaces han sido traducidos a inglés.
 
 Resulta conveniente explicar el paso Nº3 particularmente. El resultado de este paso es consecuencia de la intersección entre ``Wine'' y el resultado del paso 1 y 2. 
-Como es una intersección de tres componentes, se procede a agrupar los componentes según su tipo, para luego unirlos a través de la conjunción ``y''. Dado que el operador \emph{hasValue} y \emph{minCardinality} retornan componentes de tipo SV, son agrupados juntos en una oración. Por otro lado, la Clase Wine retorna un tipo T, por lo que queda aislado en una oración independiente. El resultado de estas agrupaciones es el texto del paso Nº3.
+Como es una intersección de tres componentes, se procede a agrupar los componentes según su tipo, para luego unirlos a través de la conjunción ``y''. Dado que el operador \emph{hasValue} y \emph{minCardinality} retornan componentes de tipo SV, son agrupados juntos en una oración. Luego de agruparlos, se procede a realizar el proceso de agregación entre ambas, a través del cual se elimina el verbo ``made'' de la oración parcial construida en el paso 1. 
+
+Por otro lado, la Clase Wine retorna un tipo T, por lo que queda aislado en una oración independiente. Estas agrupaciones resultan en el texto del paso Nº3.
 
 La verbalización de este axioma da como resultado dos oraciones. Como ambas oraciones hacen referencia a la misma Clase, en el paso Nº4 ocurre un reemplazo del nombre de la Clase por una Expresión de Referencia. 
 
@@ -494,7 +507,7 @@ La verbalización de este axioma da como resultado dos oraciones. Como ambas ora
 \end{figure}
 
 \subsection{Diagrama de clases}
-En la figura \ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de micro planificación. Las subclases de \emph{OWLRestriction} tienen la capacidad de generar las oraciones, según el tipo de restricción que represente.
+En la figura \ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de micro planificación. Las subclases de \emph{OWLRestriction} tienen la capacidad de generar las oraciones parciales.
 
 \begin{figure}[H]
     \centering
