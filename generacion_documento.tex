@@ -50,9 +50,11 @@ En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama 
 
 \section{Diseño micro planning}
 %El objetivo de esta etapa es organizar el contenido de cada axioma para crear una sentencia gramaticalmente aceptable.
-Como ya organizamos y planificamos el documento, ahora debemos centrarnos en describir en lenguaje natural a una entidad, a partir de los axiomas que la describen en la ontología. Esta descripción en lenguaje natural se alcanza a través de uno o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
+En esta estapa se llevarán a cabo las tareas para describir una entidad en lenguaje natural a partir de los axiomas que la describen en la ontología. Esta descripción en lenguaje natural se alcanza a través de uno o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
 
 Como existen diversas estructuras sintácticas para expresar un mismo contenido, a modo de simplificación se asoció a cada constructor OWL solo algunas formas de verbalización. Se trató de generar oraciones que sean fieles al significado expresado en los axiomas y de evitar ambigüedades.
+
+Para poder trabajar con patrones de la gramática del lenguaje español, se utilizó un \emph{POS Tagger} para etiquetar las palabras de las definiciones de las clases.
 
 \subsection{Verbalización de la definición de una Clase}
 Se decidió definir a cada Clase en lenguaje natural a partir de los axiomas que la describen y agregando además las propiedades en las que participa como dominio.
@@ -66,7 +68,7 @@ Esta etapa se divide en tres tareas principales:
 
 \subsection{Sintaxis OWL 2}
 \label{sec:gen_doc_sintaxis_owl}
-Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gramática BNF y de los diagramas de clases de su documentación~\cite{OWL2W3C}), podemos agrupar en diferentes niveles de abstracción las tres categorías sintácticas: en el nivel inferior se encuentran las Entidades, en el nivel intermedio las Expresiones de Clases, y en el nivel superior los Axiomas. Esta separación en niveles de abstracción será útil para organizar la verbalización. El conjunto de constructores elegido para verbalizar se encuentra en las siguientes listas: en la lista~\ref{list:constructores_axiomas} se agrupan los constructores del nivel de Axiomas, en la lista~\ref{list:constructores_expresiones} los constructores de Expresiones de Clases y en la lista~\ref{list:constructores_entity} los constructores de nivel de Entidades.
+Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gramática BNF y de los diagramas de clases de su documentación~\cite{OWL2W3C}), agrupamos en diferentes niveles de abstracción las tres categorías sintácticas: en el nivel inferior se encuentran las Entidades, en el nivel intermedio las Expresiones de Clases, y en el nivel superior los Axiomas. Esta separación en niveles de abstracción será útil para organizar la verbalización. El conjunto de constructores elegido para verbalizar se encuentra en las siguientes listas: en la lista~\ref{list:constructores_axiomas} se agrupan los constructores del nivel de Axiomas, en la lista~\ref{list:constructores_expresiones} los constructores de Expresiones de Clases y en la lista~\ref{list:constructores_entity} los constructores de nivel de Entidades.
 \begin{figure}
 \begin{multicols}{2}
 \captionof{listCap}{Constructores de Entidades}
@@ -116,7 +118,7 @@ Ordenaremos la verbalización basados en la separación en niveles de abstracci�
 
 El enfoque adoptado para crear la sintaxis de las oraciones se basa en un recorrido bottom-up de la jerarquía de un Axioma, construyendo oraciones parciales a partir de los constructores de Expresiones de Clases y de Entidades, hasta alcanzar la raíz de la jerarquía, donde se termina de construir la oración final. 
 
-Con el objetivo de comenzar a formar las oraciones parciales, el primer paso a realizar es verbalizar las Entidades, ya que están directamente relacionadas con las IRIs (o tienen acceso al \emph{label}, en caso de extraer los nombres desde los labels).
+Con el objetivo de comenzar a formar las oraciones parciales, el primer paso a realizar es verbalizar las Entidades, ya que están directamente relacionadas con las IRIs (o tienen acceso al \emph{label}, en caso de extraer los nombres desde los \emph{labels}).
 
 En la Gramática~\ref{gram:entity} se muestra una porción de la gramática BNF del lenguaje OWL 2 asociada a las entidades.
 \begin{GrammarEnv}
@@ -172,7 +174,7 @@ En la Gramática~\ref{gram:expr_clases} se muestra a modo de ejemplo una secció
 Puede apreciarse en la gramática que existe recursividad entre los constructores, lo que produce que un constructor aparezca en diferentes niveles y pueda combinarse con cualquier otro constructor del nivel de Expresiones de Clases. En este punto es importante que cada constructor pueda componerse con los demás, para asegurar cualquier combinación posible.
 
 
-Por último en el nivel más abtracto se encuentran los constructores de Axiomas. Estos constructores tienen la característica de no ser recursivos entre ellos, por lo que es posible generar oraciones independientes, yuxtapuestas o coordinadas. Un ejemplo de estos constructores se ve en la Gramática~\ref{gram:axiom}.
+Por último en el nivel más abstracto se encuentran los constructores de Axiomas. Estos constructores tienen la característica de no ser recursivos entre ellos, por lo que es posible generar oraciones independientes, yuxtapuestas o coordinadas. Un ejemplo de estos constructores se ve en la Gramática~\ref{gram:axiom}.
 
 \begin{GrammarEnv}
 \begin{grammar}
@@ -199,22 +201,31 @@ Durante la creación de una oración, se recorren los constructores de Expresion
 
 Los componentes que retorna cada constructor se definen a continuación:
 \begin{itemize}
-    \item Clase: término (T).
-    \item Propiedad: sintagma verbal (SV).
-    \item Operadores de cuantificación: SV.
-    \item Unión: oración disyuntiva (union).
-    \item Intersección: oración copulativa u oración subordinada, que en ambos casos retorna el tipo intersection.%oración copulativa (OC), oración subordinada (OS) u oración copulativa negativa (OCN).
-    \item Operadores con cardinalidad: SV.
-    \item Complemento: oración negativa (ON).
+    \item Componente Término (T):
+    \begin{itemize}
+        \item Clase.
+        \item Individuo
+        \item Operador \emph{oneOf}.
+    \end{itemize}
+    \item Componente Sintagma Verbal (SV)
+    \begin{itemize}
+        \item Propiedad.
+        \item Operadores de cuantificación.
+        \item Operador \emph{hasValue}.
+        \item Operadores con cardinalidad.
+    \end{itemize}
+    \item Componente Union: solo el constructor \emph{ObjectUnionOf}.
+    \item Componente Intersección: solo el constructor \emph{ObjectIntersectionOf}.
+    \item Componente Oración Negativa (ON): solo el constructor \emph{ObjectComplementOf}.
 \end{itemize}
 
-El beneficio de este sistema es que cada constructor sabe cómo componer sus operandos en función del tipo que retornan, lo que reduce la cantidad de combinaciones a programar (en contraste con tener que programar cómo se compondrían los operandos de un constructor con cada uno de los otros constructores). Además, incorporar un sistema como este, evita el uso de \emph{templates} prediseñados para cada caso particular, y apoya el uso de patrones más cercanos a la lingüística teórica, apoyando el uso de teorías linguísticas en el campo del Procesamiento de Lenguaje Natural, que se han visto relegadas por enfoques probabilísticos~\ref{perinan2012defensa}.
+El beneficio de este sistema es que cada constructor sabe cómo componer sus operandos en función del tipo que retornan, lo que reduce la cantidad de combinaciones a programar (en contraste con tener que programar cómo se compondrían los operandos de un constructor con cada uno de los otros constructores). Además, incorporar un sistema como este, evita el uso de \emph{templates} prediseñados para cada caso particular, y apoya el uso de patrones más cercanos a la lingüística teórica, apoyando el uso de teorías linguísticas en el campo del Procesamiento de Lenguaje Natural.
 
 
-Sin embargo, estos componentes no intentan ser exhaustivos ni completamente fieles a la sintaxis del español, sino que intentan acaparar de la forma más general los posibles resultados de cada operador, para mantener una sintaxis sencilla y aceptable. Una clase, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una clase, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas.
+Sin embargo, estos componentes no intentan ser exhaustivos ni completamente fieles a la sintaxis del lenguaje humano, sino que intentan acaparar de la forma más general los posibles resultados de cada constructor, para mantener una sintaxis sencilla y aceptable. Una clase, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una clase, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas.
 
 
-\subsection{Convención y suposiciones del nombrado de entidades}
+\subsection{Convención y suposiciones del nombrado de Entidades}
 Para no limitar la aplicación a una convención de nombrado, no se requiere una forma estricta para nombrar las entidades en una ontología. Sin embargo, nos basamos en algunas suposiciones que resultan natural al crear una ontología:
 \begin{enumerate}
     \item Las entidades pueden tener su nombre ya sea en la IRI o en un label\footnote{Estas opciones son excluyentes, al verbalizar una ontología solo se extraen los nombres de un solo lugar, por lo que todos los nombres deben ser extraídos de IRI o de label sin combinarse}. Si el nombre es extraído de una IRI, debe estar escrito con el estilo CamelCase. Si el nombre se extrae de un label, debe estar escrito en lenguaje natural, y debe tener el idioma del label (en este caso, español ``es'' o ingles ``en'').
@@ -225,12 +236,14 @@ Para no limitar la aplicación a una convención de nombrado, no se requiere una
 \end{enumerate}
 
 Estas condiciones ayudan a mejorar la fluidez del texto y no suponen una gran carga en los desarrolladores de ontologías.
-\\
 
-\subsection{Tratamiento sintáctico de los nombres de entidades}
+
+\subsection{Tratamiento sintáctico de los nombres de Entidades}
 Para facilitar el entendimiento de las secciones referidas al micro planning, se explicará cómo fueron tratados los nombres de las entidades, desde el punto de vista sintáctico. 
 
-Dado que los nombres de las entidades pueden no corresponderse fielmente con la gramática de un lenguaje (por falta de palabras funcionales, tales como artículos o preposiciones), se optó por no realizar un análisis sintáctico a los nombres. Se consideró, a cada conjunto de palabras que conforman el nombre de una entidad, como un componente incompleto (oración parcial) que es parte de una oración más grande. Por este motivo, se divide en dos partes fundamentales: una parte inicial y un complemento, entre los cuales pueden insertarse nexos y cuantificaciones. A continuación se explican cómo se reconocen ambas partes en las clases y propiedades:
+Dado que los nombres de las Entidades pueden no corresponderse fielmente con la gramática de un lenguaje (por falta de palabras funcionales, tales como artículos o preposiciones), se optó por no realizar un análisis sintáctico a los nombres. Sin embargo, para soportar la creación de patrones gramaticales, se etiquetaron las palabras de cada Entidad para reconocer la función gramatical de cada una y poder llevar a cabo las composiciones.
+
+Se consideró, a cada conjunto de palabras que conforman el nombre de una entidad, como un componente incompleto (oración parcial) que es parte de una oración más grande. Por este motivo, se divide en dos partes fundamentales: una parte inicial y un complemento, entre los cuales pueden insertarse nexos y cuantificaciones. A continuación se explican cómo se reconocen ambas partes en las clases y propiedades:
 \begin{itemize}
     \item Los nombres de las propiedades (en los que suponemos existe al menos un verbo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer verbo, incluído el verbo. El complemento se conforma con todas las palabras que siguen al verbo. Por ejemplo: la propiedad \emph{tiene color} se compone de parte inicial: \emph{tiene}, y complemento: \emph{color}. La propiedad \emph{se solapa con} se compone de \emph{se solapa} como parte de inicial, y \emph{con} como complemento.
     \item Los nombres de las clases (en los que suponemos existe al menos un sustantivo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer sustantivo, incluido el sustantivo. El complemento se conforma con todas las palabras que siguen al sustantivo. Por ejemplo: la clase \emph{agente social}, tiene como parte inicial \emph{agente} y complemento \emph{social}. La clase \emph{cobertura de pizza} se compone de \emph{cobertura} con complemento \emph{de pizza}.
@@ -239,6 +252,7 @@ Dado que los nombres de las entidades pueden no corresponderse fielmente con la 
 
 
 \subsection{Verbalización de constructores OWL}
+\label{sec:verbalizacion_constructores}
 Esta tarea se encarga de componer las oraciones según la información de cada constructor OWL. Las oraciones pueden enfocarse ya sea en una \emph{owl:Class} o  \emph{owl:NamedIndividual}. Cuando se enfocan en una \emph{owl:Class}, pueden contener la siguiente información: clases equivalentes, disjuntas, subclases, superclases, sus instancias y las propiedades en las que participa. Cuando se enfoca en un \emph{owl:NamedIndividual}, puede contener información acerca de los valores de sus propiedades.
 
 Para cada uno de estos tipos de información, se pueden presentar una o varias oraciones. Las oraciones que tratan el mismo tipo de información se organizan adyacentemente entre ellas.
@@ -250,7 +264,7 @@ Para reconocer cómo componer las oraciones en cada constructor, se revisó emp�
 
 A continuación se explican los patrones gramaticales usados para cada constructor. %El signo $+$ corresponde a la concatenación de cadenas de texto.
 
-\subsection{Restricción de cardinalidad \emph{ObjectCardinalityRestriction}}
+\subsubsection{Restricción de cardinalidad \emph{ObjectCardinalityRestriction}}
 
 La gramática~\ref{gram:object_card_rest} muestra los patrones diseñados para las restricciones de cardinalidad sobre \emph{objectProperty}. En los casos donde sea posible, si la clase sobre la que se aplica la restricción es \emph{owl:Thing}, se reemplaza por el rango de la propiedad, el complemento de la propiedad (como el patron$_2$) o por último por la palabra ``cosa''.
 
@@ -322,7 +336,7 @@ La gramática~\ref{gram:quant_obj_rest} muestra los patrones diseñados para las
 \caption{Patrones para QuantifiedObjectRestriction.}\label{gram:quant_obj_rest}
 \end{GrammarEnv}
 
-Los enlaces dependen del tipo de cuantificador existencial o universal.
+Los enlaces dependen del tipo de cuantificador y del tipo de palabra que lo proceda. Si el cuantificador es existencial, el enlace sería ``alguna/algún'' para palabras que sean sustantivo femenino o masculino respectivamente, o con cualquier otra palabra sería ``algo''.  Para el cuantificador universal el enlace es siempre ``exclusivamente''.
 
 Ejemplo: la clase ``Margherita'' que es subclase de ``PizzaConNombre'', tiene el axioma ``tieneCobertura only 
     (CoberturaDeMozzarella or CoberturaDeTomate)'' (siendo only el cuantificador universal), el cual se traduce a ``tiene cobertura de mozzarella o tomate''. También posee dos axiomas equivalentes al anterior: ``tieneCobertura some CoberturaDeMozzarella'' y ``tieneCobertura some CoberturaDeTomate'', (siendo some el cuantificador existencial), los cuales se traducen a ``tiene alguna cobertura de mozzarella'' y ``tiene alguna cobertura de tomate''.
@@ -398,6 +412,86 @@ Basaremos la agregación en la conjunción por componentes compartidos~\cite{ber
     
     \item {\bf Agregación entre sentencias}: esta agregación se aplica cuando se recorren las sentencias para armar un párrafo. Además de agrupar las sentencias por función (T, SV, ON), también se separan por constructor, obteniendo así 7 grupos: \emph{ObjectSomeValuesFrom, ObjectAllValuesFrom, intersection, union, ObjectHasValue, T, ON y SV}. De esta manera, para cada grupo, se realiza la agregación, de manera independiente entre ellos.
 \end{itemize}
+
+\subsection{Ejemplos verbalización de Axiomas}
+Con el objetivo de mostrar el proceso de verbalización de forma intuitiva, se representó la composición de oraciones parciales de forma gráfica usando árboles. Se tomaron dos ejemplos de Axiomas de dos ontologías diferentes, uno en lenguaje español y el otro en inglés.
+
+Para no sobrecargar la imagen, se omitió información de menor importancia, como el resultado de verbalizar una Entidad en los nodos hojas, ya que es el mismo nombre de la Entidad pero sin la nomenclatura CamelCase; y se omitió la información gramatical de cada palabra.
+
+\subsubsection{Ejemplo verbalización lenguaje español}
+El ejemplo se tomó de la ontología Pizza. El Axioma se corresponde al constructor \emph{owl:equivalentClass} sobre la clase \emph{PizzaPicanteEquivalente}. El contenido del axioma es el siguiente: 
+\begin{verbatim}
+EquivalentClasses(
+    :PizzaPicanteEquivalente
+    ObjectIntersectionOf(
+        :Pizza
+        ObjectSomeValuesFrom(
+            :tieneCobertura
+            ObjectIntersectionOf(
+                :CoberturaDePizza
+                ObjectSomeValuesFrom(
+                    :tienePicante
+                    :MuyPicante)
+            )
+        )
+    )
+)    
+\end{verbatim}
+La verbalización se muestra en la figura~\ref{fig:ejemplo_verb_espaniol}.
+
+Los pasos del proceso se encuentran enumerados desde el 1 al 6. La verbalización comienza en la parte más profunda del árbol, y a medida que se generan las oraciones parciales se retornan al nivel superior del árbol para continuar la composición.
+
+Las composiciones se resuelven a través de las Gramáticas de la sección~\ref{sec:verbalizacion_constructores}. Por ejemplo, en el paso Nº1 utiliza patron$_1$ de la Gramática~\ref{gram:quant_obj_rest}, donde:
+\begin{itemize}
+    \item $<$verboPropiedad$>$ es ``tiene''.
+    \item $<$complementoPropiedad$>$ es ``picante''.
+    \item $<$enlace$>$ es ``algún''.
+    \item $<$clases$>$ es ``muy picante''.
+\end{itemize}
+
+En el paso Nº2, como es una intersección de dos operandos, utiliza la subordinación de SV respecto a T.
+
+De esta manera, en cada nivel busca utilizar un patrón que se ajuste a los componentes recibidos.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/generacion_documento/verbalizacion_equivalentClass_spanish.pdf}
+    \caption{Ejemplo gráfico de verbalización en lenguaje español.}
+    \label{fig:ejemplo_verb_espaniol}
+\end{figure}
+
+\subsubsection{Axioma lenguaje inglés}
+El ejemplo se tomó de la ontología Wine. El Axioma se corresponde al constructor \emph{owl:equivalentClass} sobre la clase \emph{CheninBlanc}. El contenido del axioma es el siguiente: 
+
+\begin{verbatim}
+EquivalentClasses(
+    :CheninBlanc
+    ObjectIntersectionOf(
+        :Wine
+        ObjectHasValue(
+            :madeFromGrape
+            :CheninBlancGrape)
+        ObjectMaxCardinality(
+        1
+        :madeFromGrape)
+    )
+)
+\end{verbatim}
+La verbalización se muestra en la figura~\ref{fig:ejemplo_verb_ingles}.
+
+Los pasos del proceso se encuentran enumerados desde el 1 al 4. Las gramáticas utilizadas son similares a las explicadas para lenguaje español, con la diferencia que los enlaces han sido traducidos a inglés.
+
+Resulta conveniente explicar el paso Nº3 particularmente. El resultado de este paso es consecuencia de la intersección entre ``Wine'' y el resultado del paso 1 y 2. 
+Como es una intersección de tres componentes, se procede a agrupar los componentes según su tipo, para luego unirlos a través de la conjunción ``y''. Dado que el operador \emph{hasValue} y \emph{minCardinality} retornan componentes de tipo SV, son agrupados juntos en una oración. Por otro lado, la Clase Wine retorna un tipo T, por lo que queda aislado en una oración independiente. El resultado de estas agrupaciones es el texto del paso Nº3.
+
+La verbalización de este axioma da como resultado dos oraciones. Como ambas oraciones hacen referencia a la misma Clase, en el paso Nº4 ocurre un reemplazo del nombre de la Clase por una Expresión de Referencia. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/generacion_documento/verbalizacion_equivalentClass_english.pdf}
+    \caption{Ejemplo gráfico de verbalización en lenguaje inglés.}
+    \label{fig:ejemplo_verb_ingles}
+\end{figure}
 
 \subsection{Diagrama de clases}
 En la figura \ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de micro planificación. Las subclases de \emph{OWLRestriction} tienen la capacidad de generar las oraciones, según el tipo de restricción que represente.
