@@ -1,6 +1,6 @@
 \chapter{Presentación del problema}
 
-Para cumplir con el objetivo propuesto, se dividirá el desarrollo del sistema de generación de texto en dos problemas. El primero consiste en crear un módulo que preprocese la entrada para organizar y estructurar la información de forma más significativa. Reiter E.~\cite{reiter2007architecture} ha propuesto esta etapa previa de preprocesamiento para el análisis y la interpretación de datos, aunque fue aplicada en una entrada de datos en crudo (generada directamente de sensores) en lugar de una base de conocimiento.
+Para cumplir con el objetivo propuesto, se dividirá el desarrollo del sistema de generación de texto en dos problemas. El primero consiste en crear un módulo que preprocese la entrada para organizar y estructurar la información de forma más significativa. Reiter E.~\cite{reiter2007architecture} ha propuesto esta etapa previa de preprocesamiento para el análisis y la interpretación de datos, aunque fue aplicada en una entrada de datos en crudo (generada directamente de sensores) en lugar de una base de conocimiento. En este caso, el resultado del preprocesamiento será usado para poder abordar la coherencia global del texto.
 El segundo problema consiste en diseñar e implementar el módulo que toma como entrada la información organizada y la convierte en un documento de texto. Para esto usaremos como referencia las tareas descritas en la Sección~\ref{sec:tareas_gnl}.
 
 %Se puede apreciar la composición de nuestro sistema de generación de lenguaje natural en la Figura~\ref{fig:modulos_sgln}. En la misma se puede ver plasmado la división de los dos problemas descripta anteriormente.
@@ -16,22 +16,19 @@ Esta división puede verse plasmada en la Figura~\ref{fig:modulos_sgln}, en la c
     \label{fig:modulos_sgln}
 \end{figure}
 
-\section{Presentación del problema de la organización de la información para la coherencia del texto}
+\section{Presentación del problema de la organización de la información para la coherencia global del texto}
 \label{sec:problema_coherencia-texto}
+Considerando lo propuesto por la Teoría de Veins, debemos crear una estructura jerárquica que facilite la relación entre unidades textuales. A medida que se avanza en el texto, un concepto solo debería ser capaz de referenciar otros conceptos que hayan sido nombrados anteriormente, ya sea en el mismo nivel de jerarquía o en niveles superiores. Esto implica evitar que una entidad en un nivel \emph{N} haga referencia a entidades que se encuentren en niveles \emph{N+1} (niveles inferiores).
 
-Tomando algunos postulados básicos de la Teoría de Centrado, contamos con una base inicial para elegir cómo presentar en lenguaje natural y de manera coherente la información de cada entidad contenida en la ontología. No es el objetivo de este trabajo implementar una solución basada estrictamente en las reglas propuestas por dicha Teoría, más bien, se pretende alcanzar una cierta coherencia local motivados por la idea que subyace en la misma.
+Suponemos que las entidades que tienen mayor impacto en la ontología son las que deberían aparecer en los niveles superiores de la jerarquía, con el objetivo de usarlas como hilo conductores para estructurar el texto. 
 
-%Basándonos en la Teoría de Centrado, tenemos una base para elegir cómo presentar en lenguaje natural y de manera coherente la información de cada entidad contenida en la ontología. No es el objetivo de este trabajo implementar una solución basada estrictamente en las reglas propuestas por la Teoría de Centrado, más bien, pretendemos alcanzar una cierta coherencia local motivados por la idea que subyace a esta teoría.
+Para identificar las entidades más relevantes, usaremos la las medidas de centralidad de los nodos.
 
-Dado una entidad, se puede recorrer la estructura de grafo asociada a la ontología para recuperar la información necesaria para describir esa entidad. Es necesario definir cómo recorrer el grafo, ya que cada recorrido genera un resultado diferente. 
+A continuación veremos un ejemplo a partir de la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de la ontología {\tt pizza.owl}\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}.
 
-Como hipótesis, consideramos que para mantener una coherencia local, es necesario recorrer el grafo en anchura, obteniendo la máxima cantidad de información posible acerca de una única entidad \emph{E}, de manera que el foco de atención solo salte hacia otras entidades cuando no haya nada más para decir acerca de \emph{E}.
+Nótese que hay formas más adecuadas que otras para comenzar a transmitirle a un receptor toda la información del grafo. Algunos de los posibles tópicos que engloban o relacionan a la mayoría de los datos expuestos son ``Tipo de comidas'', o ``Ingredientes de la pizza'', siendo que, la mayor cantidad de información está relacionada a la pizza. 
 
-En cuanto a la coherencia global, considerando lo propuesto por la Teoría de Veins, podemos valernos de la estructura jerárquica de la ontología para presentar las entidades en orden, reconociendo qué entidades deben aparecer primero en la estructura del texto, para permitir que futuras entidades puedan referenciarlas manteniendo la coherencia.
-
-Como la coherencia global se refiere al sentido del texto, es necesario reconocer qué entidades son más sobresalientes que otras, para poder usarlas como hilo conductores de la estructura del texto. Suponemos que aquellas entidades que tienen mayor impacto en la ontología son las que deberían ser nombradas primero en el texto, y a partir de ellas comenzar a estructurar el texto.
-
-Se puede medir el grado de relación entre las entidades, aún antes del proceso de selección de información para describirlas. A continuación veremos un ejemplo a partir de la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de la ontología {\tt pizza.owl}\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}.
+Si se comenzara a estructurar el texto desde ``Helado'' o desde ``Vegetariana'', se perdería algo de coherencia global al no estar fuertemente relacionado con el resto de los tópicos.
 
 %\begin{figure}
 %\centering
@@ -50,11 +47,7 @@ Se puede medir el grado de relación entre las entidades, aún antes del proceso
 \caption{Subconjunto de la ontología de pizzas.} \label{fig:pizza.owl}
 \end{figure}
 
-Aún antes de generar las proposiciones que reflejan la información del grafo, se puede notar que hay formas más adecuadas que otras para comenzar a transmitirle a un receptor toda la información del grafo. Algunos de los posibles tópicos que engloban o relacionan a la mayoría de los datos expuestos son ``Tipo de comidas'', o ``Ingredientes de la pizza'', siendo que, la mayor cantidad de información está relacionada a la pizza. 
-
-Para identificar los nodos más relevantes, pueden usarse la disposición jerárquica del grafo o las medidas de centralidad de los nodos.
-
-También se puede hacer uso de la jerarquía de las propiedades, para reconocer su tipo más general a través de la relación de generalización, como en el caso de las relaciones \emph{tiene cobertura} y \emph{tiene base}, con el fin de referirse a ellas como ``Ingredientes''.
+Una vez identificados los nodos sobresalientes, se debe estructurar la información a partir de ellos. Para esto se recorre el grafo de la ontología a través de las relaciones entre los nodos.
 
 Considerando que las ontologías de la Web Semántica son redes libres de escala, esperamos que la naturaleza de las relaciones brinden información suficiente para discriminar entre el contenido principal y el menos relevante.
 \\
@@ -63,7 +56,7 @@ En esta sección hemos presentado dos problemáticas a tratar:
 
 \begin{itemize}
     \item La obtención de los tópicos más relevantes para tratar en el texto.%, que en nuestro caso son unidades de información representadas por \emph{owl:Class} y \emph{owl:NamedIndividual}.
-    \item El recorrido del grafo para obtener las unidades de información adecuada que maximicen la relación semántica respecto a los tópicos del texto (para abordar la cohesión global y local).% En este caso, las unidades de información que se tienen en cuenta para el recorrido del grafo son \emph{rdfs:subClassOf}, \emph{owl:ObjectProperty} y \emph{owl:DataProperty}.
+    \item El recorrido del grafo para obtener las unidades de información adecuada que maximicen la relación semántica respecto a los tópicos del texto (para abordar la cohesión global).% En este caso, las unidades de información que se tienen en cuenta para el recorrido del grafo son \emph{rdfs:subClassOf}, \emph{owl:ObjectProperty} y \emph{owl:DataProperty}.
 \end{itemize}
 
  
@@ -74,3 +67,18 @@ Como presentamos en el Objetivo (Sección~\ref{Intro:objetivo}), se esperan alca
     \item A nivel macro: el texto debe tener una estructura que permita visualizar los principales temas, presentándolos de manera aislada (secciones, párrafos), pero que en conjunto se complementen para que el lector pueda establecer las relaciones adecuadas entre ellos. Como objetivo principal se espera alcanzar una estructura que presente la información más importante y necesaria lo más temprana posible, preparando al lector para que pueda comprender información nueva.
     \item A nivel micro, el texto debe cumplir con cierta fluidez, utilizando frases que tengan una gramática aceptable, tratando de maximizar la cohesión.
 \end{enumerate}
+
+Para satisfacer las necesidades del nivel macro, usaremos como punto de partida la estructura resultante del módulo de organización de información, que servirá para generar un documento inicial. Este documento inicial se modificará para adoptar una estética más agradables para el lector, tratando de mantener la coherencia global de la estructura original.
+
+Parte de la estética resulta de crear secciones y párrafos con los tópicos del texto. Dado que queremos dotar al texto con coherencia local, debemos definir qué información habrá en cada sección y párrafo, y cómo estará organizada. 
+
+Tomando algunos postulados básicos de la Teoría de Centrado, contamos con una base inicial para elegir cómo presentar en lenguaje natural y de manera coherente la información contenida en la ontología. No es el objetivo de este trabajo implementar una solución basada estrictamente en las reglas propuestas por dicha Teoría, más bien, se pretende alcanzar una cierta coherencia local motivados por la idea que subyace en la misma.
+
+Para mantener la coherencia local según la Teoría de Centrado, debemos evitar cambiar continuamente los focos de atención. Por este motivo, para cada tópico tratado en el texto, trataremos de capturar y presentar toda su información agrupada en párrafos consecutivos.  
+
+Dado una entidad \emph{E}, para recuperar la información que la describe, adoptaremos como enfoque recorrer la estructura de grafo asociada a la ontología, navegando por las relaciones de \emph{E}. Es necesario definir cómo recorrer el grafo, ya que cada recorrido genera un resultado diferente. 
+
+Como hipótesis, consideramos que para mantener una coherencia local, es necesario recorrer el grafo en anchura, obteniendo la máxima cantidad de información posible acerca de \emph{E}, de manera que el foco de atención solo salte hacia otras entidades cuando no haya nada más para decir acerca de \emph{E}.
+
+
+En el nivel micro, debemos definir una traducción entre la gramática del lenguaje OWL y del lenguaje humano. Luego se modificará convenientemente la traducción para alcanzar un texto más fluido.

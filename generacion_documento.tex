@@ -202,7 +202,7 @@ Los tipos de componentes son los siguientes:
 \begin{itemize}
     \item Término (T): caracterizado por no poseer verbo. Pueden contener adverbios, sustantivos y adjetivos.
     \item Sintagma Verbal (SV): debe poseer un verbo.
-    \item Oración Negativa (ON): representa la negación de un verbo.
+    \item Oración Negativa (ON): representa la negación de un componente.
     \item Unión: representa una disyunción de oraciones parciales.
     \item Intersección: representa una adición o subordinación de oraciones parciales.
 \end{itemize}
@@ -216,24 +216,28 @@ Los componentes que retorna cada constructor se definen a continuación:
     \begin{itemize}
         \item Clase.
         \item Individuo
-        \item Operador \emph{oneOf}.
     \end{itemize}
-    \item Componente Sintagma Verbal (SV)
+    \item Componente Sintagma Verbal (SV):
     \begin{itemize}
         \item Propiedad.
-        \item Operadores de cuantificación.
-        \item Operador \emph{hasValue}.
-        \item Operadores con cardinalidad.
+        \item Constructores de cuantificación.
+        \item Constructor \emph{hasValue}.
+        \item Constructores con cardinalidad.
     \end{itemize}
-    \item Componente Union: solo el constructor \emph{ObjectUnionOf}.
-    \item Componente Intersección: solo el constructor \emph{ObjectIntersectionOf}.
-    \item Componente Oración Negativa (ON): solo el constructor \emph{ObjectComplementOf}.
+    \item Componente Union: 
+    \begin{itemize}
+        \item \emph{UnionOf}.
+        \item \emph{OneOf}
+    \end{itemize}
+    
+    \item Componente Intersección: solo el constructor \emph{IntersectionOf}.
+    \item Componente Oración Negativa (ON): solo el constructor \emph{ComplementOf}.
 \end{itemize}
 
-El beneficio de este sistema es que cada constructor sabe cómo componer sus operandos en función del tipo que retornan, lo que reduce la cantidad de combinaciones a programar (en contraste con tener que programar cómo se compondrían los operandos de un constructor con cada uno de los otros constructores). Además, incorporar un sistema como este, evita el uso de \emph{templates} prediseñados para cada caso particular, y apoya el uso de patrones más cercanos a la lingüística teórica, apoyando el uso de teorías linguísticas en el campo del Procesamiento de Lenguaje Natural.
+El beneficio de este sistema es que cada constructor sabe cómo realizar la composición, en función del tipo de cada uno de sus operandos, lo que reduce la cantidad de combinaciones a programar (en contraste con tener que programar el proceso de composición de cada constructor teniendo en cuenta que sus operandos serían otros constructores en lugar de componentes). Además, incorporar un sistema como este, evita el uso de \emph{templates} prediseñados para cada caso particular, basándose en el uso de patrones más cercanos a la lingüística teórica, apoyando el uso de teorías linguísticas en el campo del Procesamiento de Lenguaje Natural.
 
 
-Sin embargo, estos componentes no intentan ser exhaustivos ni completamente fieles a la sintaxis del lenguaje humano, sino que intentan acaparar de la forma más general los posibles resultados de cada constructor, para mantener una sintaxis sencilla y aceptable. Una clase, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una clase, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas.
+Sin embargo, estos componentes no intentan ser exhaustivos ni completamente fieles a la sintaxis del lenguaje humano, sino que intentan acaparar de la forma más general los posibles resultados de cada constructor, para mantener una sintaxis sencilla y aceptable. Una Clase, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una Clase, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas.
 
 
 \subsection{Convención y suposiciones del nombrado de Entidades}
@@ -295,7 +299,8 @@ Ejemplo: para la clase ``pizza interesante'', se tiene el axioma: ``tieneCobertu
 <RestriccionCard> : <patron$_1$> ; <patron$_2$> ; <patron$_3$>.
 <patron$_1$> : <parteInicialPropiedad> <complementoPropiedad> <enlace> <cardinalidad> <clases> .
 <patron$_2$> : <parteInicialPropiedad> <enlace> <cardinalidad> <complementoPropiedad>.
-<patron$_3$> : <parteInicialPropiedad> <enlace> <cardinalidad> <clases>.
+<patron$_3$> : <parteInicialPropiedad> <enlace> <cardinalidad> <rangoPropiedad>.
+<patron$_4$> : <parteInicialPropiedad> <enlace> <cardinalidad> <clases>.
 <enlace> : "como mínimo" ; "como máximo"; "exactamente".
 \end{minipage}}
 \end{grammar}
@@ -374,11 +379,91 @@ La gramática~\ref{gram:quant_data_rest} muestra los patrones diseñados para la
 \caption{Patrones para QuantifiedDataRestriction.}\label{gram:quant_data_rest}
 \end{GrammarEnv}
 
-\subsubsection{Restricción N-Ary \emph{UnionOf}} 
-Como representa una secuencia de elementos, en la que uno o más elementos pueden ser verdaderos, se eligió concatenar a todos los elementos con el conector disyuntivo ``o''. Sean e1, e2,...,eN los elementos de la unión, el patrón gramatical elegido es: ``e1, e2, ..., eN-1 \emph{o} eN''.
+\subsubsection{Restricción \emph{OWLObjectComplementOf}}
+La gramática~\ref{gram:complement_rest} muestra los patrones diseñados para el complemento de una Expresión de Clase.
+
+\begin{GrammarEnv}
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+\fbox{\begin{minipage}{14cm}
+<RestriccionComplement> : <patron$_1$>.
+<patron$_1$> : <enlace> <clase> .
+<enlace> : "lo opuesto de" ; "no"; "ni"; "excepto" .
+\end{minipage}}
+\end{grammar}
+\caption{Patrones para OWLObjectComplementOf.}\label{gram:complement_rest}
+\end{GrammarEnv}
+
+\subsubsection{Restricción \emph{OWLObjectInverseOf}}
+La gramática~\ref{gram:inverse_rest} muestra los patrones diseñados para el inverso de una Propiedad.
+
+\begin{GrammarEnv}
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+\fbox{\begin{minipage}{14cm}
+<RestriccionInverse> : <patron$_1$>.
+<patron$_1$> : <enlace> <Propiedad> .
+<enlace> : "es lo opuesto de" .
+\end{minipage}}
+\end{grammar}
+\caption{Patrones para OWLObjectInverseOf.}\label{gram:inverse_rest}
+\end{GrammarEnv}
+
+\subsubsection{Restricción \emph{OWLObjectHasValue}}
+La gramática~\ref{gram:hasvalue_rest} muestra los patrones diseñados para los valores de una Propiedad.
+
+\begin{GrammarEnv}
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+\fbox{\begin{minipage}{14cm}
+<RestriccionHasValue> : <patron$_1$> ; <patron$_2$>.
+<patron$_1$> : <parteInicialPropiedad> <complementoPropiedad> <Individuo>.
+<patron$_2$> : <parteInicialPropiedad> <Individuo> .
+\end{minipage}}
+\end{grammar}
+\caption{Patrones para OWLHasValue.}\label{gram:hasvalue_rest}
+\end{GrammarEnv}
+
+\subsubsection{Restricción \emph{OWLObjectHasSelf}}
+La gramática~\ref{gram:hasself_rest} muestra los patrones diseñados para una auto restricción de una Propiedad sobre sí misma.
+
+\begin{GrammarEnv}
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+\fbox{\begin{minipage}{14cm}
+<RestriccionHasSelf> : <patron$_1$>.
+<patron$_1$> : <parteInicialPropiedad> <complementoPropiedad> "Sí MISMO".
+\end{minipage}}
+\end{grammar}
+\caption{Patrones para OWLObjectHasSelf.}\label{gram:hasself_rest}
+\end{GrammarEnv}
+
+
+\subsubsection{Restricción N-Ary \emph{UnionOf} y \emph{oneOf}} 
+Como representan una secuencia de elementos, en la que uno o más elementos pueden ser verdaderos, se eligió concatenar a todos los elementos con el conector disyuntivo ``o''. Sean e1, e2,...,eN los elementos de la enumeración, el patrón gramatical elegido es: ``e1, e2, ..., eN-1 \emph{o} eN''.
 
 \subsubsection{Restricción N-Ary \emph{InterseccionOf}}
-La intersección da lugar tanto a la adición como a la subordinación de oraciones. Antes de verbalizar una intersección, se ordenan sus componentes de mayor a menor prioridad, teniendo en cuenta que: T, ON, union, intersection tienen la misma prioridad, y SV tiene menor prioridad. 
+La intersección da lugar tanto a la adición como a la subordinación de oraciones. Antes de verbalizar una intersección, se ordenan sus componentes de mayor a menor prioridad, teniendo en cuenta que: T, ON, Unión, Intersección tienen la misma prioridad, y SV tiene menor prioridad. 
 
 Para determinar cómo verbalizar una intersección, se tienen en cuenta las siguientes condiciones:
 \begin{itemize}
@@ -395,7 +480,6 @@ Para determinar cómo verbalizar una intersección, se tienen en cuenta las sigu
 Ejemplo, el axioma de clase equivalente ``Pizza and (tieneCobertura some (CoberturaDePizza and (tienePicante some MuyPicante)))'' de la clase pizzaPicanteEquivalente, contiene dos intersecciones las cuales poseen los mismos componentes: T$+$SV, por lo que utilizamos el conector ``que'' para subordinar el segundo operando. Con este criterio, el axioma anterior sería ``pizza picante es una pizza \emph{que} tiene alguna cobertura de pizza \emph{que} tiene algún picante muy picante''.
 
 En caso de asociar la intersección al conector \emph{y} sin tener en cuenta el contexto, se generaría una oración como la siguiente ``pizza picante es una pizza \emph{y} tiene alguna cobertura de pizza \emph{y} tiene algo muy picante'', dando lugar a ambigüedad, pues la segunda ``y'' podría cumplir la función de adición, interpretándose que la pizza tiene algo picante, en lugar de cumplir una función de subordinación, donde la interpretación correcta es que la cobertura de la pizza es picante. 
-        %\item OWLObjectOneOf sirve para la enumeración de los individuos, por lo que se toma el mismo criterio que en la Unión para verbalizarlo.
         %\item OWLObjectComplementOf ...
         %\item OWLObjectHasSelf ..
         %\item OWLObjectHasValue ..
@@ -421,7 +505,7 @@ Basaremos la agregación en la conjunción por componentes compartidos~\cite{ber
     
     Para los grupos SV y ON, se ordenaron por verbo, y cada verbo aparece una sola vez, acompañado por la enumeración de los complementos de cada elemento. Por ejemplo: las oraciones ``no tiene como cobertura alguna cobertura de carne'' y ``no tiene como cobertura alguna cobertura de pescado'' se convierten en ``no tiene como cobertura alguna cobertura de carne ni pescado''.
     
-    \item {\bf Agregación entre sentencias}: esta agregación se aplica cuando se recorren las sentencias para armar un párrafo. Además de agrupar las sentencias por función (T, SV, ON), también se separan por constructor, obteniendo así 7 grupos: \emph{ObjectSomeValuesFrom, ObjectAllValuesFrom, intersection, union, ObjectHasValue, T, ON y SV}. De esta manera, para cada grupo, se realiza la agregación, de manera independiente entre ellos.
+    \item {\bf Agregación entre sentencias}: esta agregación se aplica cuando se recorren las sentencias para armar un párrafo. Además de agrupar las sentencias por función (T, SV, ON), también se separan por constructor, obteniendo así 8 grupos: \emph{ObjectSomeValuesFrom, ObjectAllValuesFrom, intersection, union, ObjectHasValue, T, ON y SV}. De esta manera, para cada grupo, se realiza la agregación, de manera independiente entre ellos.
 \end{itemize}
 
 \subsection{Ejemplos verbalización de Axiomas}
@@ -497,7 +581,7 @@ Como es una intersección de tres componentes, se procede a agrupar los componen
 
 Por otro lado, la Clase Wine retorna un tipo T, por lo que queda aislado en una oración independiente. Estas agrupaciones resultan en el texto del paso Nº3.
 
-La verbalización de este axioma da como resultado dos oraciones. Como ambas oraciones hacen referencia a la misma Clase, en el paso Nº4 ocurre un reemplazo del nombre de la Clase por una Expresión de Referencia. 
+La verbalización de este axioma da como resultado dos oraciones. Como ambas oraciones hacen referencia a la misma Clase, en el paso Nº4 ocurre un reemplazo del nombre de la Clase por una Expresión de Referencia en la segunda oración. 
 
 \begin{figure}
     \centering
