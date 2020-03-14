@@ -68,7 +68,7 @@ Como presentamos en el Objetivo (Sección~\ref{Intro:objetivo}), se esperan alca
     \item A nivel micro, el texto debe cumplir con cierta fluidez, utilizando frases que tengan una gramática aceptable, tratando de maximizar la cohesión.
 \end{enumerate}
 
-Para satisfacer las necesidades del nivel macro, usaremos como punto de partida la estructura resultante del módulo de organización de información, que servirá para generar un documento inicial. Este documento inicial se modificará para adoptar una estética más agradables para el lector, tratando de mantener la coherencia global de la estructura original.
+Para satisfacer las necesidades del nivel macro, usaremos como punto de partida la estructura resultante del módulo de organización de información, que servirá para generar un documento inicial. Este documento inicial se modificará para adoptar una estética más agradable para el lector, tratando de mantener la coherencia global de la estructura original.
 
 Parte de la estética resulta de crear secciones y párrafos con los tópicos del texto. Dado que queremos dotar al texto con coherencia local, debemos definir qué información habrá en cada sección y párrafo, y cómo estará organizada. 
 
@@ -76,9 +76,13 @@ Tomando algunos postulados básicos de la Teoría de Centrado, contamos con una 
 
 Para mantener la coherencia local según la Teoría de Centrado, debemos evitar cambiar continuamente los focos de atención. Por este motivo, para cada tópico tratado en el texto, trataremos de capturar y presentar toda su información agrupada en párrafos consecutivos.  
 
-Dado una entidad \emph{E}, para recuperar la información que la describe, adoptaremos como enfoque recorrer la estructura de grafo asociada a la ontología, navegando por las relaciones de \emph{E}. Es necesario definir cómo recorrer el grafo, ya que cada recorrido genera un resultado diferente. 
+Dado una entidad \emph{E}, para recuperar la información que la describe, adoptaremos dos criterios principales:
+\begin{itemize}
+    \item El primer criterio consiste en juntar los axiomas que describen a \emph{E} en un mismo párrafo. Los axiomas de cada entidad están guardados en la estructura de la ontología creada en el módulo \emph{Traductor} del capítulo anterior, por lo que obtenerlos y agruparlos es trivial.
+    \item El segundo criterio consiste en recorrer la estructura de grafo a partir del nodo que representa a \emph{E}, navegando por las relaciones del nodo. Este recorrido busca capturar la máxima cantidad de información posible acerca de \emph{E}. 
+\end{itemize}
 
-Como hipótesis, consideramos que para mantener una coherencia local, es necesario recorrer el grafo en anchura, obteniendo la máxima cantidad de información posible acerca de \emph{E}, de manera que el foco de atención solo salte hacia otras entidades cuando no haya nada más para decir acerca de \emph{E}.
+Estos criterios permiten desarrollar el texto tomando centralmente a cada entidad una sola vez, de manera que el foco de atención solo salte hacia otras entidades cuando no haya nada más para decir acerca de \emph{E}.
+\\
 
-
-En el nivel micro, debemos definir una traducción entre la gramática del lenguaje OWL y del lenguaje humano. Luego se modificará convenientemente la traducción para alcanzar un texto más fluido.
+En el nivel micro, debemos definir una traducción desde la gramática del lenguaje OWL hacia el lenguaje humano. Luego se modificará convenientemente la traducción para alcanzar un texto más fluido, y se organizarán las sentencias para maximizar la cohesión.
