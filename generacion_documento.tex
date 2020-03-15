@@ -3,18 +3,18 @@
 \section{Diseño}
 El documento de texto debe contener toda la información de la ontología, organizado en secciones, subsecciones y párrafos. Para alcanzar el documento final, se crearon módulos teniendo como referencia las actividades de la generación de lenguaje natural nombradas en la Sección \ref{sec:tareas_gnl}. Los tres módulos principales son \emph{macroplanificación}, \emph{microplanificación} y \emph{realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
 
-Si bien en el capítulo anterior se propuso un flujo lineal de información en el organizador de información, en este capítulo, al desarrollar la macroplanificación, se integraron los módulos del organizador de información con los submódulos de la macroplanificación, generando una interacción cíclica entre los módulos. El motivo de esta integración es evitar la creación de interfaces entre los módulos, y el overhead que estas suponen, ya que la creación del árbol de información y la macroplanificación resultan ser procesos equivalentes, por lo que pueden realizarse al mismo tiempo, evitando recorrer el doble de veces la estructura jerárquica. 
+En este capítulo, al desarrollar la macroplanificación, se modificaron los módulos del Organizador de Información. El motivo de esta modificación es evitar la creación de interfaces entre los módulos, por el overhead que estas suponen, ya que la creación del árbol de información y la macroplanificación resultan ser procesos equivalentes, por lo que pueden realizarse al mismo tiempo, evitando recorrer el doble de veces la estructura jerárquica. 
 
-En la figura \ref{fig:modulos_plan_documento} se puede ver la integración de los módulos. Los pasos de la interacción entre los módulos se encuentran enumerados en orden, siendo los pasos 5 y 6 repetibles hasta que no hayan más grupos de entidades (correspondientes a niveles en la jerarquía de la estructura).
+En la figura \ref{fig:modulos_plan_documento} se puede ver que la estructura e interacción entre ellos se mantuvo, mientras que sus nombres han cambiado, dado que ya no crean únicamente un árbol de entidades, sino que generan un Plan de Documento basado en Secciones, que será explicado en la Sección de macroplanificación. 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=12cm, height=5cm]{img/generacion_documento/modulos_plan_documento.pdf}
-    \caption{Integración de módulos para la generación del plan de documento.}
+    \includegraphics{img/generacion_documento/modulos_plan_documento.pdf}
+    \caption{Modificación de módulos para la generación del plan de documento.}
     \label{fig:modulos_plan_documento}
 \end{figure}
 
-Cabe aclarar que, si bien la estructuración del documento se determina con base en el árbol de entidades, en el documento final la realización de la estructura (secciones y párrafos) se retrasa hasta tener mayor información acerca de su contenido, es decir, luego de la etapa de microplanificación. Estas tareas se encuentran desarrolladas en los módulos de microplanificación y realización, los cuales se muestran en la figura \ref{fig:modulos_documento_final}.
+Cabe aclarar que este es un Plan de Documento inicial. En el Documento Final, la realización de la estructura (secciones y párrafos) se retrasa hasta tener mayor información acerca de su contenido, es decir, luego de la etapa de microplanificación. Estas tareas se encuentran desarrolladas en los módulos de microplanificación y realización, los cuales se muestran en la figura \ref{fig:modulos_documento_final}.
 
 \begin{figure}[H]
     \centering
@@ -24,7 +24,7 @@ Cabe aclarar que, si bien la estructuración del documento se determina con base
 \end{figure}
 
 \section{Diseño macro planning}
-En esta tarea se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de macro planificación. Por este motivo, se decidió hacer una arquitectura monolítica entre el organizador de información y el macroplanificador. Sin embargo, para evitar seguir trabajando con árboles de entidades, se construyó un conjunto de componentes para comenzar con el documento de texto. De esta manera, el plan de documento, representado en la figura \ref{fig:modulos_plan_documento} con el número 9, se corresponde a un conjunto de clases que definen una representación interna de un documento de texto. Esta representación prepara el terreno para que, luego de la microplanificación, el realizador decida el diseño final del documento.
+En esta tarea se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de macro planificación. Por este motivo, se decidió hacer una arquitectura monolítica entre el organizador de información y el macroplanificador. Sin embargo, para evitar seguir trabajando con árboles de entidades, se construyó un conjunto de componentes para comenzar con el documento de texto. De esta manera, el plan de documento, representado en la figura \ref{fig:modulos_plan_documento} con el número 7, se corresponde a un conjunto de clases que definen una representación interna de un documento de texto. Esta representación prepara el terreno para que, luego de la microplanificación, el realizador decida el diseño final del documento.
 
 La representación interna del documento de texto tiene en cuenta los siguientes criterios:
 \begin{itemize}
@@ -126,7 +126,7 @@ Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gram
 \subsection{De OWL 2 a lenguaje natural}
 La verbalización de la sintaxis OWL 2 se corresponde a la tarea de traducir el lenguaje OWL al lenguaje humano. Para llevar a cabo la traducción, se tendrán en cuenta los niveles de abstracción presente en la Sección~\ref{sec:gen_doc_sintaxis_owl}. 
 
-El enfoque adoptado para crear la sintaxis de las oraciones se basa en un recorrido bottom-up de la jerarquía de un Axioma. Se comienza desde las hojas, construyendo oraciones parciales a partir de las Entidades, luego se procede a subir por los niveles a través de los constructores de Expresiones de Clases, componiendo nuevas oraciones parciales, hasta alcanzar la raíz de la jerarquía, donde se termina de construir la oración final. 
+El enfoque adoptado para crear la sintaxis de las oraciones se basa en un recorrido bottom-up de la jerarquía de un Axioma. Se comienza desde las hojas, construyendo oraciones parciales a partir de las Entidades, luego se procede a subir por los niveles a través de los constructores de Expresiones de Clases, componiendo nuevas oraciones parciales, hasta alcanzar la raíz de la jerarquía, donde se termina de construir la oración final. Adicionalmente, se realizan algunos tratamientos morfológicos para agregar fluidez y coherencia al texto, tal como insertar artículos, y hacer concordar los sustantivos en género y número.
 
 Con el objetivo de comenzar a formar las oraciones parciales, el primer paso a realizar es verbalizar las Entidades, ya que están directamente relacionadas con las IRIs (o tienen acceso al \emph{label}, en caso de extraer los nombres desde los \emph{labels}).
 
@@ -182,7 +182,6 @@ En la Gramática~\ref{gram:expr_clases} se muestra a modo de ejemplo una secció
 \end{GrammarEnv}
 
 Puede apreciarse en la gramática que existe recursividad entre los constructores, lo que produce que un constructor aparezca en diferentes niveles y pueda combinarse con cualquier otro constructor del nivel de Expresiones de Clases. En este punto es importante que cada constructor pueda componerse con los demás, para asegurar cualquier combinación posible.
-
 
 Por último en el nivel más abstracto se encuentran los constructores de Axiomas. Estos constructores tienen la característica de no ser recursivos entre ellos, por lo que es posible generar oraciones independientes, yuxtapuestas o coordinadas. Un ejemplo de estos constructores se ve en la Gramática~\ref{gram:axiom}.
 
@@ -244,7 +243,9 @@ Los componentes que retorna cada constructor se definen a continuación:
     \item Componente Oración Negativa (ON): solo el constructor \emph{ComplementOf}.
 \end{itemize}
 
-El beneficio de este sistema es que cada constructor sabe cómo realizar la composición, en función del tipo de cada uno de sus operandos, lo que reduce la cantidad de combinaciones a programar (en contraste con tener que programar el proceso de composición de cada constructor teniendo en cuenta que sus operandos serían otros constructores en lugar de componentes). Además, incorporar un sistema como este, evita el uso de \emph{templates} prediseñados para cada caso particular, basándose en el uso de patrones más cercanos a la lingüística teórica, apoyando el uso de teorías linguísticas en el campo del Procesamiento de Lenguaje Natural.
+El beneficio de este sistema es que cada constructor sabe cómo realizar la composición, en función del tipo de cada uno de sus operandos, lo que reduce la cantidad de combinaciones a programar (en contraste con tener que programar el proceso de composición de cada constructor teniendo en cuenta que sus operandos serían otros constructores en lugar de componentes). 
+
+Además, incorporar un sistema como este, evita el uso de otras técnicas menos afines a la lingüística, como \emph{templates} prediseñados o texto genérico para cada caso particular, ya que se basa en el uso de patrones más cercanos a la lingüística teórica, apoyando el uso de teorías lingüísticas en el campo del Procesamiento de Lenguaje Natural.
 
 
 Sin embargo, estos componentes no intentan ser exhaustivos ni completamente fieles a la sintaxis del lenguaje humano, sino que intentan acaparar de la forma más general los posibles resultados de cada constructor, para mantener una sintaxis sencilla y aceptable. Una Clase, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una Clase, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas.
@@ -278,12 +279,10 @@ Se consideró, a cada conjunto de palabras que conforman el nombre de una entida
 
 \subsection{Verbalización de constructores OWL}
 \label{sec:verbalizacion_constructores}
-Esta tarea se encarga de componer las oraciones según la información de cada constructor OWL. Las oraciones pueden enfocarse ya sea en una \emph{owl:Class} o  \emph{owl:NamedIndividual}. Cuando se enfocan en una \emph{owl:Class}, pueden contener la siguiente información: clases equivalentes, disjuntas y superclases. Cuando se enfoca en un \emph{owl:NamedIndividual}, puede contener información acerca de los valores de sus propiedades.
-
-Para cada uno de estos tipos de información, se pueden presentar una o varias oraciones. Las oraciones que tratan el mismo tipo de información se organizan adyacentemente entre ellas.
-\\
-
-En algunos constructores, tener un único patrón gramatical resulta insuficiente, debido a que pueden recibir distintas estructuras gramaticales como entrada, que requieren diferentes formas de componerse. Por lo tanto, se diseñó más de una forma de componer la información en algunos constructores, mejorando la variabilidad, fluidez e interpretación de las oraciones. 
+Esta tarea se encarga de componer las oraciones según la información de cada constructor OWL.
+%Las oraciones pueden enfocarse ya sea en una \emph{owl:Class} o  \emph{owl:NamedIndividual}. Cuando se enfocan en una \emph{owl:Class}, pueden contener la siguiente información: clases equivalentes, disjuntas y superclases. Cuando se enfoca en un \emph{owl:NamedIndividual}, puede contener información acerca de los valores de sus propiedades.
+%Para cada uno de estos tipos de información, se pueden presentar una o varias oraciones. Las oraciones que tratan el mismo tipo de información se organizan adyacentemente entre ellas.
+En algunos constructores, tener un único patrón gramatical resulta insuficiente, debido a que pueden recibir distintas estructuras gramaticales como entrada, que requieren diferentes formas de componerse. Por lo tanto, en estos casos se diseñó más de una forma de composición, mejorando la variabilidad, fluidez e interpretación de las oraciones. 
 
 Para reconocer cómo componer las oraciones en cada constructor, se revisó empíricamente los axiomas de algunas ontologías, y se buscó utilizar oraciones que sean lo más genéricas posibles, que permitan la comprensión de los axiomas. 
 
