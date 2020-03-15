@@ -24,17 +24,28 @@ Cabe aclarar que, si bien la estructuración del documento se determina con base
 \end{figure}
 
 \section{Diseño macro planning}
-En esta tarea se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de macro planificación. Por este motivo, se decidió hacer una arquitectura monolítica entre el organizador de información y el macroplanificador. Sin embargo, para evitar seguir trabajando con árboles de entidades, se construyó un conjunto de componentes para comenzar con el documento de texto. De esta manera, el plan de documento, representado en la figura \ref{fig:modulos_plan_documento} con el número 9, se corresponde a un conjunto de clases que definen una representación interna de un documento de texto. 
+En esta tarea se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de macro planificación. Por este motivo, se decidió hacer una arquitectura monolítica entre el organizador de información y el macroplanificador. Sin embargo, para evitar seguir trabajando con árboles de entidades, se construyó un conjunto de componentes para comenzar con el documento de texto. De esta manera, el plan de documento, representado en la figura \ref{fig:modulos_plan_documento} con el número 9, se corresponde a un conjunto de clases que definen una representación interna de un documento de texto. Esta representación prepara el terreno para que, luego de la microplanificación, el realizador decida el diseño final del documento.
 
-Esta representación prepara el terreno para que, luego de la microplanificación, el realizador decida el diseño final del documento.
-
-La creación de la representación interna del documento de texto tiene en cuenta los siguientes criterios:
+La representación interna del documento de texto tiene en cuenta los siguientes criterios:
 \begin{itemize}
-    \item A cada \emph{OWL:Class} le corresponde una sección.
+    \item Cada entidad presente en la estructura que resulta del organizador de información es considerada un tópico. 
+    \item A cada tópico le corresponde una sección. Por lo que, en principio, el documento inicial conservará la misma estructura.
     \item Cada sección está compuesta de al menos un párrafo y un título.
     \item Cada párrafo trata un único tópico, el cual puede ser una clase o un individuo. También, un párrafo puede o no tener alguna sentencia. Este criterio se debe a que no todas las entidades tienen asociados axiomas que la describan.
-    \item Una \emph{owl:ObjectProperty} solo puede ser tópico en una sección cuando agrupa información de la clase correspondiente a esa sección. 
+    \item Adicionalmente, cada \emph{owl:individual} tendrá también una sección, insertada como hija de la sección de la Clase a la que corresponda el individuo.
 \end{itemize}
+
+\subsection{Secciones y párrafos}
+Las secciones tiene como objetivo principal delimitar la información asociada a una Clase. Existen tres tipos de información a ser consideradas: una es la propia definición de la Clase a través de sus axiomas; luego están las instancias de la Clase; por último, sus subclases y relaciones que tiene con otras clases. Toda esta información será distribuida dentro de la sección en párrafos y subsecciones. Por lo tanto, una sección tendrá al menos un párrafo que contenga la verbalización en lenguaje natural de sus axiomas (si posee axiomas). Adicionalmente, se enumerará en el párrafo las subclases, individuos y las relaciones con otras Clases. Enumerar esta información resulta conveniente ya que luego se crearán subsecciones para cada uno de esos componentes.
+
+\subsubsection{Subsecciones}
+Las subsecciones son secciones anidadas dentro de otras secciones. Una subsección puede surgir a partir de un individuo, subclases o relaciones. Cuando surge a partir de un individuo, la subsección trata como tópico al individuo; cuando surge a partir de una subclase, el tópico principal es la subclase; y cuando surge a partir de una relación, el tópico principal resulta ser el rango de la relación, es decir, otra Clase.
+
+\subsection{Oraciones}
+Las oraciones pertenecen a los párrafos por lo que tratan un solo tópico. Cada oración que tenga como tópico a una Clase, contiene un solo tipo de información, por lo que existe una oración para las clases disjuntas, una oración para las clases equivalentes, y así con los demás tipos de información tal como sus instancias, relaciones, etc. Cada oración correspondientes a un Individuo contiene las propiedades con sus valores declaradas sobre el individuo.
+
+Al tratar un solo tipo de información por oración, se maximiza la cohesión dentro de cada oración.
+
 
 \subsection{Diagrama de clases}
 En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al macroplanificador. El componente principal que integra el macroplanificador con el organizador de información es la clase TextManager. Esta clase se encarga de crear la clase Text, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Sentencias. Cada Sentencia tiene asociada entidades \emph{OWL} que describen a un único tópico.
@@ -49,21 +60,20 @@ En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama 
 \section{Implementación macro panning}
 
 \section{Diseño micro planning}
-%El objetivo de esta etapa es organizar el contenido de cada axioma para crear una sentencia gramaticalmente aceptable.
-En esta estapa se llevarán a cabo las tareas para describir una entidad en lenguaje natural a partir de los axiomas que la describen en la ontología. Esta descripción en lenguaje natural se alcanza a través de uno o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
+En esta estapa se llevarán a cabo las tareas para describir una Entidad en lenguaje natural a partir de la información que contiene cada oración creada en el macro planning. Esta descripción en lenguaje natural se alcanza a través de una o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
 
 Como existen diversas estructuras sintácticas para expresar un mismo contenido, a modo de simplificación se asoció a cada constructor OWL solo algunas formas de verbalización. Se trató de generar oraciones que sean fieles al significado expresado en los axiomas y de evitar ambigüedades.
 
-Para poder trabajar con patrones de la gramática del lenguaje español, se utilizó un \emph{POS Tagger} para etiquetar las palabras de las definiciones de las clases.
+Para poder trabajar con patrones de la gramática del lenguaje humano (ya sea español o inglés), se utilizó un \emph{POS Tagger} para etiquetar las palabras.
 
-\subsection{Verbalización de la definición de una Clase}
-Se decidió definir a cada Clase en lenguaje natural a partir de los axiomas que la describen y agregando además las propiedades en las que participa como dominio.
+\subsection{Verbalización de una oración}
+Tanto las oraciones acerca de Clases como las de Individuos requieren la verbalización de los constructores OWL. Solo en el caso de las oraciones acerca de Clases requieren además la enumeración de sus instancias, propiedades y subclases. Con enumeración de las propiedades (y de instancias y subclases por igual), nos referimos únicamente a presentarlas, por ejemplo, las propiedades \emph{tieneCobertura} y \emph{tieneBase} para la clase Pizza resultan en la oración ``una pizza tiene base de pizza y tiene cobertura de pizza''.
 
-Esta etapa se divide en tres tareas principales:
+Las tareas necesarias para la verbalización de una oración son:
 \begin{itemize}
-    \item Verbalizar los constructores OWL.
+    \item Verbalizar los constructores OWL o enumerar las propiedades, instancias y subclases.
     \item Eliminar información redundante entre oraciones a través del proceso de agragación.
-    \item Reemplazar con expresiones de referencia a los nombres de las Clases en oraciones consecutivas evitando que se repitan y que genere un texto poco fluido.
+    \item En el caso de las Clases, se reemplaza con expresiones de referencia a los nombres de las Clases en oraciones consecutivas evitando que se repitan y que genere un texto poco fluido.
 \end{itemize}
 
 \subsection{Sintaxis OWL 2}
@@ -113,14 +123,14 @@ Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gram
     \end{itemize}
 \end{figure}
 
-\subsection{Orden de la verbalización}
-Ordenaremos la verbalización basados en la separación en niveles de abstracción presente en la Sección~\ref{sec:gen_doc_sintaxis_owl}. 
+\subsection{De OWL 2 a lenguaje natural}
+La verbalización de la sintaxis OWL 2 se corresponde a la tarea de traducir el lenguaje OWL al lenguaje humano. Para llevar a cabo la traducción, se tendrán en cuenta los niveles de abstracción presente en la Sección~\ref{sec:gen_doc_sintaxis_owl}. 
 
-El enfoque adoptado para crear la sintaxis de las oraciones se basa en un recorrido bottom-up de la jerarquía de un Axioma, construyendo oraciones parciales a partir de los constructores de Expresiones de Clases y de Entidades, hasta alcanzar la raíz de la jerarquía, donde se termina de construir la oración final. 
+El enfoque adoptado para crear la sintaxis de las oraciones se basa en un recorrido bottom-up de la jerarquía de un Axioma. Se comienza desde las hojas, construyendo oraciones parciales a partir de las Entidades, luego se procede a subir por los niveles a través de los constructores de Expresiones de Clases, componiendo nuevas oraciones parciales, hasta alcanzar la raíz de la jerarquía, donde se termina de construir la oración final. 
 
 Con el objetivo de comenzar a formar las oraciones parciales, el primer paso a realizar es verbalizar las Entidades, ya que están directamente relacionadas con las IRIs (o tienen acceso al \emph{label}, en caso de extraer los nombres desde los \emph{labels}).
 
-En la Gramática~\ref{gram:entity} se muestra una porción de la gramática BNF del lenguaje OWL 2 asociada a las entidades.
+En la Gramática~\ref{gram:entity} se muestra una porción de la gramática BNF del lenguaje OWL 2 asociada a las Entidades.
 \begin{GrammarEnv}
 %detecta un error de sintaxis pero es mentira.
 \begin{grammar}
@@ -268,7 +278,7 @@ Se consideró, a cada conjunto de palabras que conforman el nombre de una entida
 
 \subsection{Verbalización de constructores OWL}
 \label{sec:verbalizacion_constructores}
-Esta tarea se encarga de componer las oraciones según la información de cada constructor OWL. Las oraciones pueden enfocarse ya sea en una \emph{owl:Class} o  \emph{owl:NamedIndividual}. Cuando se enfocan en una \emph{owl:Class}, pueden contener la siguiente información: clases equivalentes, disjuntas, subclases, superclases, sus instancias y las propiedades en las que participa. Cuando se enfoca en un \emph{owl:NamedIndividual}, puede contener información acerca de los valores de sus propiedades.
+Esta tarea se encarga de componer las oraciones según la información de cada constructor OWL. Las oraciones pueden enfocarse ya sea en una \emph{owl:Class} o  \emph{owl:NamedIndividual}. Cuando se enfocan en una \emph{owl:Class}, pueden contener la siguiente información: clases equivalentes, disjuntas y superclases. Cuando se enfoca en un \emph{owl:NamedIndividual}, puede contener información acerca de los valores de sus propiedades.
 
 Para cada uno de estos tipos de información, se pueden presentar una o varias oraciones. Las oraciones que tratan el mismo tipo de información se organizan adyacentemente entre ellas.
 \\
@@ -480,10 +490,49 @@ Para determinar cómo verbalizar una intersección, se tienen en cuenta las sigu
 Ejemplo, el axioma de clase equivalente ``Pizza and (tieneCobertura some (CoberturaDePizza and (tienePicante some MuyPicante)))'' de la clase pizzaPicanteEquivalente, contiene dos intersecciones las cuales poseen los mismos componentes: T$+$SV, por lo que utilizamos el conector ``que'' para subordinar el segundo operando. Con este criterio, el axioma anterior sería ``pizza picante es una pizza \emph{que} tiene alguna cobertura de pizza \emph{que} tiene algún picante muy picante''.
 
 En caso de asociar la intersección al conector \emph{y} sin tener en cuenta el contexto, se generaría una oración como la siguiente ``pizza picante es una pizza \emph{y} tiene alguna cobertura de pizza \emph{y} tiene algo muy picante'', dando lugar a ambigüedad, pues la segunda ``y'' podría cumplir la función de adición, interpretándose que la pizza tiene algo picante, en lugar de cumplir una función de subordinación, donde la interpretación correcta es que la cobertura de la pizza es picante. 
-        %\item OWLObjectComplementOf ...
-        %\item OWLObjectHasSelf ..
-        %\item OWLObjectHasValue ..
-        %\item OWLObjectInverseOf ..
+
+\subsection{Enumeración de propiedades, subclases e individuos}
+Enumerar esta información es solo para anunciar la existencia de estos componentes, por lo que la sintaxis es simple.
+
+Para las subclases se creó el patrón de la Gramática~\ref{gram:subclases}.
+Para los individuos se creó un patrón similar al de las subclases.
+Para las propiedades se creó el patrón de la Gramática~\ref{gram:propiedades}.
+
+\begin{GrammarEnv}
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+\fbox{\begin{minipage}{14cm}
+<EnumerarSubclases> : <patron$_1$> ; <patron$_2$>.
+<patron$_1$> : "existen las siguientes clases de" <topico> "$\colon$" <subclases>.
+<patron$_2$> : <subclase> "es la única clase de" <topico>.
+\end{minipage}}
+\end{grammar}
+\caption{Patrones para enumerar subclases.}\label{gram:subclases}
+\end{GrammarEnv}
+
+\begin{GrammarEnv}
+\begin{grammar}
+[(colon){$\rightarrow$}]
+[(semicolon)$|$]
+[(comma){}]
+[(period){\vspace{0.3cm} \\}]
+[(quote){\begin{bf}}{\end{bf}}]
+[(nonterminal){$<$}{$>$}]
+\fbox{\begin{minipage}{14cm}
+<EnumerarPropiedades> : <patron$_1$> ; <patron$_2$> ; <patron$_3$>.
+<patron$_1$> : <parteInicialPropiedad> <complementoPropiedad> <rangoPropiedad> .
+<patron$_2$> : <parteInicialPropiedad> "como" <complementoPropiedad> "a" <rangoPropiedad> .
+<patron$_3$> : <parteInicialPropiedad> <rangoPropiedad> .
+\end{minipage}}
+\end{grammar}
+\caption{Patrones para enumerar propiedades.}\label{gram:propiedades}
+\end{GrammarEnv}
+
 
 
 \subsection{Expresiones de referencia}
