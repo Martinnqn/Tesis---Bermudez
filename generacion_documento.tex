@@ -1,20 +1,20 @@
 \chapter{Generación del documento de texto}
 
 \section{Diseño}
-El documento de texto debe contener toda la información de la ontología, organizado en secciones, subsecciones y párrafos. Para alcanzar el documento final, se crearon módulos teniendo como referencia las actividades de la generación de lenguaje natural nombradas en la Sección \ref{sec:tareas_gnl}. Los tres módulos principales son \emph{macroplanificación}, \emph{microplanificación} y \emph{realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
+En este capítulo se diseñará e implementará el proceso de generación del documento de texto. Elegimos organizar toda la información de la ontología generando un documento dividido en secciones, subsecciones y párrafos. Para alcanzar el documento final, se crearon módulos teniendo como referencia las actividades de la generación de lenguaje natural nombradas en la Sección \ref{sec:tareas_gnl}. Los tres módulos principales son \emph{Macro planificación}, \emph{Micro planificación} y \emph{Realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
 
-En este capítulo, al desarrollar la macroplanificación, se modificaron los módulos del Organizador de Información. El motivo de esta modificación es evitar la creación de interfaces entre los módulos, por el overhead que estas suponen, ya que la creación del árbol de información y la macroplanificación resultan ser procesos equivalentes, por lo que pueden realizarse al mismo tiempo, evitando recorrer el doble de veces la estructura jerárquica. 
+Para comenzar con la generación de un documento de texto, se planteó un Plan de Documento. Este Plan tiene la estructura resultante del Organizador de la Información. Sin embargo, para crear el documento en la etapa de Macro Planificación, se reemplazó el módulo Generador del Árbol de Entidades del Organizador de Información, por un nuevo módulo específico del Macro Planning. El motivo de este reemplazo es evitar la creación de interfaces entre el Organizador de Información y el Macro Planning, por el overhead que estas suponen, ya que la creación del Árbol de Entidades y la Macro Planificación resultan ser procesos equivalentes, por lo que pueden ser reemplazables, evitando recorrer el doble de veces la estructura jerárquica.
 
-En la figura \ref{fig:modulos_plan_documento} se puede ver que la estructura e interacción entre ellos se mantuvo, mientras que sus nombres han cambiado, dado que ya no crean únicamente un árbol de entidades, sino que generan un Plan de Documento basado en Secciones, que será explicado en la Sección de macroplanificación. 
+En la figura~\ref{fig:modulos_plan_documento} se puede ver el nuevo módulo Generador del Plan de Documento, que retorna como salida un Plan de Documento.
 
 \begin{figure}[H]
     \centering
     \includegraphics{img/generacion_documento/modulos_plan_documento.pdf}
-    \caption{Modificación de módulos para la generación del plan de documento.}
+    \caption{Módulos para la generación del Plan de Documento.}
     \label{fig:modulos_plan_documento}
 \end{figure}
 
-Cabe aclarar que este es un Plan de Documento inicial. En el Documento Final, la realización de la estructura (secciones y párrafos) se retrasa hasta tener mayor información acerca de su contenido, es decir, luego de la etapa de microplanificación. Estas tareas se encuentran desarrolladas en los módulos de microplanificación y realización, los cuales se muestran en la figura \ref{fig:modulos_documento_final}.
+Cabe aclarar que este es un Plan de Documento inicial que solo cuenta con una primera distribución de la información que estará contenida en el texto final. En el Documento Final, la realización de la estructura y la realización lingüística (secciones, párrafos y oraciones) se realizarán en las etapas de Micro Planificación y Realización, como se ve en la figura~\ref{fig:modulos_documento_final}.
 
 \begin{figure}[H]
     \centering
@@ -23,44 +23,53 @@ Cabe aclarar que este es un Plan de Documento inicial. En el Documento Final, la
     \label{fig:modulos_documento_final}
 \end{figure}
 
-\section{Diseño macro planning}
-En esta tarea se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de macro planificación. Por este motivo, se decidió hacer una arquitectura monolítica entre el organizador de información y el macroplanificador. Sin embargo, para evitar seguir trabajando con árboles de entidades, se construyó un conjunto de componentes para comenzar con el documento de texto. De esta manera, el plan de documento, representado en la figura \ref{fig:modulos_plan_documento} con el número 7, se corresponde a un conjunto de clases que definen una representación interna de un documento de texto. Esta representación prepara el terreno para que, luego de la microplanificación, el realizador decida el diseño final del documento.
+\section{Diseño Macro Planning}
+\label{sec:macro_planning}
+En esta etapa se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de Macro Planificación. Por este motivo, se decidió hacer una arquitectura monolítica entre el Organizador de Información y el Macroplanificador. 
+
+El documento de texto estará representado internamente con una estructura basada en componentes. Esta representación prepara el terreno para que, luego de la Micro Planificación, el Realizador decida el diseño final del documento.
 
 La representación interna del documento de texto tiene en cuenta los siguientes criterios:
 \begin{itemize}
-    \item Cada entidad presente en la estructura que resulta del organizador de información es considerada un tópico. 
-    \item A cada tópico le corresponde una sección. Por lo que, en principio, el documento inicial conservará la misma estructura.
+    \item Cada Entidad presente en la estructura que resulta del Organizador de Información es considerada un tópico. 
+    \item A cada tópico del primer nivel le corresponde una sección. Los tópicos anidados (Subclases, Individuos y Relaciones) se corresponden a subsecciones (secciones anidadas).
     \item Cada sección está compuesta de al menos un párrafo y un título.
-    \item Cada párrafo trata un único tópico, el cual puede ser una clase o un individuo. También, un párrafo puede o no tener alguna sentencia. Este criterio se debe a que no todas las entidades tienen asociados axiomas que la describan.
-    \item Adicionalmente, cada \emph{owl:individual} tendrá también una sección, insertada como hija de la sección de la Clase a la que corresponda el individuo.
+    \item Cada párrafo trata un único tópico, el cual puede ser una clase o un individuo. También, un párrafo puede o no tener alguna sentencia. Esto se debe a que no todas las entidades tienen asociados axiomas que la describan.
 \end{itemize}
 
 \subsection{Secciones y párrafos}
-Las secciones tiene como objetivo principal delimitar la información asociada a una Clase. Existen tres tipos de información a ser consideradas: una es la propia definición de la Clase a través de sus axiomas; luego están las instancias de la Clase; por último, sus subclases y relaciones que tiene con otras clases. Toda esta información será distribuida dentro de la sección en párrafos y subsecciones. Por lo tanto, una sección tendrá al menos un párrafo que contenga la verbalización en lenguaje natural de sus axiomas (si posee axiomas). Adicionalmente, se enumerará en el párrafo las subclases, individuos y las relaciones con otras Clases. Enumerar esta información resulta conveniente ya que luego se crearán subsecciones para cada uno de esos componentes.
+Las Secciones tiene como objetivo principal delimitar la información asociada a una Entidad, segmentando el texto con el fin de mantener la coherencia global.
+
+Dentro de una sección para una Clase, se verbalizarán sus axiomas y se enumerarán sus Individuos, Subclases y Relaciones, todo en un párrafo. Enumerar esta información resulta conveniente ya que luego se crearán subsecciones para cada uno de esos componentes.
+
+En una sección asociada a una Relación, solo habrán subsecciones acerca de las Entidades que pertenecen a la Relación.
+
+En una sección para Individuos, se creará un párrafo para describir sus propiedades.
 
 \subsubsection{Subsecciones}
-Las subsecciones son secciones anidadas dentro de otras secciones. Una subsección puede surgir a partir de un individuo, subclases o relaciones. Cuando surge a partir de un individuo, la subsección trata como tópico al individuo; cuando surge a partir de una subclase, el tópico principal es la subclase; y cuando surge a partir de una relación, el tópico principal resulta ser el rango de la relación, es decir, otra Clase.
+Las subsecciones son secciones anidadas dentro de otras secciones. Una subsección puede surgir a partir de un Individuo, Subclases o Relaciones. Cuando surge a partir de un Individuo, la subsección trata como tópico al Individuo; cuando surge a partir de una Subclase, el tópico principal es la Subclase; y cuando surge a partir de una Relación, el tópico principal resulta ser el rango de la Relación, es decir, otra Clase.
 
 \subsection{Oraciones}
-Las oraciones pertenecen a los párrafos por lo que tratan un solo tópico. Cada oración que tenga como tópico a una Clase, contiene un solo tipo de información, por lo que existe una oración para las clases disjuntas, una oración para las clases equivalentes, y así con los demás tipos de información tal como sus instancias, relaciones, etc. Cada oración correspondientes a un Individuo contiene las propiedades con sus valores declaradas sobre el individuo.
+Las oraciones pertenecen a los párrafos por lo que tratan un solo tópico. Cada oración que tenga como tópico a una Clase,  aborda un solo tipo de información, por lo que existe una oración para las clases disjuntas, una oración para las clases equivalentes, y así con los demás tipos de información. Cada oración correspondientes a un Individuo contiene las propiedades con sus valores declaradas sobre el Individuo.
 
 Al tratar un solo tipo de información por oración, se maximiza la cohesión dentro de cada oración.
 
 
 \subsection{Diagrama de clases}
-En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al macroplanificador. El componente principal que integra el macroplanificador con el organizador de información es la clase TextManager. Esta clase se encarga de crear la clase Text, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Sentencias. Cada Sentencia tiene asociada entidades \emph{OWL} que describen a un único tópico.
+En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al Macroplanificador. La clase TextManager es la implementación del módulo Generador del Plan de Documento. Esta clase se encarga de crear la clase Text, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Sentencias. 
 
-\begin{figure}[H]
+\begin{figure}
     \centering
-    \includegraphics[width=10cm, height=7cm]{img/generacion_documento/diagrama_clases_macroplanificador.pdf}
-    \caption{Diagrama de clases del generador del documento de texto.}
+    \includegraphics{img/generacion_documento/diagrama_clases_macroplanificador.pdf}
+    \caption{Diagrama de clases del generador del Documento de Texto.}
     \label{fig:diagrama_clases_macroplanificador}
 \end{figure}
 
-\section{Implementación macro panning}
+\section{Implementación Macro Planning}
 
-\section{Diseño micro planning}
-En esta estapa se llevarán a cabo las tareas para describir una Entidad en lenguaje natural a partir de la información que contiene cada oración creada en el macro planning. Esta descripción en lenguaje natural se alcanza a través de una o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
+\section{Diseño Micro Planning}
+En esta estapa se llevarán a cabo las tareas crear las oraciones del documento de texto.
+para describir una Entidad en lenguaje natural a partir de la información que contiene cada oración creada en el Macro Planning. Esta descripción en lenguaje natural se alcanza a través de una o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
 
 Como existen diversas estructuras sintácticas para expresar un mismo contenido, a modo de simplificación se asoció a cada constructor OWL solo algunas formas de verbalización. Se trató de generar oraciones que sean fieles al significado expresado en los axiomas y de evitar ambigüedades.
 

@@ -4,9 +4,18 @@
 Para abordar los problemas de coherencia propuestos en la Sección~\ref{sec:problema_coherencia-texto}, es necesario crear una estructura jerárquica para guiar el desarrollo del texto. Esta estructura está compuesta por las entidades presentes en la ontología, de manera que las entidades que consideramos más relevantes se encuentren en el primer nivel de jerarquía, y a medida que se descienda por los niveles la importancia de las entidades disminuya.
 
 \section{Diseño}
-Para alcanzar esta estructura, se crearon una serie de módulos que transforman la ontología de entrada en un árbol con toda la información contenida en la misma. El primer módulo recibe la entrada y la traduce a una representación interna de la ontología, luego esta representación es enviada a otros dos módulos: uno se encarga de extraer las entidades más relevantes; el otro, con la representación interna de la ontología y las entidades más relevantes, se encarga de generar un árbol de entidades. Para finalizar, un último módulo agrega en una nueva rama del árbol a aquellas entidades que no han sido utilizadas en ninguna otra rama.
+Para alcanzar esta estructura, se crearon cuatro módulos que transforman la ontología de entrada en un árbol con toda la información contenida en la misma.
+A continuación se describe cada módulo:
+\begin{itemize}
+    \item Traductor: recibe la entrada y la traduce a una representación interna de la ontología.
+    \item Clasificador de Entidades: clasifica y extrae las entidades más relevantes, utilizando como criterio las medidas de centralidad.
+    \item Generador de Nuevo Grupo de Entidades: recibe una Entidad y recorre sus relaciones para crear un nuevo grupo de entidades relacionados semánticamente.
+    \item Generador del Árbol de Entidades: se encarga de crear los niveles de la estructura jerárquica, interactuando con el Generador de Nuevo Grupo de Entidades.
+    
+\end{itemize}
+%Para finalizar, un último módulo agrega en una nueva rama del árbol a aquellas entidades que no han sido utilizadas en ninguna otra rama.
 
-En la Figura~\ref{fig:modulos_organizador_inf} se muestra la transformación de la ontología OWL a través de los módulos.
+En la Figura~\ref{fig:modulos_organizador_inf} se muestra la transformación de la ontología OWL a través de los módulos. Los pasos 4 y 5 son iterativos, el proceso finaliza cuando no queden más Entidades que explorar, lo cual es definido por el Generador del Árbol de Entidades.
 
 \begin{figure}[H]
     \centering
@@ -54,7 +63,7 @@ Cuando se seleccionan las clases que van a representar los temas principales, pu
 \label{sec:agrupando_info}
 Una vez elegidas las clases que estarán en el primer nivel de la jerarquía, se procede a crear los niveles siguientes, con toda la información relacionada a estas clases. Para esto se creó un tercer módulo, que agrupa la información de cada entidad en grupos generales, que abarquen con el mayor nivel de abstracción posible su información. Para cada clase, se busca reemplazar las propiedades donde participan como dominio, por propiedades en común de más alto nivel en la jerarquía de \emph{ObjectProperties}. Por ejemplo, en la ontología de las pizzas, para la clase \emph{pizza} existen dos propiedades: \emph{tieneCobertura} y \emph{tieneBase}. Como estas dos propiedades tienen a su vez una \emph{superproperty} en común llamada \emph{tieneIngrediente}, se agrupa toda la información que pueda ser alcanzada por las \emph{subproperties} en un único grupo representado por \emph{tieneIngrediente}. 
 
-Además de la información que puede ser alcanzada desde las \emph{ObjectProperties}, la información que poseen las subclases y los individuos también es agrupada. En este caso estamos haciendo uso de las relaciones \emph{owl:subClassOf} y \emph{owl:NamedIndividual}.
+Además de la información que puede ser alcanzada desde las \emph{ObjectProperties}, la información que poseen las Subclases y los Individuos también es agrupada. En este caso estamos haciendo uso de las relaciones \emph{owl:subClassOf} y \emph{owl:NamedIndividual}.
 
 En la Figura~\ref{fig:diagrama_secuencia_contentGrouping} se muestra un pseudocódigo del algoritmo usado para agrupar la información de las clases.
 
@@ -144,11 +153,11 @@ Continuando con el ejemplo de la pizza, el resultado de agregar la  información
 \end{figure}
 
 \subsection{Diagrama de clases}
-En la Figura~\ref{fig:diagrama_clases_organizador} se muestra el diagrama de clases correspondiente al organizador de información. El primer módulo tiene asociado las clases \emph{Ontology} y \emph{OWLIntClass}. El segundo módulo está representado por la clases \emph{ContentClasification}; y el tercer y cuarto módulo están asociados a la clase \emph{ContentGrouping}.
+En la Figura~\ref{fig:diagrama_clases_organizador} se muestra el diagrama de clases correspondiente al Organizador de Información. El módulo \emph{Traductor} está representado a través de la clase \emph{OntologyManager}; el módulo Clasificador de Entidades está representado por la clase \emph{ContentClasification}; el módulo que genera el Árbol de Entidades está implementado por la clase \emph{GeneratorTreeManager}, y el módulo que crea nuevos grupos de entidades está implementado en la clase \emph{ContentGrouping}. 
 
-\begin{figure}[H]
+\begin{figure}
     \centering
-    \includegraphics[width=10cm]{img/organizacion_informacion/clases_organizador_informacion.pdf}
+    \includegraphics{img/organizacion_informacion/clases_organizador_informacion.pdf}
     \caption{Diagrama de clases del organizador de información}
     \label{fig:diagrama_clases_organizador}
 \end{figure}
