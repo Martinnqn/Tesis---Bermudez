@@ -66,6 +66,7 @@ En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama 
 \end{figure}
 
 \section{Implementación Macro Planning}
+\subsection{Recursos usados}
 
 \section{Diseño Micro Planning}
 En esta estapa se llevarán a cabo las tareas crear las oraciones del documento de texto.
@@ -663,33 +664,25 @@ En la figura \ref{fig:diagrama_clases_microplanificador} se puede ver el diagram
 \subsection{Recursos usados}
 
 \section{Diseño del realizador}
-Este módulo se encarga de la tarea de diseñar la estructura final del documento, definiendo criterios para decidir si la información organizada se corresponde a secciones o párrafos.
+La arquitectura de este trabajo relegó la tarea de definir la estructura y llevar acabo la realización lingüística de la  oraciones a la etapa de Micro Planning, por lo que en esta etapa solo queda la tarea de definir la estructura final del documento. 
 
-Para simplificar el documento de salida, solo se consideraron dos niveles de información en el documento: el nivel más alto se corresponde a las secciones (o capítulos) y sub-secciones, y el nivel más bajo a los párrafos. 
+Alcanzaremos el Documento Final, a través del refinamiento del Documento Inicial creado en el Macro Planning.
 
-Para llevar a cabo esta planificación, se buscó medir la información a verbalizar, por lo que se propuso como métrica principal a la cantidad de sentencias presentes en la descripción de un tópico. Este es el único parámetro para reconocer si a un tópico le corresponde una estructuración asociada a una sección o un párrafo. 
+El Documento Inicial tiene una estructura en la que todos los tópicos tienen su propia sección, por lo que no existe más información que haga posible expandir la estructura. Por este motivo, nos enfocaremos en la idea de reducir la estructura del documento convirtiendo secciones en párrafos, para que se haga más compacto, tratando de mejorar la estética y el proceso de lectura, sin perjudicar la coherencia y la segmentación de la información.
 
-\subsection{Secciones y párrafos}
-Una sección agrupa uno o más párrafos o sub-secciones, por lo que en una sección puede existir más de un tópico, con la condición de que esos tópicos tengan una relación, ya sea de hermanos o de hijos. Estas relaciones se obtienen de la estructura en árbol resultado de la macroplanificación. 
+Para llevar a cabo el refinamiento, se buscó medir la información a verbalizar, para saber cuándo es posible convertir una sección. Para esto se propuso como métrica principal a la cantidad de oraciones presentes en la descripción de un tópico.
 
-Para decidir si un tópico es planificado como una sección, se utiliza como medida la cantidad de sentencias que posee y si tiene algún tópico que a su vez deba ser planificado como una sub-sección.
+\subsection{Criterio de reducción de Secciones}
+Una sección agrupa uno o más párrafos o sub-secciones, por lo que en una sección puede existir más de un tópico, con la condición de que esos tópicos tengan una relación, ya sea de hermanos o de hijos. Estas relaciones se obtienen de la Estructura de Árbol del Organizador de Información. 
 
-El valor mínimo de sentencias usado para decidir si se planifica como una sección es de cinco sentencias. Para agregar flexibilidad, el algoritmo queda parametrizado con esta unidad de medida, por lo que puede personalizarse para variar la granularidad del texto de salida, forzando a crear secciones con diferentes cantidad de sentencias, lo que permite variar el diseño del documento de salida.
-
-Otro criterio usado en complemento de la cantidad de sentencias, es si para un tópico existe algún sub-tópico que requiera planificarse como sección, permitiendo anidar secciones y sub-secciones. Este concepto de anidamiento de secciones se aplica recursivamente, por lo que la cantidad de niveles de secciones puede ser tan alto como la jerarquía de tópicos reconocidos en el árbol de tópicos. 
-
-Cuando se reconoce a una sección, esta se incluye en el documento final como: \begin{itemize}
-    \item una sección principal
-    \item o como hija (sub-sección) de una sección existente.
+Para decidir si un tópico es planificado como una Sección, se utilizan los siguientes criterios:
+\begin{itemize}
+    \item Debe poseer cinco o más oraciones.
+    \item Debe poseer alguna Subsección con cinco o más oraciones.
+    \item En cualquier otro caso será planificado como un Párrafo.
 \end{itemize}
 
-Existe una relación directa entre las secciones y el árbol de tópicos. Todo tópico es una potencial sección, para ser planificado como tal, debe cumplir los criterios propuestos anteriormente. 
-
-Si la cantidad de sentencias requeridas para ser considerado una sección, tiende a cero, la planificación del documento será fiel al árbol de tópicos; mientras que si la cantidad de sentencias tiende a infinito, la planificación perderá niveles de jerarquía, y únicamente contemplará como secciones a los tópicos del primer nivel del árbol.   
-
-Si un tópico se planifica como párrafo, significa que ningún tópico que se encuentre en niveles inferiores de esa misma rama del árbol tiene aptitud para ser planificado como sección.
-
-Si bien esto puede diseñar un documento con una gran cantidad de sub-secciones, siendo visualmente antinatural, ayuda a los humanos a reconocer y establecer relaciones entre los tópicos, siendo el objetivo principal no desaprovechar la semántica del dominio modelado, y teniendo como intención principal que el lector comprenda el dominio modelado en la ontología.
+Si la cantidad de sentencias requeridas para ser considerado una sección, tiende a cero, la planificación del documento será fiel al Documento Inicial; mientras que si la cantidad de sentencias tiende a infinito, la planificación perderá niveles de jerarquía, y únicamente contemplará como secciones a los tópicos del primer nivel. Ninguno de los dos extremos es conveniente, o se pierde coherencia, o se obtiene un texto con demasiados niveles de secciones, que resulta antinatural. Sin embargo, un documento en el que predominan las sub-secciones (aunque tengan poca información), ayuda a los humanos a reconocer y establecer relaciones entre los tópicos, siendo el objetivo principal no desaprovechar la semántica del dominio modelado, y teniendo como intención principal que el lector comprenda el dominio modelado en la ontología.
 
 \section{Implementación del realizador}
 El realizador está embebido dentro de la clase Section vista en la figura \ref{fig:diagrama_clases_macroplanificador}, en forma de funciones que implementan los criterios vistos para la definición del documento.
