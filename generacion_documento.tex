@@ -685,7 +685,56 @@ Para decidir si un tópico es planificado como una Sección, se utilizan los sig
 Si la cantidad de sentencias requeridas para ser considerado una sección, tiende a cero, la planificación del documento será fiel al Documento Inicial; mientras que si la cantidad de sentencias tiende a infinito, la planificación perderá niveles de jerarquía, y únicamente contemplará como secciones a los tópicos del primer nivel. Ninguno de los dos extremos es conveniente, o se pierde coherencia, o se obtiene un texto con demasiados niveles de secciones, que resulta antinatural. Sin embargo, un documento en el que predominan las sub-secciones (aunque tengan poca información), ayuda a los humanos a reconocer y establecer relaciones entre los tópicos, siendo el objetivo principal no desaprovechar la semántica del dominio modelado, y teniendo como intención principal que el lector comprenda el dominio modelado en la ontología.
 
 \section{Implementación del realizador}
-El realizador está embebido dentro de la clase Section vista en la figura \ref{fig:diagrama_clases_macroplanificador}, en forma de funciones que implementan los criterios vistos para la definición del documento.
+El realizador está embebido dentro de la clase Section, en forma de métodos que implementan los criterios vistos para la definición del documento. En la figura~\ref{fig:clase_section} se presenta un pseudocódigo de la clase Section.
+
+\begin{figure}
+\begin{minted}[autogobble,linenos]{java}
+public class Section {
+
+    private LinkedList<OWLIntClassLite> topics;
+    private Title title;
+    private LinkedList<Paragraph> paragraphs;
+    private LinkedList<Section> subSections;
+    private String language;
+
+    public Section(OWLIntClassLite topic, String lang) {
+        init(lang);
+        topics.add(topic);
+        title = new Title(topic, lang);
+        if (topic.getType().equals("class") ||
+        topic.getType().equals("individual")) {
+            //crear el Paragraph para la informacion de la seccion
+            Paragraph inf = new Paragraph(topic, lang);
+            paragraphs.add(inf);
+        } 
+    }
+    
+    public String generateText() {
+    String textF = "";
+    textF = titulo de la Section
+    textF += contenido de los Parrafos de la Section
+    for (Section s: subSections){
+        if (s no cumple los criterios para verbalizar como sección){
+            textF += contenido de s en forma de párrafo
+        }
+    }
+    /*La realización de las secciones se separa en dos
+    recorridos distintos para que todos los párrafos estén
+    juntos, y luego aparezcan todas las secciones.*/
+    for (Section s: subSections){
+        if (s cumple los criterios para verbalizar como sección){
+            textF += s.generateText();
+        }
+    }
+    
+    return textF;
+    }
+    
+}
+\end{minted}
+\caption{Definición en Java de la Clase \texttt{Section}.}
+\label{fig:clase_section}
+\end{figure}
 
 
 \section{Casos de estudio}

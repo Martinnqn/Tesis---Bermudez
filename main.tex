@@ -28,6 +28,9 @@
 \usepackage{dirtree}
 \usepackage{verbatim} 
 
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
 %para el caption de las listas
 \DeclareCaptionType{listCap}[Lista]
 
@@ -53,6 +56,11 @@
 
 %separacion de columnas multicol
  \setlength{\columnsep}{5mm}
+
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
 
 \begin{document}
 	
