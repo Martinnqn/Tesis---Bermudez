@@ -155,6 +155,8 @@ Continuando con el ejemplo de la pizza, el resultado de agregar la  información
 \subsection{Diagrama de clases}
 En la Figura~\ref{fig:diagrama_clases_organizador} se muestra el diagrama de clases correspondiente al Organizador de Información. El módulo \emph{Traductor} está representado a través de la clase \emph{OntologyManager}; el módulo Clasificador de Entidades está representado por la clase \emph{ContentClasification}; el módulo que genera el Árbol de Entidades está implementado por la clase \emph{GeneratorTreeManager}, y el módulo que crea nuevos grupos de entidades está implementado en la clase \emph{ContentGrouping}. 
 
+Las clases \emph{OWLIntClass},  \emph{OWLClass},  \emph{OWLDataProperty},  \emph{OWLObjectProperty}, \emph{OWLIndividual} y  \emph{Ontology} son usadas para representar la estructura de la ontología. Estos objetos son creados por la clase  \emph{OntologyManager}. 
+
 \begin{figure}
     \centering
     \includegraphics{img/organizacion_informacion/clases_organizador_informacion.pdf}
@@ -163,7 +165,144 @@ En la Figura~\ref{fig:diagrama_clases_organizador} se muestra el diagrama de cla
 \end{figure}
 
 \section{Implementación}
-\subsection{blabla}
+Para documentar la implementación se tomarán como puntos principales las cuatro clases asociadas a los módulos del Organizador de Información. Para simplificar la longitud de las clases documentadas, solo se mostrará el encabezado de los métodos con sus respectivas descripciones.
+
+La estructura de la ontología se crea a través de la clase \emph{OntologyManager}. Esta clase hace uso de la librería  \emph{OWLAPI}\footnote{http://owlapi.sourceforge.net/} para cargar el archivo que contiene la ontología de entrada. El beneficio de esta librería es que también importa los archivos necesarios en caso de que hayan definiciones de tipo \emph{import} en la ontología. En la Figura~\ref{clase_ontologymanager} se muestra un pseudocódigo del método principal de \emph{OntologyManager}.
+
+La clase \emph{Ontology} posee la estructura cargada con OntologyManager. También posee algunos métodos útiles para el proceso de organizar la información, los cuales se muestran en la Figura~\ref{fig:clase_ontology}.
+
+La clase \emph{ContentClasification} contiene los métodos necesarios para clasificar y extraer las entidades más relevantes. Algunos de sus métodos más importantes se muestran en la Figura...
+
+La clase \emph{ContentGrouping} solo posee dos metodos para generar los nuevos tópicos del Árbol de Entidades. En la Figura.. se muestra la implementación de esta clase.
+
+
+\begin{figure}
+\begin{minted}[autogobble,linenos]{java}
+public class OntologyManager {
+
+    /*nameOf guarda el valor 0 o 1 para reconocer de donde tiene que
+    extraer el nombre de las entidades*/
+    private static int nameOf; // 0 -> iri, 1 -> label.
+    /*lang setea el valor del lenguaje para buscar los nombres
+    de las entidades en los labels correctos*/
+    private static String lang; // "en" -> ingles, "es" -> español.
+
+  public static Ontology createOntology
+            (OWLOntology ontology, int nameOfClass, String language) {
+        nameOf = nameOfClass;
+        lang = language;
+        Ontology onto = new Ontology();
+        
+        
+        //Obtiene el título de la ontología desde la etiqueta title.
+        String title = getTitleOntology();
+        onto.setTitle(title);
+        
+        //crear clases
+        OWLClass rootClass = createClasses();
+
+        //crear los dataProperty
+        OWLDataProperty rootDataProp = createDataProperty();
+        
+        //crear properties
+        OWLObjectProperty rootProp = createObjectProperty();
+        //setea las objectProperty equivalentes, inversas y disjuntas.
+        setListsToProperties();
+        //setea el dominio y rango de las objectProperty
+        setObjectPropertyDomainRange();
+        //setea el dominio y rango de las dataProperty
+        setDataPropertyDomain();
+        
+        //crear individuals
+        createIndividuals();
+        
+        /*crear las clases anónimas para cada clase en onto.
+        Setea listas para guardar los axiomas. Para cada clase en onto
+        setea sus clases equivalentes, disjuntas y superClases.*/
+        /*createAnonymousClasses debe ser llamado despues de haber
+        creado las clases nombradas, las properties y los individuos.*/
+        createAnonymousClasses();
+        
+        //agrega los componentes creados al objeto onto.
+        addComponentsToOnto();
+        
+        //precomputeValues asocia a cada clase en onto una lista 
+        //de propiedades en las que participa como dominio.
+        onto.precomputeValues();
+        return onto;
+    }
+    
+}
+
+\end{minted}
+\caption{Definición en Java de la Clase \texttt{OntologyManager}.}
+\label{fig:clase_ontologymanager}
+\end{figure}
+
+
+\begin{figure}
+\begin{minted}[autogobble,linenos]{java}
+public class Ontology {
+
+    private String title;
+
+    private OWLClass rootClass;
+    private OWLObjectProperty rootObjectProperty;
+    private OWLDataProperty rootDataProp;
+
+    //los siguientes hashmaps asocian IRIs a sus respectivas Entidades.
+    private HashMap<IRI, OWLClass> classes;
+    private HashMap<IRI, OWLObjectProperty> properties;
+    private HashMap<IRI, OWLObjectProperty> anonProperties;
+    private HashMap<IRI, OWLDataProperty> dataProperties;
+    private HashMap<IRI, OWLIndividual> individuals;
+    
+    //Las siguientes listas guardan las Entidades presentes en la 
+    //ontologia
+    private LinkedList<OWLClass> listClasses;
+    private LinkedList<OWLObjectProperty> listProps;
+    private LinkedList<OWLObjectProperty> anonListProps;
+    private LinkedList<OWLDataProperty> listDataProps;
+    private LinkedList<OWLIndividual> listIndividuals;
+
+    /*hashmaps para guardar que clases participan en el dominio
+    de que propiedades*/
+    HashMap<OWLClass, LinkedList<OWLObjectProperty>> classOnPropDomain;
+    /*hashmaps para guardar que clases participan en el rango
+    de que propiedades*/
+    HashMap<OWLClass, LinkedList<OWLObjectProperty>> classOnPropRange;
+
+    /*Retorna una lista de ObjectProperties que sean superProperties
+    en comun de las properties de la lista prop.*/
+    public LinkedList<OWLObjectProperty>
+    getCommonSuperProperties(LinkedList<OWLObjectProperty> prop) {}
+
+
+    /*Dada la clase cls, recorre las properties donde participa como dominio
+    y busca las superProperties de mas alto nivel que encuentre 
+    y las retorna. */
+     public LinkedList<OWLObjectProperty>
+     getCommonSuperPropertiesFromClass(OWLClass cls) {}
+
+    /*Retorna el contenido necesario para crear un nuevo grupo
+    de entidades a partir de la clase cls. Util para
+    el modulo ContentGrouping */
+    public LinkedList<OWLIntClass> 
+    createTopicsGroupsFromClass(OWLClass cls) {
+        LinkedList<OWLIntClass> res = new LinkedList<>();
+        res.addAll(getCommonSuperPropertiesFromClass(cls));
+        res.addAll(cls.getSubClass());
+        res.addAll(cls.getIndividuals());
+        return res;
+    }
+
+}
+
+\end{minted}
+\caption{Definición en Java de la Clase \texttt{Ontology}.}
+\label{fig:clase_ontology}
+\end{figure}
+
 
 \section{Casos de estudio}
 En esta sección se presentan tres casos de estudio que muestran el comportamiento de la aplicación ante tres entradas diferentes, abarcando distintos aspectos de la solución propuesta.
