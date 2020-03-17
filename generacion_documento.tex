@@ -738,10 +738,187 @@ public class Section {
 
 
 \section{Casos de estudio}
+En el capítulo de Organización de Información analizamos cómo quedan organizados los tópicos de las ontologías Pizza y Wine, por lo que continuaremos con estas ontologías de ejemplo, analizando la realización del texto generado. Para identificar el formato del texto, a las secciones se le incluye el número de sección a la izquierda del título de la sección, y cada párrafo comienza con sangría.
 
 \subsection{Generación documento ontología Pizza}
+Ya que el texto completo resulta muy extenso, solo pondremos los fragmentos más significativos del Documento Final. En la figura~\ref{fig:doc_final_pizza} se presentan los fragmentos a analizar.
+
+\begin{figure}
+\fbox{
+\begin{minipage}{14cm}
+\setlength{\parindent}{1em}
+
+\noindent 1 Pizza
+
+una pizza es una comida. una pizza tiene base de pizza y tiene cobertura de pizza. Esta tiene como base a alguna base de pizza. Existen las siguientes clases de pizzas: pizza con carne, picante, no vegetariana, con nombre, \dots, con queso y vegetariana. una pizza es disjunta de base de pizza, cobertura de pizza y helado.
+
+Pizza con carne: una pizza con carne es una pizza que tiene como cobertura a alguna cobertura de carne. 
+\par \dots Otras pizzas realizadas como párrafos.
+
+\noindent 1.1 Pizza con nombre
+
+una pizza con nombre es una pizza. Existen las siguientes clases de pizzas con nombre: margherita, frutti di mare, \dots, veneziana y napoletana.
+
+Margherita: una margherita es una pizza con nombre. Esta tiene como cobertura a alguna cobertura de mozzarella y tomate. También, margherita tiene exclusivamente las siguientes coberturas: cobertura de mozzarella o de tomate. una margherita es disjunta de american, american hot, \dots, soho y veneziana.
+
+\dots Otras pizzas con nombre realizadas como párrafos.
+
+\noindent 1.2 Ingredientes
+	
+\noindent 1.2.1 Coberturas
+	
+\noindent 1.2.1.1 Cobertura de pizza
+
+una cobertura de pizza es una comida. una cobertura de pizza es cobertura de una pizza. Existen las siguientes clases de coberturas de pizza: \dots
+
+\noindent 1.2.2 Bases
+
+\noindent 1.2.2.1 Base de pizza
+
+una base de pizza es una comida. una base de pizza es base de una pizza. Existen las siguientes clases de bases de pizza: base gruesa y delgada y crujiente.
+\end{minipage}
+}
+\caption{Fragmentos del Documento Final generado a partir de la ontología Pizza.}
+\label{fig:doc_final_pizza}
+\end{figure}
+Para visualizar la estructura total del documento, se imprimió el índice de las secciones, el cual se muestra en la Figura~\ref{fig:indice_secciones_pizza}. Se puede apreciar que la estructura del documento comparte algunas similitudes con el Documento Inicial, manteniendo la coherencia global, pero disminuyó la cantidad de secciones, ya que muchas de ellas se convirtieron en párrafos. Aún así, prevalecen títulos de secciones que agregan información semántica aunque no aporten información en forma de texto, tales como Ingredientes, Coberturas y Bases.
+
+\begin{figure}
+\begin{multicols}{2}
+\begin{figure}[H]
+\dirtree{%
+.1 Pizza.
+.2 Pizza con nombre.
+.2 Ingredientes.
+.3 Coberturas.
+.4 Cobertura de pizza.
+.5 Cobertura de verduras.
+.6 Cobertura de pimiento.
+.6 Cobertura de tomate.
+.5 Cobertura de hierbas.
+.5 Cobertura de carne.
+.5 Cobertura de queso.
+.5 Cobertura de pescado.
+.3 Bases.
+.4 Base de pizza.
+.5 Base gruesa.
+.5 Base delgada y crujiente.
+}
+\end{figure}
+
+\begin{figure}[H]
+\dirtree{%
+.1 Otras secciones.
+.2 Domain concept.
+.3 Comida.
+.2 Value partition.
+.3 Picante.
+}
+\end{figure}
+\end{multicols}
+\caption{Índice de secciones del Documento Final generado para la ontología Pizza.}
+\label{fig:indice_secciones_pizza}
+\end{figure}
+
 
 \subsection{Generación documento ontología Wine}
+Al igual que el caso de estudio anterior, solo incluiremos algunos fragmentos del documento generado, los cuales se pueden ver en la Figura~\ref{fig:doc_final_wine}.
+
+En la Figura~\ref{fig:indice_secciones_wine} se visualiza el índice del documento. El comportamiento es similar al obtenido en la verbalización de la ontología Pizza, comparando la Figura~\ref{fig:indice_secciones_wine} con la Figura~\ref{fig:caso_estudio_wine}, se observa que la estructura resulta mucho más compacta.
+
+
+\begin{figure}
+\fbox{
+\begin{minipage}{14cm}
+\setlength{\parindent}{1em}
+\noindent 1 Wine
+
+a wine is a potable liquid. a wine has wine sugar as sugar, has wine flavor as flavor, has wine body as body, has wine color as color, has wine descriptor and made from grape a wine grape. This located in SOME region. Also, wine has only winery maker. Also, wine has exactly one maker, made at least one wine grape, wine body, wine color, wine flavor and wine sugar. There are the following kinds of wines: italian wine, \dots, late harvest and alsatian wine. 
+
+Full bodied wine: a full bodied wine is a wine that has full body.
+
+\noindent 1.1 Italian wine
+
+a italian wine is a wine that located in italian region. chianti is the only kind of wine. 
+
+Chianti: a chianti is a italian wine. This has only light or medium body. Also, chianti has red color, moderate flavor and dry sugar. located in chianti region. made from grape sangiovese grape. chianti classico is a type of chianti. 
+
+Chianti classico: a chianti classico has mc guinnesso maker and medium body.
+
+\noindent 1.14 Wines descriptor
+
+Wine sugar:	a wine sugar is a wine taste. a wine sugar is a sweet, off dry or dry. there are the wines sugar: dry, off dry and sweet. 
+
+
+Wine color: a wine color is a wine descriptor. a wine color is a rose, red or white. there are the wines color: white, red and rose. 
+
+
+Wine flavor: a wine flavor is a wine taste. a wine flavor is a moderate, delicate or strong. there are the wines flavor: moderate, strong and delicate. 
+
+Wine body: a wine body is a wine taste. a wine body is a light, medium or full. there are the wines body: medium, full and light. 
+
+\end{minipage}
+}
+\caption{Fragmentos del Documento Final generado a partir de la ontología Wine.}
+\label{fig:doc_final_wine}
+\end{figure}
+
+
+\begin{figure}
+\begin{multicols}{2}
+{\small
+\begin{figure}[H]
+\dirtree{%
+.1 Wine.
+.2 Italian wine.
+.2 Loire.
+.2 Table wine.
+.2 Pinot noir.
+.2 Dessert wine.
+.3 Sweet riesling.
+.2 Bordeaux.
+.3 Medoc.
+.2 Riesling.
+.2 Red wine.
+.3 Red burgundy.
+.2 Cabernet sauvignon.
+.2 Semillon or sauvignon blanc.
+.3 Sauvignon blanc.
+.2 White wine.
+.3 White burgundy.
+.2 Zinfandel.
+.2 Chardonnay.
+.2 Wines descriptor.
+.3 Wine sugar.
+.3 Wine color.
+.3 Wine flavor.
+.3 Wine body.
+}
+\end{figure}}  
+
+\begin{figure}[H]
+\dirtree{%
+.1 Otras secciones.
+.1 Region.
+.1 Vintage year.
+.1 Wine descriptor.
+.1 Non consumable thing.
+.1 Vintage.
+.1 Fruit.
+.1 Winery.
+.1 Consumable thing.
+.2 Meal course.
+.3 Foods.
+.4 Edible thing.
+.5 Seafood.
+.5 Pasta.
+}
+\end{figure}
+
+\end{multicols}
+\caption{Resultado del organizador de información con la ontología Wine.}
+\label{fig:indice_secciones_wine}
+\end{figure}
 
 \section{Conclusiones}
 
