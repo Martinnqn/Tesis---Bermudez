@@ -66,12 +66,19 @@ En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama 
 \end{figure}
 
 \section{Implementación Macro Planning}
-La clase principal del Macroplanificador es \emph{TextManager}. Esta clase recorre las Entidades de la misma manera que la clase \emph{GeneratorTreeManager}, explicada en la Figura~\ref{fig:clase_generator_tree}, con la diferencia que crea el objeto \emph{Text} y los objetos \emph{Section} asociados a cada Entidad. Ya que el recorrido es equivalente no se presentará su implementación, en cambio comenzaremos a mostrar las clases que componen el documento de texto.
+La clase principal del Macroplanificador es \emph{TextManager}. Para crear el Documento Inicial, recorre las Entidades de la misma manera que la clase \emph{GeneratorTreeManager}, explicada en la Figura~\ref{fig:clase_generator_tree}, con la diferencia que crea el objeto \emph{Text} y los objetos \emph{Section} asociados a cada Entidad. Ya que el recorrido es equivalente no se presentará su implementación, en cambio comenzaremos a mostrar las clases que componen el Documento de Texto.
 
-La clase \emph{Text}...
-La clase \emph{Section}...
-La clase \emph{Paragraph}...
-La clase \emph{Statement} contiene la información que tendrá cada oración.
+La clase \emph{Text} solo contiene los objetos del primer nivel del Documento de Texto. Tiene acceso a las secciones principales y a las secciones que contienen la información marginada. 
+
+La clase \emph{Section} contiene la información referida a una Sección, como título, párrafos, sus subsecciones y el tópico asociado. Implementa el método de realización del Documento Final, el cual se verá en el Capítulo de Realización.
+
+Cada \emph{Section} se encarga de crear el \emph{Paragraph} correspondiente a su tópico.
+
+La clase \emph{Paragraph} contiene una lista de todas las \emph{Statement} referidas a su Tópico. 
+
+Cada \emph{Paragraph} se encarga de crear las \emph{Statement} correspondientes para el Tópico que recibe, y asociarles los componentes que describen al Tópico. Adicionalmente el párrafo recibe el lenguaje del texto, por lo que debe instanciar las \emph{Statement} adecuadas, ya sea \emph{StatementEnglish} o \emph{StatementSpanish}.
+
+La clase \emph{Statement} contiene la información que tendrá cada oración. Será usada por el Microplanificador para verbalizar la información e implementar los métodos de la etapa de Micro Planning. 
 
 \section{Diseño Micro Planning}
 En esta estapa se llevarán a cabo las tareas crear las oraciones del documento de texto.
@@ -655,6 +662,7 @@ La verbalización de este axioma da como resultado dos oraciones. Como ambas ora
 
 \subsection{Diagrama de clases}
 En la figura \ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de Micro Planificación. 
+
 La clase \emph{Statement} es la encargada de realizar la verbalización de los constructores de Axiomas y las enumeraciones.
 
 La clase \emph{StatementComponent} representa la oraciones parciales. Se encarga de componer oraciones parciales y generar una nueva oración parcial. En el caso de un constructor de Entidad, se encarga de generar una oración parcial compuesta por el nombre de la Entidad.
@@ -671,8 +679,21 @@ Las subclases de \emph{OWLRestriction} tienen la capacidad de verbalizar los con
 \end{figure}
 
 
-\section{Implementación micro panning}
+\section{Implementación Micro Planning}
+Para facilitar la implementación de los algoritmos de Agregación y Expresiones de Referencia, decidimos implementar el contenido de las oraciones con listas de palabras, facilitando su manipulación y recorrido. De esta manera, se creó la interfaz \emph{Word} con sus respectivas subclases \emph{WordEnglish} y \emph{WordSpanish}. 
+La clase \emph{WordSpanish} utiliza la librería \emph{javaGramatica}\footnote{\url{https://www.proinf.net/permalink/gramatica_numero_genero_y_acentuacion}}, para implementar algunos métodos del idioma español, como pluralizar, cambio de género, número, etc. Para el idioma inglés estos métodos fueron implementados manualmente.
 
+Los objetos \emph{Word} son creados por cada \emph{StatementComponent}. Una \emph{StatementComponent} se crea durante el proceso de verbalización de los constructores de Expresiones de Clase y de Entidades. Como los constructores del nivel de las hojas son de Entidades, es en ellas donde se decide qué tipo de objeto se instancia según el idioma, es decir \emph{StatementComponentEnglish} o \emph{StatementComponentSpanish}. Para ejemplificar esta implementación, se muestra en la Figura... la implementación de la clase \emph{OWLClass} con su respectivo método que genera un \emph{StatementComponent} según el idioma. El resto de las clases que representan entidades son equivalentes.
+
+
+
+\begin{figure}
+\begin{minted}[autogobble,linenos]{java}
+
+\end{minted}
+\caption{Definición en Java de la Clase \texttt{OntologyManager}.}
+\label{fig:clase_ontologymanager}
+\end{figure}
 
 \section{Diseño del realizador}
 %La arquitectura de este trabajo relegó la tarea de definir la estructura de las oraciones y llevar acabo su realización lingüística a la etapa de Micro Planning.
@@ -730,7 +751,7 @@ public class Section {
             textF += contenido de s en forma de párrafo
         }
     }
-    /*La realización de las secciones se separa en dos
+    /*La realización de las subsecciones se separa en dos
     recorridos distintos para que todos los párrafos estén
     juntos, y luego aparezcan todas las secciones.*/
     for (Section s: subSections){
