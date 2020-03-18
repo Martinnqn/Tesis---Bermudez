@@ -56,17 +56,22 @@ Al tratar un solo tipo de información por oración, se maximiza la cohesión de
 
 
 \subsection{Diagrama de clases}
-En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al Macroplanificador. La clase TextManager es la implementación del módulo Generador del Plan de Documento. Esta clase se encarga de crear la clase Text, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Sentencias. 
+En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al Macroplanificador. La clase TextManager es la implementación del módulo Generador del Plan de Documento. Esta clase se encarga de crear la clase Text, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Oraciones, cada uno de los cuales tiene asociado su respectiva clase Section, Paragraph y Statement. Las clases StatementComponent y Word son específicas del Micro Planning por lo que se explicarán más adelante.
 
 \begin{figure}
     \centering
     \includegraphics{img/generacion_documento/diagrama_clases_macroplanificador.pdf}
-    \caption{Diagrama de clases del generador del Documento de Texto.}
+    \caption{Diagrama de clases del Macro Planning.}
     \label{fig:diagrama_clases_macroplanificador}
 \end{figure}
 
 \section{Implementación Macro Planning}
-\subsection{Recursos usados}
+La clase principal del Macroplanificador es \emph{TextManager}. Esta clase recorre las Entidades de la misma manera que la clase \emph{GeneratorTreeManager}, explicada en la Figura~\ref{fig:clase_generator_tree}, con la diferencia que crea el objeto \emph{Text} y los objetos \emph{Section} asociados a cada Entidad. Ya que el recorrido es equivalente no se presentará su implementación, en cambio comenzaremos a mostrar las clases que componen el documento de texto.
+
+La clase \emph{Text}...
+La clase \emph{Section}...
+La clase \emph{Paragraph}...
+La clase \emph{Statement} contiene la información que tendrá cada oración.
 
 \section{Diseño Micro Planning}
 En esta estapa se llevarán a cabo las tareas crear las oraciones del documento de texto.
@@ -649,19 +654,25 @@ La verbalización de este axioma da como resultado dos oraciones. Como ambas ora
 \end{figure}
 
 \subsection{Diagrama de clases}
-En la figura \ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de micro planificación. Las subclases de \emph{OWLRestriction} tienen la capacidad de generar las oraciones parciales.
+En la figura \ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de Micro Planificación. 
+La clase \emph{Statement} es la encargada de realizar la verbalización de los constructores de Axiomas y las enumeraciones.
+
+La clase \emph{StatementComponent} representa la oraciones parciales. Se encarga de componer oraciones parciales y generar una nueva oración parcial. En el caso de un constructor de Entidad, se encarga de generar una oración parcial compuesta por el nombre de la Entidad.
+
+La clase \emph{Word} representa las palabras usadas durante la verbalización. Contiene la función gramatical de la palabra, y los algoritmos necesarios para convertir una palabra en plural, un número en palabra (1 a uno), cambiar el género de una palabra, retornar el artículo correspondiente a un sustantivo, entre otros.
+
+Las subclases de \emph{OWLRestriction} tienen la capacidad de verbalizar los constructores de Expresiones de Clases y de generar las \emph{StatementComponent}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=10cm, height=7cm]{img/generacion_documento/diagrama_clases_microplanificador.pdf}
-    \caption{Diagrama de clases del micro planificador.}
+    \includegraphics{img/generacion_documento/diagrama_clases_microplanificador.pdf}
+    \caption{Diagrama de clases del Micro Planificador.}
     \label{fig:diagrama_clases_microplanificador}
 \end{figure}
 
 
 \section{Implementación micro panning}
 
-\subsection{Recursos usados}
 
 \section{Diseño del realizador}
 %La arquitectura de este trabajo relegó la tarea de definir la estructura de las oraciones y llevar acabo su realización lingüística a la etapa de Micro Planning.
