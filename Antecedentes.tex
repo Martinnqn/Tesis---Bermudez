@@ -7,7 +7,7 @@ Varios trabajos involucran el procesamiento de lenguaje natural en el ámbito de
 
 Por su parte, NaturalOWL~\cite{galanis2007generating}, se enfoca en la flexibilidad y fluidez del texto, agregando información lingüística a la ontología para verbalizar los axiomas.
 
-Por otro lado, se han desarrollado herramientas para asistir durante el desarrollo de la ontología, permitiendo acceder a la información modelada en lógicas descriptivas en un formato de texto, y poder editarlo en lenguaje natural. Entre las herramientas desarrolladas se encuentran CLOnE~\cite{power2010complexity} y Aqualog~\cite{lopez2005aqualog},completamente orientadas a la comprensión de texto y no a la generación; y Attempto Tools~\cite{attempto}, que utiliza Attempto Controlled English  (ACE) que es un lenguaje natural controlado ~\cite{CNL}, para servir como lenguaje de representación de conocimiento, y de esta manera poder utilizar representaciones formales, sin necesidad de comprender la lógica interna. La ventaja de usar ACE radica en la posibilidad de generar lenguaje natural desde una representación de conocimiento en lógica, y viceversa.
+Por otro lado, se han desarrollado herramientas para asistir durante el desarrollo de la ontología, permitiendo acceder a la información modelada en lógicas descriptivas en un formato de texto, y poder editarlo en lenguaje natural. Entre las herramientas desarrolladas se encuentran CLOnE~\cite{power2010complexity} y Aqualog~\cite{lopez2005aqualog}, completamente orientadas a la comprensión de texto y no a la generación; y Attempto Tools~\cite{attempto}, que utiliza Attempto Controlled English  (ACE) que es un lenguaje natural controlado ~\cite{CNL}, para servir como lenguaje de representación de conocimiento, y de esta manera poder utilizar representaciones formales, sin necesidad de comprender la lógica interna. La ventaja de usar ACE radica en la posibilidad de generar lenguaje natural desde una representación de conocimiento en lógica, y viceversa.
 
 Si bien estas herramientas cumplen con la verbalización de axiomas y asisten en el uso de ontologías evitando que los usuarios deban comprender las lógicas descriptivas y la sintaxis OWL, la comprensión de cada axioma aislado no asegura la comprensión del dominio completo. Un factor importante en la comprensión del dominio es la capacidad de relacionar los temas de manera coherente. La verbalización de axiomas es necesaria pero no suficiente para comprender las temáticas modeladas en la ontología. Existen conjuntos de axiomas que están relacionados y son complementarios para la descripción de entidades, y que expresados en conjunto como una unidad de información textual transmiten mejor la intención de ese conjunto de axiomas. OntoVerbal es la herramienta que tiene en cuenta este criterio, sin embargo, no planea una estructura de documento, por lo que no garantiza que el orden en el que aparezcan los párrafos maximice la coherencia.
 
@@ -61,9 +61,9 @@ En el ámbito de la Generación de Lenguaje Natural, se engloban las tareas de c
 
 \begin{itemize}
     \item  \emph{Macro planning:} agrupa las tareas de nivel más abstracto. Se encarga de seleccionar la información que se usará en la generación de texto y de organizarla a nivel de capítulos, secciones, párrafos, y sentencias.
-    \item \emph{Micro planning:} es la etapa asociada a la construcción de sentencias, agrupa las tareas de nivel de abstracción intermedio. Dado un conjunto de datos que deben estar presentes en una sentencia, el \emph{micro planning} decide en qué orden aparecerán y cómo se combinarán para producir una oración cohesiva. 
+    \item \emph{Micro planning:} es la etapa asociada a la construcción de sentencias, agrupa las tareas de nivel de abstracción intermedio. Dado un conjunto de datos que deben estar presentes en una sentencia, el \emph{Micro Planning} decide en qué orden aparecerán y cómo se combinarán para producir una oración cohesiva. 
     Para esto, se selecciona las configuraciones léxicas de las palabras, se elige qué entidades se reemplazarán por una expresión de referencia, y qué oraciones se pueden combinar para mejorar la fluidez del texto.
-    \item \emph{Realización} es la última etapa, donde se seleccionan las palabras adecuadas según lo establecido en el \emph{micro planning}. Puede involucrar, por ejemplo, el uso de algoritmos de conjugación de verbos. 
+    \item \emph{Realización} es la última etapa, donde se seleccionan las palabras adecuadas según lo establecido en el \emph{Micro Planning}. Puede involucrar, por ejemplo, el uso de algoritmos de conjugación de verbos. 
     Genera la salida final, definiendo las oraciones y la estructura final del documento.
 \end{itemize}
 
@@ -100,8 +100,8 @@ Según~\cite{vicente2015generacion}, ``Un elemento de una parte del discurso a n
 \subsubsection{Teoría de Veins}
 La Teoría de Veins es una extensión de la Teoría de Centrado. Esta teoría propone un modelo para la descripción de la coherencia global. La estructura jerárquica del texto permite la relación (a través de referencias) entre unidades textuales aún cuando no se encuentran en una disposición lineal~\cite{cristea2005motivations}, garantizando que se mantiene la coherencia del texto.
 
-\section{Teoría de grafos}
-La teoría de grafos se encarga de estudiar las propiedades de los grafos. Un grafo es una estructura de datos que consiste de un conjunto de vértices conectados por un conjunto de arcos que pueden ser usados para modelar relaciones entre los objetos en una colección~\cite{mihalcea2011graph}.
+\section{Teoría de Grafos}
+La Teoría de Grafos se encarga de estudiar las propiedades de los grafos. Un grafo es una estructura de datos que consiste de un conjunto de vértices conectados por un conjunto de arcos que pueden ser usados para modelar relaciones entre los objetos en una colección~\cite{mihalcea2011graph}.
 
 Algunos aspectos que se estudian de los grafos son su estructura (jerárquica, árbol, conexos, bipartitos, etc.), las medidas de sus nodos (centralidad relativa, absoluta~\cite{freeman1978centrality}), los algoritmos de recorridos (profundidad, anchura, etc.), entre otros.
 
@@ -126,7 +126,7 @@ Se utilizan para recorrer los nodos de un grafo. Dos clasificaciones principales
     \item Recorrido en anchura: dado un nodo $n$, se visitan todos sus nodos adyacentes. Sea $n'$ un adyacente de $n$, no se visita ningún adyacente de $n'$ hasta que ya se hayan visitado todos los adyacentes de $n$. 
 \end{itemize}
 
-\section{Procesamiento de lenguaje natural y teoría de grafos}
+\section{Procesamiento de Lenguaje Natural y Teoría de Grafos}
 La representación de texto como una estructura de datos basada en grafos ha sido usada para dar soporte a las tareas de procesamiento de lenguaje natural. En TextGraph Workshop Series\footnote{http://www.textgraphs.org} se pone a disposición una plataforma para el intercambio de ideas que beneficien ambos campos de investigación. 
 
 La representación de datos como un grafo beneficia el PNL poniendo a disposición los algoritmos conocidos, permitiendo la navegación del grafo para extraer y clasificar el contenido. Algunas tareas de PLN que son resueltas utilizando grafos son la creación de resúmenes~\cite{mihalcea2004graph}\cite{erkan2004lexrank} y minería de texto~\cite{Jin:2007:GTR:1244002.1244182}\cite{beliga2015overview}.
@@ -136,7 +136,7 @@ La representación de datos como un grafo beneficia el PNL poniendo a disposici�
     \item Minería de texto: ``Es el proceso de extracción automática de información fundamental de textos,  detección  automática  de temas  predominantes en un conjunto de documentos y búsqueda de textos relevantes mediante consultas de grandes prestaciones y flexibilidad''~\cite{brun2004articulo}.
 \end{itemize}
 
-\section{Ontologías y teoría de grafos}
+\section{Ontologías y Teoría de Grafos}
 Tanto en la academia como en la industria~\cite{soylu2018navigating} se han utilizado grafos para la representación de conocimiento. Este enfoque permite explotar las propiedades de un grafo dentro del área de la visualización de la información, por ejemplo para la representación y navegación de ontologías~\cite{escarza2005visualizacion}.
 
 El uso de herencia múltiple en ontologías genera estructuras de datos en forma de grafos dirigidos, sin embargo se pueden usar diferentes criterios para mostrar el contenido de una ontología, por ejemplo Protégé utiliza una visualización en forma de árbol para mostrar la jerarquía de clases, donde cada nodo del árbol es una clase~\cite{protegehierarchy}. Como es posible que un nodo sea hijo de más de un padre, existe redundancia en la visualización, ya que un nodo puede repetirse en dos ramas diferentes.
@@ -145,9 +145,9 @@ En~\cite{mellish2008natural} presentan una investigación acerca de \emph{Natura
 
 En~\cite{crampes2007ontology} comparan dos aplicaciones que utilizan ontologías para soportar y dirigir la navegación conceptual. En ellas, aplican criterios de selección y ordenamientos de conceptos a partir de las relaciones de las entidades en la ontología del dominio y de reglas específicas de una ontología pedagógica. 
 
-De estos trabajos se observan dos aspectos importantes para integrar la teoría de grafos y la representación de las ontologías:
+De estos trabajos se observan dos aspectos importantes para integrar la Teoría de Grafos y la representación de las Ontologías:
 \begin{itemize}
-    \item Determinar qué información de la ontología será usada para crear los nodos y los enlaces del grafo.
+    \item Determinar qué información de la Ontología será usada para crear los nodos y los enlaces del grafo.
     \item Establecer un método de navegación del grafo.
 \end{itemize}
 

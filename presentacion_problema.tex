@@ -11,7 +11,7 @@ Esta división puede verse plasmada en la Figura~\ref{fig:modulos_sgln}, en la c
 
 \begin{figure}
     \centering
-    \includegraphics[width=11cm, height=4cm]{img/presentacion_problema/modulos_sgln.pdf}
+    \includegraphics{img/presentacion_problema/modulos_sgln.pdf}
     \caption{Módulos que componen el sistema de generación de lenguaje natural}
     \label{fig:modulos_sgln}
 \end{figure}
@@ -22,7 +22,7 @@ Considerando lo propuesto por la Teoría de Veins, debemos crear una estructura 
 
 Suponemos que las entidades que tienen mayor impacto en la ontología son las que deberían aparecer en los niveles superiores de la jerarquía, con el objetivo de usarlas como hilo conductores para estructurar el texto. 
 
-Para identificar las entidades más relevantes, usaremos la las medidas de centralidad de los nodos.
+Para identificar las entidades más relevantes, usaremos las medidas de centralidad de los nodos.
 
 A continuación veremos un ejemplo a partir de la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de la ontología {\tt pizza.owl}\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}.
 
@@ -56,7 +56,7 @@ En esta sección hemos presentado dos problemáticas a tratar:
 
 \begin{itemize}
     \item La obtención de los tópicos más relevantes para tratar en el texto.%, que en nuestro caso son unidades de información representadas por \emph{owl:Class} y \emph{owl:NamedIndividual}.
-    \item El recorrido del grafo para obtener las unidades de información adecuada que maximicen la relación semántica respecto a los tópicos del texto (para abordar la cohesión global).% En este caso, las unidades de información que se tienen en cuenta para el recorrido del grafo son \emph{rdfs:subClassOf}, \emph{owl:ObjectProperty} y \emph{owl:DataProperty}.
+    \item El recorrido del grafo para obtener las unidades de información adecuada que maximicen la relación semántica respecto a los tópicos del texto (para abordar la coherencia global).% En este caso, las unidades de información que se tienen en cuenta para el recorrido del grafo son \emph{rdfs:subClassOf}, \emph{owl:ObjectProperty} y \emph{owl:DataProperty}.
 \end{itemize}
 
  
@@ -68,7 +68,7 @@ Como presentamos en el Objetivo (Sección~\ref{Intro:objetivo}), se esperan alca
     \item A nivel micro, el texto debe cumplir con cierta fluidez, utilizando frases que tengan una gramática aceptable, tratando de maximizar la cohesión.
 \end{enumerate}
 
-Para satisfacer las necesidades del nivel macro, usaremos como punto de partida la estructura resultante del módulo de organización de información, que servirá para generar un documento inicial. Este documento inicial se modificará para adoptar una estética más agradable para el lector, tratando de mantener la coherencia global de la estructura original.
+Para satisfacer las necesidades del nivel macro, usaremos como punto de partida la estructura resultante del módulo de Organización de Información, que servirá para generar un Documento Inicial. Este Documento Inicial se modificará para adoptar una estética más agradable para el lector, tratando de mantener la coherencia global de la estructura original.
 
 Parte de la estética resulta de crear secciones y párrafos con los tópicos del texto. Dado que queremos dotar al texto con coherencia local, debemos definir qué información habrá en cada sección y párrafo, y cómo estará organizada. 
 
@@ -78,7 +78,7 @@ Para mantener la coherencia local según la Teoría de Centrado, debemos evitar 
 
 Dado una entidad \emph{E}, para recuperar la información que la describe, adoptaremos dos criterios principales:
 \begin{itemize}
-    \item El primer criterio consiste en juntar los axiomas que describen a \emph{E} en un mismo párrafo. Los axiomas de cada entidad están guardados en la estructura de la ontología creada en el módulo \emph{Traductor} del capítulo anterior, por lo que obtenerlos y agruparlos es trivial.
+    \item El primer criterio consiste en juntar los axiomas que describen a \emph{E} en un mismo párrafo. %Los axiomas de cada entidad están guardados en la estructura de la ontología creada en el módulo \emph{Traductor} del capítulo anterior, por lo que obtenerlos y agruparlos es trivial.
     \item El segundo criterio consiste en recorrer la estructura de grafo a partir del nodo que representa a \emph{E}, navegando por las relaciones del nodo. Este recorrido busca capturar la máxima cantidad de información posible acerca de \emph{E}. 
 \end{itemize}
 
