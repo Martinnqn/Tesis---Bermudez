@@ -663,7 +663,7 @@ La verbalización de este axioma da como resultado dos oraciones. Como ambas ora
 \subsection{Diagrama de clases}
 En la figura \ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de Micro Planificación. 
 
-La clase \emph{Statement} es la encargada de realizar la verbalización de los constructores de Axiomas y las enumeraciones.
+La clase \emph{Statement} es la encargada de realizar la verbalización de los constructores de Axiomas y las enumeraciones. Un objeto \emph{Statement} puede generar más de una oración, ya que cada \emph{Statement} trata un solo tópico y un solo tipo de constructor, pero pueden haber varios axiomas que utilicen el mismo tipo de constructor, por lo que todos esos axiomas estarán en la misma \emph{Statement}.
 
 La clase \emph{StatementComponent} representa la oraciones parciales. Se encarga de componer oraciones parciales y generar una nueva oración parcial. En el caso de un constructor de Entidad, se encarga de generar una oración parcial compuesta por el nombre de la Entidad.
 
@@ -680,19 +680,69 @@ Las subclases de \emph{OWLRestriction} tienen la capacidad de verbalizar los con
 
 
 \section{Implementación Micro Planning}
-Para facilitar la implementación de los algoritmos de Agregación y Expresiones de Referencia, decidimos implementar el contenido de las oraciones con listas de palabras, facilitando su manipulación y recorrido. De esta manera, se creó la interfaz \emph{Word} con sus respectivas subclases \emph{WordEnglish} y \emph{WordSpanish}. 
+Para facilitar la implementación de los algoritmos de Agregación y Expresiones de Referencia, decidimos implementar el contenido de las oraciones con listas de palabras en lugar de cadenas de texto, facilitando su manipulación y recorrido. De esta manera, se creó la interfaz \emph{Word} con sus respectivas subclases \emph{WordEnglish} y \emph{WordSpanish}. 
 La clase \emph{WordSpanish} utiliza la librería \emph{javaGramatica}\footnote{\url{https://www.proinf.net/permalink/gramatica_numero_genero_y_acentuacion}}, para implementar algunos métodos del idioma español, como pluralizar, cambio de género, número, etc. Para el idioma inglés estos métodos fueron implementados manualmente.
 
-Los objetos \emph{Word} son creados por cada \emph{StatementComponent}. Una \emph{StatementComponent} se crea durante el proceso de verbalización de los constructores de Expresiones de Clase y de Entidades. Como los constructores del nivel de las hojas son de Entidades, es en ellas donde se decide qué tipo de objeto se instancia según el idioma, es decir \emph{StatementComponentEnglish} o \emph{StatementComponentSpanish}. Para ejemplificar esta implementación, se muestra en la Figura... la implementación de la clase \emph{OWLClass} con su respectivo método que genera un \emph{StatementComponent} según el idioma. El resto de las clases que representan entidades son equivalentes.
+Cada vez que se crea una Word, debe especificarse su palabra y el tipo de función que cumple la palabra. Para identificar el tipo de una palabra, se utilizó el software\texttt{Stanford POS Tagger}\footnote{https://nlp.stanford.edu/software/tagger.html}, el cual permite etiquetar palabras de inglés, español y otros idiomas. Este software utiliza una nomenclatura específica para etiquetar las palabras, por lo que utilizamos esa nomenclatura y la implementamos a través de Variables de Clase creadas en la clase Word.
 
+Los objetos \emph{Word} son creados por cada \emph{StatementComponent}. Una \emph{StatementComponent} se crea durante el proceso de verbalización de los constructores de Expresiones de Clase y de Entidades. Como los constructores del nivel más bajo son de Entidades, es en ellas donde se decide qué tipo de objeto se instancia según el idioma, es decir \emph{StatementComponentEnglish} o \emph{StatementComponentSpanish}. 
 
+En el nivel de los constructores de Expresiones de Clase se encuentran las clases que heredan de la interfaz \emph{OWLRestriction}. Esta interfaz acopla los atributos que requieren los constructores, como los individuos, las clases, las propiedades y cardinalidades.
+
+Las clases que implementan \emph{OWLRestriction} componen y generan las \emph{StatementComponent}. Como ejemplo, se muestra en la Figura~\ref{fig:clase_OWLObjectComplementOf} la implementación de la clase \emph{OWLObjectComplementOf} con los métodos para implementar la verbalización del constructor en español.
+
+Se puede ver que el método \emph{generateStatementSpanish()} recibe como párametro un objeto de clase \emph{TextCotext}. Esta clase tiene el tópico al que hace referencia la oración que se está componiendo y el lenguaje de la oración, para ser utilizados, por ejemplo, en la generación de Expresiones de Referencia.
+
+Por último la interfaz \emph{Statement} tiene los atributos necesarios para que sus implementaciones \emph{StatementEnglish} y \emph{StatementSpanish} puedan verbalizar los constructores de Axiomas y de unir todas las oraciones. 
+
+Las \emph{Statement} utilizan la Agregación y las Expresiones de Referencia cuando generan varias oraciones. Estas tareas se implementaron en las clases \emph{StatementComponent} (teniendo en cuenta sus implementaciones) y \emph{OWLClass} respectivamente. 
 
 \begin{figure}
 \begin{minted}[autogobble,linenos]{java}
+public class OWLObjectComplementOf extends OWLRestriction{
 
+    public OWLObjectComplementOf(String type, String lang) {
+        super(type, lang);
+    }
+
+@Override
+    protected StatementComponent generateStatementSpanish(TextCotext c) {
+        LinkedList<StatementComponent> stmsClasses = new LinkedList<>();
+        stmsClasses.add(classes.get(0).generateStatement(c));
+        LinkedList<Word> resList = new LinkedList<>();
+        LinkedList<Word> enlace = getEnlaceSpanish(stmsClasses.get(0));
+        resList.addAll(enlace);
+        resList.addAll(stmsClasses.get(0).getListWords());
+        StatementComponent stm = new StatementComponentSpanish(c, resList, "ON", type);
+        stm.setComplementList(resList);
+        return stm;
+    }
+    
+    private LinkedList<Word> getEnlaceSpanish(StatementComponent stm) {
+        LinkedList<Word> enlace = new LinkedList<>();
+        if (stm.getType().equals("T")) {
+            WordSpanish lo = new WordSpanish("LO", WordSpanish.TYPE_PRONOUN);
+            WordSpanish opuesto = new WordSpanish("OPUESTO", WordSpanish.TYPE_ADJETIVE);
+            WordSpanish de = new WordSpanish("DE", WordSpanish.TYPE_PREPOSITION);
+            enlace.add(lo);
+            enlace.add(opuesto);
+            enlace.add(de);
+        } else if (stm.getType().equals("SV")) {
+            WordSpanish no = new WordSpanish("NO", WordSpanish.TYPE_ADV_NEG);
+            enlace.add(no);
+        } else if (stm.getType().equals("ON")) {
+            WordSpanish ni = new WordSpanish("NI", WordSpanish.TYPE_CONJUNTION_COORD);
+            enlace.add(ni);
+        }else {
+            WordSpanish no = new WordSpanish("EXCEPTO", WordSpanish.TYPE_ADV_NEG);
+            enlace.add(no);
+        }
+        return enlace;
+    }
+}
 \end{minted}
-\caption{Definición en Java de la Clase \texttt{OntologyManager}.}
-\label{fig:clase_ontologymanager}
+\caption{Implementación de los métodos para verbalizar el constructor \emph{OWLObjectComplementOf} en español.}
+\label{fig:clase_OWLObjectComplementOf}
 \end{figure}
 
 \section{Diseño del realizador}
@@ -724,13 +774,13 @@ El realizador está embebido dentro de la clase Section, en forma de métodos qu
 \begin{minted}[autogobble,linenos]{java}
 public class Section {
 
-    private LinkedList<OWLIntClassLite> topics;
+    private LinkedList<OWLIntClass> topics;
     private Title title;
     private LinkedList<Paragraph> paragraphs;
     private LinkedList<Section> subSections;
     private String language;
 
-    public Section(OWLIntClassLite topic, String lang) {
+    public Section(OWLIntClass topic, String lang) {
         init(lang);
         topics.add(topic);
         title = new Title(topic, lang);
