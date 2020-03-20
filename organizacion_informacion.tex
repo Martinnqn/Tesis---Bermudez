@@ -146,7 +146,7 @@ Las clases \emph{OWLIntClass},  \emph{OWLClass},  \emph{OWLDataProperty},  \emph
 \end{figure}
 
 \section{Implementación}
-Para documentar la implementación se tomarán principalmente las cuatro clases asociadas a los módulos del Organizador de Información. Para simplificar la longitud de las clases documentadas, solo se mostrará el encabezado de los métodos con sus respectivas descripciones, y de ser necesario se incluirá la implementación de los métodos.
+Para documentar la implementación se tomarán principalmente las cuatro clases asociadas a los módulos del Organizador de Información. Para simplificar la longitud de las clases documentadas, solo se mostrará el encabezado de los métodos con sus respectivas descripciones, y solo se incluirá la implementación de los métodos más importantes.
 
 La estructura de la ontología se crea a través de la clase \emph{OntologyManager}. Esta clase hace uso de la librería  \emph{OWLAPI}\footnote{http://owlapi.sourceforge.net/} para cargar el archivo que contiene la ontología de entrada. El beneficio de esta librería es que también importa los archivos necesarios en caso de que hayan definiciones de tipo \emph{import} en la ontología. En la Figura~\ref{fig:clase_ontologymanager} se muestra un pseudocódigo del método principal de \emph{OntologyManager}.
 
@@ -156,7 +156,7 @@ La clase \emph{ContentClasification} contiene los métodos necesarios para clasi
 
 La clase \emph{ContentGrouping} posee tres métodos para generar los grupos de nuevos tópicos del Árbol de Entidades. En la Figura~\ref{fig:clase_content_grouping} se presenta esta clase.
 
-La clase \emph{GeneratorTreeManager} recorre recursivamente las Entidades creando las ramas del Árbol de Entidades. Se presenta un pseudocódigo en Java en la Figura~\ref{fig:clase_generator_tree} para explicar el recorrido.
+La clase \emph{GeneratorTreeManager} recorre recursivamente las Entidades creando las ramas del Árbol de Entidades. Se presenta un pseudocódigo en la Figura~\ref{fig:clase_generator_tree} para explicar el recorrido.
 
 El resto de las clases solo sirven para completar la estructura en forma de grafo de la ontología, pero no agregan métodos relevantes para el Organizador de Información.
 
@@ -634,13 +634,15 @@ La ontología Wine cuenta con 138 clases y 16 propiedades. De las 16 propiedades
 %\subsection{Organización de Ontología SNOMED-CT}
 
 \section{Conclusiones}
-Pudimos abordar el problema de organizar la información de una ontología, tratando de maximizar la coherencia de la estructura generada usando apropiadamente sus relaciones semánticas. Como planteamos inicialmente, tuvimos que definir:
+Abordamos el problema de organizar la información de una ontología, tratando de maximizar la coherencia de la estructura generada. Como planteamos inicialmente, tuvimos que definir:
 \begin{itemize}
-    \item Las entidades que iban a representar los nodos de la estructura, donde elegimos para el primer nivel de la jerarquía a las Clases, y para los próximos niveles a Clases, Propiedades e Individuos.
+    \item Las entidades que iban a representar los nodos de la estructura: donde elegimos para el primer nivel de la jerarquía a las Clases, y para los próximos niveles a Clases, Propiedades e Individuos.
     \begin{itemize}
-        \item El criterio para ponderar la importancia de las Clases, para crear el primer nivel, donde decidimos usar el criterio de centralidad de un nodo, teniendo en cuenta solo la relación \emph{rdfs:domain}.
+        \item El criterio para ponderar la importancia de las Clases para crear el primer nivel: donde decidimos usar el criterio de centralidad de un nodo, teniendo en cuenta solo la relación \emph{rdfs:domain}.
     \end{itemize}
-    \item El recorrido de la ontología para crear los siguientes niveles, seleccionando las relaciones \emph{rdfs:Domain}, \emph{owl:subPropertyOf}, \emph{rdfs:Range} y \emph{rdfs:subClassOf}.
+    \item El recorrido de la ontología para crear los siguientes niveles: para el cual seleccionamos las relaciones \emph{rdfs:Domain}, \emph{owl:subPropertyOf}, \emph{rdfs:Range} y \emph{rdfs:subClassOf}. El recorrido para cada Entidad visita todos sus vecinos a solo un nivel de profundidad.
 \end{itemize}
 
-Los resultados fueron satisfactorios...
+Los resultados fueron satisfactorios, obteniendo estructuras que corresponden a los resultados esperados. 
+
+Si bien el resultado de la clasificación de las entidades mas importantes depende de la cantidad de \emph{owl:ObjectProperties} y de que sus \emph{rdfs:domain} estén correctamente establecidos, en general el hecho de que son Redes Libres de Escala es un punto a favor para este enfoque.

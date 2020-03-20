@@ -1,25 +1,28 @@
 \chapter{Generación del documento de texto}
 
-\section{Diseño}
-En este capítulo se diseñará e implementará el proceso de generación del documento de texto. Elegimos organizar toda la información de la ontología generando un documento dividido en secciones, subsecciones y párrafos. Para alcanzar el documento final, se crearon módulos teniendo como referencia las actividades de la generación de lenguaje natural nombradas en la Sección \ref{sec:tareas_gnl}. Los tres módulos principales son \emph{Macro planificación}, \emph{Micro planificación} y \emph{Realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
+\section{Introducción}
 
-Para comenzar con la generación de un documento de texto, se planteó un Plan de Documento. Este Plan tiene la estructura resultante del Organizador de la Información. Sin embargo, para crear el documento en la etapa de Macro Planificación, se reemplazó el módulo Generador del Árbol de Entidades del Organizador de Información, por un nuevo módulo específico del Macro Planning. El motivo de este reemplazo es evitar la creación de interfaces entre el Organizador de Información y el Macro Planning, por el overhead que estas suponen, ya que la creación del Árbol de Entidades y la Macro Planificación resultan ser procesos equivalentes, por lo que pueden ser reemplazables, evitando recorrer el doble de veces la estructura jerárquica.
+
+\section{Diseño}
+En este capítulo se diseñará e implementará el proceso de generación del Documento de Texto. Elegimos organizar toda la información de la ontología generando un documento dividido en secciones, subsecciones y párrafos. Para alcanzar el Documento Final, se crearon módulos teniendo como referencia las actividades de la Generación de Lenguaje Natural nombradas en la Sección~\ref{sec:tareas_gnl}. Los tres módulos principales son \emph{Macro planificación}, \emph{Micro planificación} y \emph{Realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
+
+Para comenzar con la generación de un documento de texto, se planteó un Plan de Documento. Este Plan tiene la estructura resultante del Organizador de Información. Para crear el documento en la etapa de Macro Planificación, se reemplazó el módulo Generador del Árbol de Entidades del Organizador de Información, por un nuevo módulo específico del Macro Planning. El motivo de este reemplazo es evitar la creación de interfaces entre el Organizador de Información y el Macro Planning, por el overhead que estas suponen, ya que la creación del Árbol de Entidades y la Macro Planificación resultan ser procesos equivalentes, por lo que pueden ser reemplazables, evitando recorrer el doble de veces la estructura jerárquica.
 
 En la figura~\ref{fig:modulos_plan_documento} se puede ver el nuevo módulo Generador del Plan de Documento, que retorna como salida un Plan de Documento.
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics{img/generacion_documento/modulos_plan_documento.pdf}
     \caption{Módulos para la generación del Plan de Documento.}
     \label{fig:modulos_plan_documento}
 \end{figure}
 
-Cabe aclarar que este es un Plan de Documento inicial que solo cuenta con una primera distribución de la información que estará contenida en el texto final. En el Documento Final, la realización de la estructura y la realización lingüística (secciones, párrafos y oraciones) se realizarán en las etapas de Micro Planificación y Realización, como se ve en la figura~\ref{fig:modulos_documento_final}.
+Cabe aclarar que este es un Plan de Documento Inicial que solo cuenta con una primera distribución de la información que estará contenida en el texto final. En el Documento Final, la realización de la estructura y la realización lingüística (secciones, párrafos y oraciones) se realizarán en las etapas de Micro Planificación y Realización, como se ve en la figura~\ref{fig:modulos_documento_final}.
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=12cm]{img/generacion_documento/modulos_documento_final.pdf}
-    \caption{Módulos para la generación del documento final.}
+    \caption{Módulos para la generación del Documento Final.}
     \label{fig:modulos_documento_final}
 \end{figure}
 
@@ -40,7 +43,7 @@ La representación interna del documento de texto tiene en cuenta los siguientes
 \subsection{Secciones y párrafos}
 Las Secciones tiene como objetivo principal delimitar la información asociada a una Entidad, segmentando el texto con el fin de mantener la coherencia global.
 
-Dentro de una sección para una Clase, se verbalizarán sus axiomas y se enumerarán sus Individuos, Subclases y Relaciones, todo en un párrafo. Enumerar esta información resulta conveniente ya que luego se crearán subsecciones para cada uno de esos componentes.
+Dentro de una sección para una Clase, se verbalizarán sus axiomas y se enumerarán sus Individuos, Subclases y Relaciones, todo en un párrafo. Enumerar esta información (es decir, presentarla sin considerarla un nuevo tópico) resulta conveniente ya que luego se crearán subsecciones para cada uno de esos componentes.
 
 En una sección asociada a una Relación, solo habrán subsecciones acerca de las Entidades que pertenecen a la Relación.
 
@@ -56,7 +59,7 @@ Al tratar un solo tipo de información por oración, se maximiza la cohesión de
 
 
 \subsection{Diagrama de clases}
-En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al Macroplanificador. La clase TextManager es la implementación del módulo Generador del Plan de Documento. Esta clase se encarga de crear la clase Text, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Oraciones, cada uno de los cuales tiene asociado su respectiva clase Section, Paragraph y Statement. Las clases StatementComponent y Word son específicas del Micro Planning por lo que se explicarán más adelante.
+En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al Macroplanificador. La clase \emph{TextManager} es la implementación del módulo Generador del Plan de Documento. Esta clase se encarga de crear la clase \emph{Text}, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Oraciones, cada uno de los cuales tiene asociado su respectiva clase \emph{Section}, \emph{Paragraph} y \emph{Statement}.
 
 \begin{figure}
     \centering
@@ -68,25 +71,24 @@ En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama 
 \section{Implementación Macro Planning}
 La clase principal del Macroplanificador es \emph{TextManager}. Para crear el Documento Inicial, recorre las Entidades de la misma manera que la clase \emph{GeneratorTreeManager}, explicada en la Figura~\ref{fig:clase_generator_tree}, con la diferencia que crea el objeto \emph{Text} y los objetos \emph{Section} asociados a cada Entidad. Ya que el recorrido es equivalente no se presentará su implementación, en cambio comenzaremos a mostrar las clases que componen el Documento de Texto.
 
-La clase \emph{Text} solo contiene los objetos del primer nivel del Documento de Texto. Tiene acceso a las secciones principales y a las secciones que contienen la información marginada. 
+La clase \emph{Text} solo contiene los objetos del primer nivel del Documento de Texto. Tiene acceso a las secciones principales y a las secciones que contienen la información que no había sido utilizada en otras secciones. 
 
 La clase \emph{Section} contiene la información referida a una Sección, como título, párrafos, sus subsecciones y el tópico asociado. Implementa el método de realización del Documento Final, el cual se verá en el Capítulo de Realización.
 
-Cada \emph{Section} se encarga de crear el \emph{Paragraph} correspondiente a su tópico.
+Cada \emph{Section} se encarga de crear el \emph{Paragraph} correspondiente a su Tópico.
 
 La clase \emph{Paragraph} contiene una lista de todas las \emph{Statement} referidas a su Tópico. 
 
-Cada \emph{Paragraph} se encarga de crear las \emph{Statement} correspondientes para el Tópico que recibe, y asociarles los componentes que describen al Tópico. Adicionalmente el párrafo recibe el lenguaje del texto, por lo que debe instanciar las \emph{Statement} adecuadas, ya sea \emph{StatementEnglish} o \emph{StatementSpanish}.
+Cada \emph{Paragraph} se encarga de crear las \emph{Statement} correspondientes para el Tópico que recibe, y asociarles los componentes (Axiomas) que describen al Tópico. Adicionalmente el párrafo recibe el lenguaje del texto, por lo que debe instanciar las \emph{Statement} adecuadas, ya sea \emph{StatementEnglish} o \emph{StatementSpanish}.
 
 La clase \emph{Statement} contiene la información que tendrá cada oración. Será usada por el Microplanificador para verbalizar la información e implementar los métodos de la etapa de Micro Planning. 
 
 \section{Diseño Micro Planning}
-En esta estapa se llevarán a cabo las tareas crear las oraciones del documento de texto.
-para describir una Entidad en lenguaje natural a partir de la información que contiene cada oración creada en el Macro Planning. Esta descripción en lenguaje natural se alcanza a través de una o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
+En esta estapa se llevarán a cabo las tareas para describir una Entidad en lenguaje natural a partir de la información que contiene cada \emph{Statement} creada en el Macro Planning. Esta descripción en lenguaje natural se alcanza a través de una o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
 
 Como existen diversas estructuras sintácticas para expresar un mismo contenido, a modo de simplificación se asoció a cada constructor OWL solo algunas formas de verbalización. Se trató de generar oraciones que sean fieles al significado expresado en los axiomas y de evitar ambigüedades.
 
-Para poder trabajar con patrones de la gramática del lenguaje humano (ya sea español o inglés), se utilizó un \emph{POS Tagger} para etiquetar las palabras.
+Para poder trabajar con patrones de la gramática del lenguaje humano (ya sea español o inglés), se utilizó un \emph{POS Tagger}\footnote{Un \emph{Part-Of-Speech Tagger} es un software para asignar la categoría gramatical a las palabras de un texto.} para etiquetar las palabras.
 
 \subsection{Verbalización de una oración}
 Tanto las oraciones acerca de Clases como las de Individuos requieren la verbalización de los constructores OWL. Solo en el caso de las oraciones acerca de Clases requieren además la enumeración de sus instancias, propiedades y subclases. Con enumeración de las propiedades (y de instancias y subclases por igual), nos referimos únicamente a presentarlas, por ejemplo, las propiedades \emph{tieneCobertura} y \emph{tieneBase} para la clase Pizza resultan en la oración ``una pizza tiene base de pizza y tiene cobertura de pizza''.
@@ -166,13 +168,14 @@ En la Gramática~\ref{gram:entity} se muestra una porción de la gramática BNF 
 %<number> : <digit> ; <digit> , <number>.
 %<digit> : "0";"1";"2";"3";"4";"5";"6";"7";"8";"9".
 %<relational\_operator> : $"="$;"$\lessthan \greaterthan$";"$\lessthan$";"$\greaterthan$"; "$\lessthan=$";"$\greaterthan=$";"in".
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <Entity> : <Class> ; <ObjectProperty> ; <DataProperty> ; <NamedIndividual> ; <AnnotationProperty>.
 <Class> : <IRI> .
 <ObjectProperty> : <IRI> .
 <DataProperty> : <IRI> .
 <AnnotationProperty> : <IRI> .
 <NamedIndividual> : <IRI> .
+}
 \end{minipage}
 }
 \end{grammar}
@@ -194,10 +197,11 @@ En la Gramática~\ref{gram:expr_clases} se muestra a modo de ejemplo una secció
 %<number> : <digit> ; <digit> , <number>.
 %<digit> : "0";"1";"2";"3";"4";"5";"6";"7";"8";"9".
 %<relational\_operator> : $"="$;"$\lessthan \greaterthan$";"$\lessthan$";"$\greaterthan$"; "$\lessthan=$";"$\greaterthan=$";"in".
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <ClassExpression> : <Class> ; <ObjectIntersectionOf> ; <ObjectSomeValuesFrom> .
 <ObjectSomeValuesFrom> : "ObjectSomeValuesFrom" "(" <ObjectPropertyExpression> <ClassExpression> ")" .
 <ObjectPropertyExpression> : <ObjectProperty> .
+}
 \end{minipage}}
 \end{grammar}
 \caption{Porción de gramática asociada a las Expresiones de Clases.}\label{gram:expr_clases}
@@ -219,9 +223,10 @@ Por último en el nivel más abstracto se encuentran los constructores de Axioma
 %<number> : <digit> ; <digit> , <number>.
 %<digit> : "0";"1";"2";"3";"4";"5";"6";"7";"8";"9".
 %<relational\_operator> : $"="$;"$\lessthan \greaterthan$";"$\lessthan$";"$\greaterthan$"; "$\lessthan=$";"$\greaterthan=$";"in".
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <ClassAxiom> : <SubClassOf> ; <EquivalentClasses> ; <DisjointClasses> ; <DisjointUnion> .
 <EquivalentClasses> : "EquivalentClasses" "(" <axiomAnnotations> <ClassExpression> <ClassExpression> \{ <ClassExpression> \} ")".
+}
 \end{minipage}}
 \end{grammar}
 \caption{Porción de gramática asociada a los Axiomas.}\label{gram:axiom}
@@ -326,13 +331,14 @@ Ejemplo: para la clase ``pizza interesante'', se tiene el axioma: ``tieneCobertu
 [(period){\vspace{0.3cm} \\}]
 [(quote){\begin{bf}}{\end{bf}}]
 [(nonterminal){$<$}{$>$}]
-\fbox{\begin{minipage}{14cm}
-<RestriccionCard> : <patron$_1$> ; <patron$_2$> ; <patron$_3$>.
+\fbox{\begin{minipage}{14cm} \small{ 
+<RestriccionCard> : <patron$_1$> ; <patron$_2$> ; <patron$_3$> ; <patron$_4$> .
 <patron$_1$> : <parteInicialPropiedad> <complementoPropiedad> <enlace> <cardinalidad> <clases> .
 <patron$_2$> : <parteInicialPropiedad> <enlace> <cardinalidad> <complementoPropiedad>.
 <patron$_3$> : <parteInicialPropiedad> <enlace> <cardinalidad> <rangoPropiedad>.
 <patron$_4$> : <parteInicialPropiedad> <enlace> <cardinalidad> <clases>.
 <enlace> : "como mínimo" ; "como máximo"; "exactamente".
+}
 \end{minipage}}
 \end{grammar}
 \caption{Patrones para ObjectCardinalityRestriction.}\label{gram:object_card_rest}
@@ -349,11 +355,12 @@ La gramática~\ref{gram:data_card_rest} muestra los patrones diseñados para las
 [(period){\vspace{0.3cm} \\}]
 [(quote){\begin{bf}}{\end{bf}}]
 [(nonterminal){$<$}{$>$}]
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <RestriccionCard> : <patron$_1$> ; <patron$_2$>.
 <patron$_1$> : <parteInicialPropiedad> <enlace> <cardinalidad> <complementoPropiedad> .
 <patron$_2$> : "tiene" <enlace> <cardinalidad> <nombrePropiedad>.
 <enlace> : "al menos" ; "como máximo"; "exactamente".
+}
 \end{minipage}}
 \end{grammar}
 \caption{Patrones para DataCardinalityRestriction.}\label{gram:data_card_rest}
@@ -370,7 +377,7 @@ La gramática~\ref{gram:quant_obj_rest} muestra los patrones diseñados para las
 [(period){\vspace{0.3cm} \\}]
 [(quote){\begin{bf}}{\end{bf}}]
 [(nonterminal){$<$}{$>$}]
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <RestriccionQuant> : <patron$_1$> ; <patron$_2$> ; <patron$_3$> ; <patron$_4$> ; <patron$_5$> .
 <patron$_1$> : <verboPropiedad> "como" <complementoPropiedad> <enlace> <clases> .
 <patron$_2$> : <verboPropiedad> <enlace> <clases> .
@@ -378,6 +385,7 @@ La gramática~\ref{gram:quant_obj_rest} muestra los patrones diseñados para las
 <patron$_4$> : <verboPropiedad> "a" <enlace> <clases> .
 <patron$_5$> : <verboPropiedad> <complementoPropiedad> <enlace> <clases> .
 <enlace> : "algún" ; "alguna"; "algo"; "exclusivamente" .
+}
 \end{minipage}}
 \end{grammar}
 \caption{Patrones para QuantifiedObjectRestriction.}\label{gram:quant_obj_rest}
@@ -400,11 +408,12 @@ La gramática~\ref{gram:quant_data_rest} muestra los patrones diseñados para la
 [(period){\vspace{0.3cm} \\}]
 [(quote){\begin{bf}}{\end{bf}}]
 [(nonterminal){$<$}{$>$}]
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <RestriccionQuant> : <patron$_1$> ; <patron$_2$> .
 <patron$_1$> : <verboPropiedad> <enlace> <complementoPropiedad> "de tipo" <rangoPropiedad> .
 <patron$_2$> : <verboPropiedad> <complementoPropiedad> <enlace> "de tipo" <rangoPropiedad> .
 <enlace> : "algún" ; "alguna"; "algo"; "exclusivamente" .
+}
 \end{minipage}}
 \end{grammar}
 \caption{Patrones para QuantifiedDataRestriction.}\label{gram:quant_data_rest}
@@ -421,10 +430,11 @@ La gramática~\ref{gram:complement_rest} muestra los patrones diseñados para el
 [(period){\vspace{0.3cm} \\}]
 [(quote){\begin{bf}}{\end{bf}}]
 [(nonterminal){$<$}{$>$}]
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <RestriccionComplement> : <patron$_1$>.
 <patron$_1$> : <enlace> <clase> .
 <enlace> : "lo opuesto de" ; "no"; "ni"; "excepto" .
+}
 \end{minipage}}
 \end{grammar}
 \caption{Patrones para OWLObjectComplementOf.}\label{gram:complement_rest}
@@ -441,10 +451,11 @@ La gramática~\ref{gram:inverse_rest} muestra los patrones diseñados para el in
 [(period){\vspace{0.3cm} \\}]
 [(quote){\begin{bf}}{\end{bf}}]
 [(nonterminal){$<$}{$>$}]
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <RestriccionInverse> : <patron$_1$>.
 <patron$_1$> : <enlace> <Propiedad> .
 <enlace> : "es lo opuesto de" .
+}
 \end{minipage}}
 \end{grammar}
 \caption{Patrones para OWLObjectInverseOf.}\label{gram:inverse_rest}
@@ -461,10 +472,11 @@ La gramática~\ref{gram:hasvalue_rest} muestra los patrones diseñados para los 
 [(period){\vspace{0.3cm} \\}]
 [(quote){\begin{bf}}{\end{bf}}]
 [(nonterminal){$<$}{$>$}]
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <RestriccionHasValue> : <patron$_1$> ; <patron$_2$>.
 <patron$_1$> : <parteInicialPropiedad> <complementoPropiedad> <Individuo>.
 <patron$_2$> : <parteInicialPropiedad> <Individuo> .
+}
 \end{minipage}}
 \end{grammar}
 \caption{Patrones para OWLHasValue.}\label{gram:hasvalue_rest}
@@ -481,9 +493,10 @@ La gramática~\ref{gram:hasself_rest} muestra los patrones diseñados para una a
 [(period){\vspace{0.3cm} \\}]
 [(quote){\begin{bf}}{\end{bf}}]
 [(nonterminal){$<$}{$>$}]
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <RestriccionHasSelf> : <patron$_1$>.
 <patron$_1$> : <parteInicialPropiedad> <complementoPropiedad> "Sí MISMO".
+}
 \end{minipage}}
 \end{grammar}
 \caption{Patrones para OWLObjectHasSelf.}\label{gram:hasself_rest}
@@ -527,10 +540,11 @@ Para las propiedades se creó el patrón de la Gramática~\ref{gram:propiedades}
 [(period){\vspace{0.3cm} \\}]
 [(quote){\begin{bf}}{\end{bf}}]
 [(nonterminal){$<$}{$>$}]
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <EnumerarSubclases> : <patron$_1$> ; <patron$_2$>.
 <patron$_1$> : "existen las siguientes clases de" <topico> "$\colon$" <subclases>.
 <patron$_2$> : <subclase> "es la única clase de" <topico>.
+}
 \end{minipage}}
 \end{grammar}
 \caption{Patrones para enumerar subclases.}\label{gram:subclases}
@@ -544,11 +558,12 @@ Para las propiedades se creó el patrón de la Gramática~\ref{gram:propiedades}
 [(period){\vspace{0.3cm} \\}]
 [(quote){\begin{bf}}{\end{bf}}]
 [(nonterminal){$<$}{$>$}]
-\fbox{\begin{minipage}{14cm}
+\fbox{\begin{minipage}{14cm} \small{ 
 <EnumerarPropiedades> : <patron$_1$> ; <patron$_2$> ; <patron$_3$>.
 <patron$_1$> : <parteInicialPropiedad> <complementoPropiedad> <rangoPropiedad> .
 <patron$_2$> : <parteInicialPropiedad> "como" <complementoPropiedad> "a" <rangoPropiedad> .
 <patron$_3$> : <parteInicialPropiedad> <rangoPropiedad> .
+}
 \end{minipage}}
 \end{grammar}
 \caption{Patrones para enumerar propiedades.}\label{gram:propiedades}
@@ -671,7 +686,7 @@ La clase \emph{Word} representa las palabras usadas durante la verbalización. C
 
 Las subclases de \emph{OWLRestriction} tienen la capacidad de verbalizar los constructores de Expresiones de Clases y de generar las \emph{StatementComponent}.
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics{img/generacion_documento/diagrama_clases_microplanificador.pdf}
     \caption{Diagrama de clases del Micro Planificador.}
@@ -830,35 +845,52 @@ Ya que el texto completo resulta muy extenso, solo pondremos los fragmentos más
 \fbox{
 \begin{minipage}{14cm}
 \setlength{\parindent}{1em}
-
+\large{
 \noindent 1 Pizza
+}
 
+\small{
 una pizza es una comida. una pizza tiene base de pizza y tiene cobertura de pizza. Esta tiene como base a alguna base de pizza. Existen las siguientes clases de pizzas: pizza con carne, picante, no vegetariana, con nombre, \dots, con queso y vegetariana. una pizza es disjunta de base de pizza, cobertura de pizza y helado.
 
 Pizza con carne: una pizza con carne es una pizza que tiene como cobertura a alguna cobertura de carne. 
 \par \dots Otras pizzas realizadas como párrafos.
+}
 
+\large{
 \noindent 1.1 Pizza con nombre
+}
 
+\small{
 una pizza con nombre es una pizza. Existen las siguientes clases de pizzas con nombre: margherita, frutti di mare, \dots, veneziana y napoletana.
 
 Margherita: una margherita es una pizza con nombre. Esta tiene como cobertura a alguna cobertura de mozzarella y tomate. También, margherita tiene exclusivamente las siguientes coberturas: cobertura de mozzarella o de tomate. una margherita es disjunta de american, american hot, \dots, soho y veneziana.
 
 \dots Otras pizzas con nombre realizadas como párrafos.
+}
 
+\large{
 \noindent 1.2 Ingredientes
 	
 \noindent 1.2.1 Coberturas
 	
 \noindent 1.2.1.1 Cobertura de pizza
+}
 
+\small{
 una cobertura de pizza es una comida. una cobertura de pizza es cobertura de una pizza. Existen las siguientes clases de coberturas de pizza: \dots
+}
 
+\large{
 \noindent 1.2.2 Bases
+}
 
+\large{
 \noindent 1.2.2.1 Base de pizza
+}
 
+\small{
 una base de pizza es una comida. una base de pizza es base de una pizza. Existen las siguientes clases de bases de pizza: base gruesa y delgada y crujiente.
+}
 \end{minipage}
 }
 \caption{Fragmentos del Documento Final generado a partir de la ontología Pizza.}
@@ -868,6 +900,7 @@ Para visualizar la estructura total del documento, se imprimió el índice de la
 
 \begin{figure}
 \begin{multicols}{2}
+\small{
 \begin{figure}[H]
 \dirtree{%
 .1 Pizza.
@@ -898,6 +931,7 @@ Para visualizar la estructura total del documento, se imprimió el índice de la
 .3 Picante.
 }
 \end{figure}
+}
 \end{multicols}
 \caption{Índice de secciones del Documento Final generado para la ontología Pizza.}
 \label{fig:indice_secciones_pizza}
@@ -914,32 +948,41 @@ En la Figura~\ref{fig:indice_secciones_wine} se visualiza el índice del documen
 \fbox{
 \begin{minipage}{14cm}
 \setlength{\parindent}{1em}
+\large{
 \noindent 1 Wine
+}
 
-a wine is a potable liquid. a wine has wine sugar as sugar, has wine flavor as flavor, has wine body as body, has wine color as color, has wine descriptor and made from grape a wine grape. This located in SOME region. Also, wine has only winery maker. Also, wine has exactly one maker, made at least one wine grape, wine body, wine color, wine flavor and wine sugar. There are the following kinds of wines: italian wine, \dots, late harvest and alsatian wine. 
+\small{
+a wine is a potable liquid. a wine has wine sugar as sugar, has wine flavor as flavor, has wine body as body, has wine color as color, has wine descriptor and made from grape a wine grape. This located in some region. Also, wine has only winery maker. Also, wine has exactly one maker, made at least one wine grape, wine body, wine color, wine flavor and wine sugar. There are the following kinds of wines: italian wine, \dots, late harvest and alsatian wine. 
 
 Full bodied wine: a full bodied wine is a wine that has full body.
+}
 
+\large{
 \noindent 1.1 Italian wine
+}
 
+\small{
 a italian wine is a wine that located in italian region. chianti is the only kind of wine. 
 
 Chianti: a chianti is a italian wine. This has only light or medium body. Also, chianti has red color, moderate flavor and dry sugar. located in chianti region. made from grape sangiovese grape. chianti classico is a type of chianti. 
 
 Chianti classico: a chianti classico has mc guinnesso maker and medium body.
+}
 
+\large{
 \noindent 1.14 Wines descriptor
+}
 
+\small{
 Wine sugar:	a wine sugar is a wine taste. a wine sugar is a sweet, off dry or dry. there are the wines sugar: dry, off dry and sweet. 
 
-
 Wine color: a wine color is a wine descriptor. a wine color is a rose, red or white. there are the wines color: white, red and rose. 
-
 
 Wine flavor: a wine flavor is a wine taste. a wine flavor is a moderate, delicate or strong. there are the wines flavor: moderate, strong and delicate. 
 
 Wine body: a wine body is a wine taste. a wine body is a light, medium or full. there are the wines body: medium, full and light. 
-
+}
 \end{minipage}
 }
 \caption{Fragmentos del Documento Final generado a partir de la ontología Wine.}
