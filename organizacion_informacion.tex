@@ -1,17 +1,15 @@
 \chapter{Organización de la información}
 
 \section{Introducción}
-Para abordar los problemas de coherencia propuestos en la Sección~\ref{sec:problema_coherencia-texto}, es necesario crear una estructura jerárquica para guiar el desarrollo del texto. Esta estructura está compuesta por las entidades presentes en la ontología, de manera que las entidades que consideramos más relevantes se encuentren en el primer nivel de jerarquía, y a medida que se descienda por los niveles la importancia de las entidades disminuya.
+Para abordar los problemas de coherencia propuestos en la Sección~\ref{sec:problema_coherencia-texto}, es necesario crear una estructura jerárquica para guiar el desarrollo del texto. Esta estructura está compuesta por las entidades presentes en la ontología, de manera que las entidades que consideramos más relevantes se encuentren en el primer nivel de jerarquía, y a medida que se descienda por los niveles la importancia de las entidades disminuya. Nos referiremos a esta estructura como Árbol de Entidades.
 
 \section{Diseño}
-Para alcanzar esta estructura, se crearon cuatro módulos que transforman la ontología de entrada en un árbol con toda la información contenida en la misma.
-A continuación se describe cada módulo:
+Para organizar la información, se crearon cuatro módulos que transforman la ontología de entrada en un árbol con toda la información contenida en la ontología. A continuación se describe cada módulo:
 \begin{itemize}
     \item Traductor: recibe la entrada y la traduce a una representación interna de la ontología.
     \item Clasificador de Entidades: clasifica y extrae las entidades más relevantes, utilizando como criterio las medidas de centralidad.
     \item Generador de Nuevo Grupo de Entidades: recibe una Entidad y recorre sus relaciones para crear un nuevo grupo de entidades relacionados semánticamente.
-    \item Generador del Árbol de Entidades: se encarga de crear los niveles de la estructura jerárquica.
-    
+    \item Generador del Árbol de Entidades: se encarga de crear los niveles del Árbol de Entidades. 
 \end{itemize}
 %Para finalizar, un último módulo agrega en una nueva rama del árbol a aquellas entidades que no han sido utilizadas en ninguna otra rama.
 
@@ -21,7 +19,7 @@ En la Figura~\ref{fig:modulos_organizador_inf} se muestra la transformación de 
     \centering
     \includegraphics%[width=12cm, height=6cm]
     [scale=1]{img/organizacion_informacion/modulos_organizador_de_informacion.pdf}
-    \caption{Módulos que componen el organizador de información}
+    \caption{Módulos que componen el Organizador de Información}
     \label{fig:modulos_organizador_inf}
 \end{figure}
 
@@ -30,7 +28,7 @@ En la Figura~\ref{fig:modulos_organizador_inf} se muestra la transformación de 
 El módulo Traductor crea una representación interna de la ontología cargando toda la información en una estructura que facilita el acceso y recorrido de los datos. Como algunos datos son accedidos a través de un razonador o importados de otras ontologías, se optó por cargar toda esta información una única vez para reducir el tiempo de espera cuando se requieren estos datos.
 
 \subsection{Clasificación de las entidades más relevantes}
-Una vez creada la representación de la ontología, el segundo módulo debe clasificar las entidades y extraer las más relevantes. A continuación se explicará cómo son extraídas estas entidades.
+Una vez creada la representación de la ontología, el segundo módulo debe clasificar las entidades y extraer las más relevantes para crear el primer nivel del Árbol de Entidades. A continuación se explicará cómo son extraídas estas entidades.
 
 \subsubsection{Criterio de clasificación}
 El criterio principal para establecer una clasificación sobre las clases de una ontología, y que tal clasificación sirva para seleccionar las clases más relevantes, se basa en cuánta información posee una clase respecto al resto de las clases en la ontología. Consideramos que una clase tiene más información que otra si está presente en más cantidad de dominios de \emph{ObjectProperties}. Esto permite reconocer las clases que tengan mayor cantidad de conexiones con otras clases, y que a su vez sean el núcleo de la relación. 
@@ -59,7 +57,7 @@ Cuando se seleccionan las clases que van a representar los temas principales, pu
 
 \subsection{Agrupando la información de las Entidades}
 \label{sec:agrupando_info}
-El tercer módulo crea nuevos grupos de entidades para agregar como un nuevo nivel a la jerarquía de entidades. 
+El tercer módulo crea nuevos grupos de entidades para agregar como un nuevo nivel al Árbol. Los elementos de cada grupo serán insertados como hijos de la Entidad correspondiente.
 
 Dada una Entidad \emph{E}, debe recorrerse las relaciones de \emph{E} en la ontología, para seleccionar Entidades que serán agregadas al nuevo grupo.
 El contenido de cada grupo depende del tipo de \emph{E}.
@@ -72,8 +70,20 @@ El contenido de cada grupo depende del tipo de \emph{E}.
 Cuando existen más de una Propiedad en un grupo, se busca reemplazarlas por propiedades en común de más alto nivel en la jerarquía de propiedades. Por ejemplo, en la ontología de las pizzas, para la clase \emph{pizza} existen dos propiedades: \emph{tieneCobertura} y \emph{tieneBase}. Como estas dos propiedades tienen a su vez una \emph{superproperty} en común llamada \emph{tieneIngrediente}, se reemplaza a las dos \emph{subproperties} por su ancestro \emph{tieneIngrediente}.
 
 En la Figura~\ref{fig:diagrama_secuencia_contentGrouping} se muestra un pseudocódigo del algoritmo usado para agrupar la información de las clases.
+ 
+ 
+\begin{figure}
+    \centering
+    \includegraphics%[width=8cm, height=7cm]
+    [scale=0.8]{img/organizacion_informacion/secuencia_contentGrouping}
+    \caption{Diagrama de secuencia para agrupar la información de las clases}
+    \label{fig:diagrama_secuencia_contentGrouping}
+\end{figure}
 
-Como ejemplo, el primer nivel de la ontología de las pizzas quedaría como en la Figura~\ref{fig:macro_planning_pizza}; y el segundo nivel se muestra en la Figura~\ref{fig:macro_planning_pizza_n2}. 
+\subsection{Generador Árbol de Entidades}
+El cuarto módulo se encarga de crear la estructura del Árbol, sincronizando la interacción entre los demás módulos. Su objetivo es formar la jerarquía comenzando desde las Entidades más Relevantes, y agregando nuevos niveles con ayuda del Generador de Nuevos Grupos. Cuando no quedan más relaciones que recorrer en las Entidades del último nivel, revisa que todas las clases haya sido usadas al menos una vez. Si hay clases que no fueron utilizadas, invoca un algoritmo para agregar estas clases en una rama especial. Es el caso, por ejemplo, de las clases \emph{Comida} y \emph{Helado} en la ontología \emph{pizza}.
+
+Como ejemplo, el primer y segundo nivel de la ontología de las pizzas quedaría como en la Figura~\ref{fig:macro_planning_pizza}; y el tercer nivel se muestra en la Figura~\ref{fig:macro_planning_pizza_n2}.
 
 \begin{figure}
 \centering
@@ -81,13 +91,16 @@ Como ejemplo, el primer nivel de la ontología de las pizzas quedaría como en l
 %no borrar el % de dirtree porque es necesario.
 {\footnotesize 
 \dirtree{%
+.0 .
 .1 pizza.
 .2 tieneIngrediente.
 .2 pizzaConCarne.
 .2 pizzaConNombre.
 .2 $\ldots$ las restantes subclases de pizza.
+.1 comida.
+.2 helado.
 }}
-\caption{Primer nivel de la jerarquía de entidades de la ontología \emph{pizza}.}
+\caption{Primer y segundo nivel del Árbol de Entidades de la ontología \emph{pizza}.}
 \label{fig:macro_planning_pizza}
 \end{minipage}
 \end{figure}
@@ -98,6 +111,7 @@ Como ejemplo, el primer nivel de la ontología de las pizzas quedaría como en l
 %no borrar el % de dirtree porque es necesario.
 {\footnotesize 
 \dirtree{%
+.0 .
 .1 pizza.
 .2 tieneIngrediente.
 .3 tieneBase.
@@ -108,55 +122,26 @@ Como ejemplo, el primer nivel de la ontología de las pizzas quedaría como en l
 .3 Napoletana.
 .3 $...$ las restantes subclases de pizzaConNombre.
 .2 $...$ las restantes subclases de pizza, con sus respectivas subclases.
+.1 comida.
+.2 helado.
 }}
-\caption{Segundo nivel de la jerarquía de entidades de la ontología \emph{pizza}.}
+\caption{Tercer nivel del Árbol de Entidades de la ontología \emph{pizza}.}
 \label{fig:macro_planning_pizza_n2}
 \end{minipage}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics%[width=8cm, height=7cm]
-    [scale=0.8]{img/organizacion_informacion/secuencia_contentGrouping}
-    \caption{Diagrama de secuencia para agrupar la información de las clases}
-    \label{fig:diagrama_secuencia_contentGrouping}
-\end{figure}
 
-
-Se puede ver que las subproperties \emph{tieneBase} y \emph{tieneCobertura} tienen en su dominio a \emph{pizza}, la clase más cercana recorriendo sus ancestros. Si existiera por ejemplo, \emph{tieneCondimento} como una tercer subproperty de \emph{tieneIngrediente}, cuyo dominio no tuviera \emph{pizza}, entonces no sería listada dentro del grupo \emph{tieneIngredientes} en la rama de \emph{pizza}. Sin embargo, deben explorarse las subproperties de \emph{tieneCondimento}, por el caso de que tenga alguna subproperty que tuviera como dominio a \emph{pizza}. Por ejemplo, supongamos que \emph{tieneCondimento} tiene como subproperty a \emph{tieneOrégano} con diminio \emph{pizza}, en ese caso se habilita a \emph{tieneCondimento} para ser insertado en el grupo junto a  \emph{tieneCobertura} y \emph{tieneBase}.  
-
-
-\subsection{Agregando información marginada}
-Con el recorrido de la ontología para formar los grupos de información, existe la posibilidad de que hayan clases que no sean parte de un grupo. Es el caso, por ejemplo, de la clase \emph{Comida}, y sus subclases \emph{Helado} y \emph{Condimento}, en la ontología \emph{pizza}. Para no dejar información del dominio excluida en el árbol, se ejecuta un cuarto módulo, que crea un nuevo grupo menos importante, y se agregan todas las clases que habían quedado marginadas. El proceso de creación de subgrupos para este nuevo grupo es idéntico al explicado en las sección anterior.
-
-Continuando con el ejemplo de la pizza, el resultado de agregar la  información marginada se muestra en la figura~\ref{fig:macro_planning_pizza_marg}
-
-\begin{figure}[H]
-\centering
-\begin{minipage}[c]{0.7\textwidth}
-{\footnotesize 
-\dirtree{%
-.1 pizza.
-.2 ....
-.1 comida.
-.2 condimento.
-.2 helado.
-}
-}
-\caption{Grupos de la ontología \emph{pizza} con información marginada.}
-\label{fig:macro_planning_pizza_marg}
-\end{minipage}
-\end{figure}
+Se puede ver que las subproperties \emph{tieneBase} y \emph{tieneCobertura} tienen en su dominio a \emph{pizza}, la clase más cercana recorriendo sus ancestros. Si existiera por ejemplo, \emph{tieneCondimento} como una tercer subproperty de \emph{tieneIngrediente}, cuyo dominio no tuviera \emph{pizza}, entonces no sería listada dentro del grupo \emph{tieneIngredientes} en la rama de \emph{pizza}. Sin embargo, deben explorarse las subproperties de \emph{tieneCondimento}, por el caso de que tenga alguna subproperty que tuviera como dominio a \emph{pizza}. Por ejemplo, supongamos que \emph{tieneCondimento} tiene como subproperty a \emph{tieneOrégano} con diminio \emph{pizza}, en ese caso se habilita a \emph{tieneCondimento} para ser insertado en el grupo junto a  \emph{tieneCobertura} y \emph{tieneBase}. 
 
 \subsection{Diagrama de clases}
 En la Figura~\ref{fig:diagrama_clases_organizador} se muestra el diagrama de clases correspondiente al Organizador de Información. El módulo \emph{Traductor} está representado a través de la clase \emph{OntologyManager}; el módulo Clasificador de Entidades está representado por la clase \emph{ContentClasification}; el módulo que genera el Árbol de Entidades está implementado por la clase \emph{GeneratorTreeManager}, y el módulo que crea nuevos grupos de entidades está implementado en la clase \emph{ContentGrouping}. 
 
-Las clases \emph{OWLIntClass},  \emph{OWLClass},  \emph{OWLDataProperty},  \emph{OWLObjectProperty}, \emph{OWLIndividual} y  \emph{Ontology} son usadas para representar la estructura de la ontología. Estos objetos son creados por la clase  \emph{OntologyManager}. 
+Las clases \emph{OWLIntClass},  \emph{OWLClass},  \emph{OWLDataProperty},  \emph{OWLObjectProperty}, \emph{OWLIndividual},\emph{OWLRestriction} y  \emph{Ontology} son usadas para representar la estructura de la ontología. Estos objetos son creados por la clase  \emph{OntologyManager}. 
 
 \begin{figure}
     \centering
-    \includegraphics{img/organizacion_informacion/clases_organizador_informacion.pdf}
-    \caption{Diagrama de clases del organizador de información}
+    \includegraphics{img/organizacion_informacion/diagrama_clases_organizador_informacion.pdf}
+    \caption{Diagrama de clases del Organizador de Información}
     \label{fig:diagrama_clases_organizador}
 \end{figure}
 
@@ -472,12 +457,12 @@ public class GeneratorTreeManager {
 
 
 \section{Casos de estudio}
-En esta sección se presentan tres casos de estudio que muestran el comportamiento de la aplicación ante tres entradas diferentes, abarcando distintos aspectos de la solución propuesta.
+En esta sección se presentan dos casos de estudio que muestran el comportamiento de la aplicación ante dos entradas diferentes, abarcando distintos aspectos de la solución propuesta. En el primer caso será usada la ontología de las pizzas, y en el segundo se hará uso de la ontología \emph{Wine}\footnote{https://www.w3.org/TR/owl-guide/wine.rdf}.
 
 Al momento de realizar este trabajo no se reconoce ninguna aplicación que aborde el problema de organización de la información en una ontología, por lo que se expondrán tres casos de estudio sin la posibilidad de compararlos con otros resultados.
 
 \subsection{Organización de Ontología Pizza}
-Según la descripción de la ontología, este dominio representa las pizzas y sus coberturas, por lo que esperamos que las entidades que representen a las pizzas, a las coberturas y la información complementaria tiendan a agruparse en los niveles más altos de la jerarquía, mientras que en los niveles más bajas esperamos encontrar las clases más específicas y que tienen menor impacto sobre el entendimiento del dominio.
+Según la descripción de la ontología, este dominio representa las pizzas y sus coberturas, por lo que esperamos que las entidades que representen a las pizzas, a las coberturas y la información complementaria tiendan a agruparse en los niveles más altos de la jerarquía, mientras que en los niveles más bajos esperamos encontrar las clases más específicas y que tienen menor impacto sobre el entendimiento del dominio.
 
 En la Figura~\ref{fig:caso_estudio_pizza} se puede ver el resultado de aplicar el algoritmo teniendo como entrada la ontología pizza. 
 
@@ -509,9 +494,6 @@ Los nombres de las entidades fueron traducidos al español, para poder generar l
 .4 Base de pizza.
 .5 Base gruesa.
 .5 Base delgada y crujiente.
-.5 Condimentoes.
-.6 Sales.
-.7 Sal.
 }
 \end{figure}
 
@@ -535,15 +517,14 @@ Los nombres de las entidades fueron traducidos al español, para poder generar l
 .4 Muy picante.
 }
 \end{figure}
-
 \end{multicols}
-\caption{Resultado del organizador de información con la ontología Pizza.}
+\caption{Resultado del Organizador de Información con la ontología \emph{Pizza}.}
 \label{fig:caso_estudio_pizza}
 \end{figure}
 
 La ontología pizza cuenta con 100 clases y 8 propiedades. De las 8 propiedades, 5 fueron usadas  para clasificar las 100 clases (de las 8, 3 eran inversas a otras 3 por lo que no agregaban información nueva). El promedio de información obtenido fue 1.25, siendo la clase Pizza la única en superar este valor, lo que concuerda con el resultado esperado.
 
-Como se puede observar en la Figura~\ref{fig:caso_estudio_pizza}, en la primer columna se encuentran los tópicos principales reconocidos por el algoritmo, y en la segunda columna se encuentran los tópicos agregados con el módulo para agregar información marginada.
+Como se puede observar en la Figura~\ref{fig:caso_estudio_pizza}, en la primer columna se encuentran los tópicos principales reconocidos por el algoritmo, y en la segunda columna se encuentra una rama especial, para aquellas clases que no habían sido utilizadas en el resto del árbol.
 
 En la jerarquía de los tópicos principales, se puede ver como toda la información se agrupa como hijas de la entidad Pizza, describiendo los tipos de pizzas y sus ingredientes. Inmediato a los ingredientes lista las coberturas, y reconoce a las bases de pizza a la misma altura que las coberturas, asignándoles la misma importancia.
 
@@ -554,7 +535,7 @@ Respecto al resultado esperado, la organización de la información es satisfact
 \subsection{Organización de Ontología Wine}
 Esta ontología tiene como objetivo describir un dominio de vinos y comidas\footnote{\url{https://protege.stanford.edu/publications/ontology_development/ontology101-noy-mcguinness.html}}, por lo que esperamos que las entidades que se consideren más relevantes sean aquellas afines a los vinos y comidas.
 
-En la Figura~\ref{fig:caso_estudio_wine} se puede ver el resultado de aplicar el algoritmo teniendo como entrada la ontología Wine.
+En la Figura~\ref{fig:caso_estudio_wine} se puede ver el resultado de aplicar el algoritmo.
 
 \begin{figure}
 \begin{multicols}{2}
@@ -648,8 +629,18 @@ En la Figura~\ref{fig:caso_estudio_wine} se puede ver el resultado de aplicar el
 \end{figure}
 
 
-La ontología Wine cuenta con 138 clases y 16 propiedades. De las 16 propiedades, 12 fueron usadas para verificar qué clases superan el umbral promedio para ser seleccionadas como las principales. El promedio fue de 2.5 y la única clase que lo superó fue Wine, lo que cumple parcialmente el resultado esperado, ya que parte del objetivo de la ontología es describir el dominio de los \emph{Wines}. Respecto a la sección que describe las comidas, quedó desplazada a \emph{otras secciones}, siendo un resultado no esperado según el objetivo de la ontología. Sin embargo, analizando manualmente la ontología, se puede apreciar que el porcentaje de  información que describe a las comidas es significativamente menor en relación a la información referida a los vinos, factor por el cual resulta aceptable que no aparezcan como sección principal.
+La ontología Wine cuenta con 138 clases y 16 propiedades. De las 16 propiedades, 12 fueron usadas para verificar qué clases superan el promedio para ser seleccionadas como las principales. El promedio fue de 2.5 y la única clase que lo superó fue Wine, lo que cumple parcialmente el resultado esperado, ya que parte del objetivo de la ontología es describir el dominio de los vinos. Respecto a la sección que describe las comidas, quedó desplazada a \emph{otras secciones}, siendo un resultado no esperado según el objetivo de la ontología. Sin embargo, analizando manualmente la ontología, se puede apreciar que el porcentaje de  información que describe a las comidas es significativamente menor en relación a la información referida a los vinos, factor por el cual resulta aceptable que no aparezcan como sección principal.
 
 %\subsection{Organización de Ontología SNOMED-CT}
 
 \section{Conclusiones}
+Pudimos abordar el problema de organizar la información de una ontología, tratando de maximizar la coherencia de la estructura generada usando apropiadamente sus relaciones semánticas. Como planteamos inicialmente, tuvimos que definir:
+\begin{itemize}
+    \item Las entidades que iban a representar los nodos de la estructura, donde elegimos para el primer nivel de la jerarquía a las Clases, y para los próximos niveles a Clases, Propiedades e Individuos.
+    \begin{itemize}
+        \item El criterio para ponderar la importancia de las Clases, para crear el primer nivel, donde decidimos usar el criterio de centralidad de un nodo, teniendo en cuenta solo la relación \emph{rdfs:domain}.
+    \end{itemize}
+    \item El recorrido de la ontología para crear los siguientes niveles, seleccionando las relaciones \emph{rdfs:Domain}, \emph{owl:subPropertyOf}, \emph{rdfs:Range} y \emph{rdfs:subClassOf}.
+\end{itemize}
+
+Los resultados fueron satisfactorios...
