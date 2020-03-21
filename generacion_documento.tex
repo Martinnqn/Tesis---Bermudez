@@ -838,8 +838,23 @@ public class Section {
 \section{Casos de estudio}
 En el capítulo de Organización de Información analizamos cómo quedan organizados los tópicos de las ontologías Pizza y Wine, por lo que continuaremos con estas ontologías de ejemplo, analizando la realización del texto generado. Para identificar el formato del texto, a las secciones se le incluye el número de sección a la izquierda del título de la sección, y cada párrafo comienza con sangría.
 
+Ya que existen muchos parámetros a tener en cuenta en el análisis de un texto, tendremos en cuenta criterios que estén directamente relacionados con el Objetivo propuesto: \begin{itemize}
+    \item En cuanto a la estructura jerárquica del texto, analizaremos la coherencia global y si los temas son representativos de la ontología.
+    \item Respecto a la sintaxis, veremos si las oraciones son claras, cumplen con la sintaxis del idioma, son coherentes a nivel local, y si transmiten el significado del axioma verbalizado. 
+    \item En cuanto a la realización del texto, analizaremos la estética (aunque de manera subjetiva), viendo si la segmentación en secciones y párrafos es agradable.
+\end{itemize}
+
+
 \subsection{Generación documento ontología Pizza}
-Ya que el texto completo resulta muy extenso, solo pondremos los fragmentos más significativos del Documento Final. En la figura~\ref{fig:doc_final_pizza} se presentan los fragmentos a analizar.
+Ya que el texto completo resulta muy extenso, solo pondremos los fragmentos más significativos del Documento Final. En la figura~\ref{fig:doc_final_pizza} se presentan los fragmentos a analizar. Para visualizar la estructura total del documento, se imprimió el índice de las secciones, el cual se muestra en la Figura~\ref{fig:indice_secciones_pizza}. 
+
+Los tópicos reconocidos representan bien el tema del texto. Se puede apreciar que la estructura del documento comparte algunas similitudes con el Documento Inicial, manteniendo la coherencia global, pero disminuyó la cantidad de secciones, ya que muchas de ellas se convirtieron en párrafos. Aún así, prevalecen títulos de secciones que agregan información semántica aunque no aporten información en forma de texto, tales como Ingredientes, Coberturas y Bases.
+
+La sintaxis es aceptable y las oraciones pueden comprenderse, aunque pueden mejorarse para disminuir la redundancia. Los axiomas no son muy complejos, aunque verbalizó bien axiomas de hasta cuatro niveles de jerarquía, como el de la Figura~\ref{fig:ejemplo_verb_espaniol}. Las oraciones resultan coherentes, el salto entre oraciones es fluido teniendo en cuenta que no intercalan tópicos, y el contenido del texto anticipa bien la aparición de párrafos y subsecciones.
+
+La estructura de las oraciones es repetitiva, no era objetivo de este trabajo realizar un texto variado, por lo que ante la misma información para verbalizar se obtiene la misma estructura.
+
+En cuanto a la cuestión estética, el texto resulta agradable, no posee muchas secciones anidadas por lo que visualmente no sobrecarga la lectura.
 
 \begin{figure}
 \fbox{
@@ -850,9 +865,16 @@ Ya que el texto completo resulta muy extenso, solo pondremos los fragmentos más
 }
 
 \small{
-una pizza es una comida. una pizza tiene base de pizza y tiene cobertura de pizza. Esta tiene como base a alguna base de pizza. Existen las siguientes clases de pizzas: pizza con carne, picante, no vegetariana, con nombre, \dots, con queso y vegetariana. una pizza es disjunta de base de pizza, cobertura de pizza y helado.
+Una pizza es una comida. Una pizza tiene base de pizza y tiene cobertura de pizza. Esta tiene como base a alguna base de pizza. Existen las siguientes clases de pizzas: pizza con carne, picante, no vegetariana, con nombre, \dots, con queso y vegetariana. Una pizza es disjunta de base de pizza, cobertura de pizza y helado.
 
 Pizza con carne: una pizza con carne es una pizza que tiene como cobertura a alguna cobertura de carne. 
+
+Pizza vegetariana equivalente1: una pizza vegetariana equivalente1 es una pizza que tiene como cobertura exclusivamente a cobertura vegetariana.
+
+Pizza picante equivalente: una pizza picante equivalente es una pizza que tiene como cobertura a alguna cobertura de pizza que tiene como picante algo muy picante. 
+
+Pizza real italiana: una pizza real italiana es una pizza que tiene pais de origen italy. Esta tiene como base exclusivamente a base delgada y crujiente.
+
 \par \dots Otras pizzas realizadas como párrafos.
 }
 
@@ -861,7 +883,7 @@ Pizza con carne: una pizza con carne es una pizza que tiene como cobertura a alg
 }
 
 \small{
-una pizza con nombre es una pizza. Existen las siguientes clases de pizzas con nombre: margherita, frutti di mare, \dots, veneziana y napoletana.
+Una pizza con nombre es una pizza. Existen las siguientes clases de pizzas con nombre: margherita, frutti di mare, \dots, veneziana y napoletana.
 
 Margherita: una margherita es una pizza con nombre. Esta tiene como cobertura a alguna cobertura de mozzarella y tomate. También, margherita tiene exclusivamente las siguientes coberturas: cobertura de mozzarella o de tomate. una margherita es disjunta de american, american hot, \dots, soho y veneziana.
 
@@ -877,7 +899,7 @@ Margherita: una margherita es una pizza con nombre. Esta tiene como cobertura a 
 }
 
 \small{
-una cobertura de pizza es una comida. una cobertura de pizza es cobertura de una pizza. Existen las siguientes clases de coberturas de pizza: \dots
+Una cobertura de pizza es una comida. Una cobertura de pizza es cobertura de una pizza. Existen las siguientes clases de coberturas de pizza: \dots
 }
 
 \large{
@@ -889,14 +911,13 @@ una cobertura de pizza es una comida. una cobertura de pizza es cobertura de una
 }
 
 \small{
-una base de pizza es una comida. una base de pizza es base de una pizza. Existen las siguientes clases de bases de pizza: base gruesa y delgada y crujiente.
+Una base de pizza es una comida. Una base de pizza es base de una pizza. Existen las siguientes clases de bases de pizza: base gruesa y delgada y crujiente.
 }
 \end{minipage}
 }
 \caption{Fragmentos del Documento Final generado a partir de la ontología Pizza.}
 \label{fig:doc_final_pizza}
 \end{figure}
-Para visualizar la estructura total del documento, se imprimió el índice de las secciones, el cual se muestra en la Figura~\ref{fig:indice_secciones_pizza}. Se puede apreciar que la estructura del documento comparte algunas similitudes con el Documento Inicial, manteniendo la coherencia global, pero disminuyó la cantidad de secciones, ya que muchas de ellas se convirtieron en párrafos. Aún así, prevalecen títulos de secciones que agregan información semántica aunque no aporten información en forma de texto, tales como Ingredientes, Coberturas y Bases.
 
 \begin{figure}
 \begin{multicols}{2}
@@ -941,8 +962,13 @@ Para visualizar la estructura total del documento, se imprimió el índice de la
 \subsection{Generación documento ontología Wine}
 Al igual que el caso de estudio anterior, solo incluiremos algunos fragmentos del documento generado, los cuales se pueden ver en la Figura~\ref{fig:doc_final_wine}.
 
-En la Figura~\ref{fig:indice_secciones_wine} se visualiza el índice del documento. El comportamiento es similar al obtenido en la verbalización de la ontología Pizza, comparando la Figura~\ref{fig:indice_secciones_wine} con la Figura~\ref{fig:caso_estudio_wine}, se observa que la estructura resulta mucho más compacta.
+En la Figura~\ref{fig:indice_secciones_wine} se visualiza el índice del documento. El resultado es similar al obtenido en la verbalización de la ontología Pizza, comparando la Figura~\ref{fig:indice_secciones_wine} con la Figura~\ref{fig:caso_estudio_wine}, se observa que la estructura resulta mucho más compacta.
 
+Analizando la coherencia global y el sentido del texto, la estructuración resultó razonable, enfocada en los vinos y las propiedades de los vinos.
+
+La implementación de la sintaxis es sustancialmente equivalente a la del español, por lo que puede presentar las mismas características y capacidades, como redundancia, repetitividad y claridad. 
+
+El resultado de la realización final también resulta satisfactorio. Si bien presenta hasta cinco niveles de anidamiento (a partir de \emph{Consumable thing}), la información que se transmite es necesaria para mantener la coherencia global y establecer las relaciones pertinentes entre los tópicos.
 
 \begin{figure}
 \fbox{
@@ -953,9 +979,13 @@ En la Figura~\ref{fig:indice_secciones_wine} se visualiza el índice del documen
 }
 
 \small{
-a wine is a potable liquid. a wine has wine sugar as sugar, has wine flavor as flavor, has wine body as body, has wine color as color, has wine descriptor and made from grape a wine grape. This located in some region. Also, wine has only winery maker. Also, wine has exactly one maker, made at least one wine grape, wine body, wine color, wine flavor and wine sugar. There are the following kinds of wines: italian wine, \dots, late harvest and alsatian wine. 
+A wine is a potable liquid. A wine has wine sugar as sugar, has wine flavor as flavor, has wine body as body, has wine color as color, has wine descriptor and made from grape a wine grape. This located in some region. Also, wine has only winery maker. Also, wine has exactly one maker, made at least one wine grape, wine body, wine color, wine flavor and wine sugar. There are the following kinds of wines: italian wine, \dots, late harvest and alsatian wine. 
 
 Full bodied wine: a full bodied wine is a wine that has full body.
+
+Burgundy: a burgundy is a wine that located in bourgogne region. This has dry sugar. There are the following kinds of burgundies: white burgundy and red burgundy. 
+
+\dots Otros vinos realizados como párrafos.
 }
 
 \large{
@@ -963,12 +993,40 @@ Full bodied wine: a full bodied wine is a wine that has full body.
 }
 
 \small{
-a italian wine is a wine that located in italian region. chianti is the only kind of wine. 
+A italian wine is a wine that located in italian region. chianti is the only kind of wine. 
 
 Chianti: a chianti is a italian wine. This has only light or medium body. Also, chianti has red color, moderate flavor and dry sugar. located in chianti region. made from grape sangiovese grape. chianti classico is a type of chianti. 
 
 Chianti classico: a chianti classico has mc guinnesso maker and medium body.
 }
+
+\large{
+\noindent 1.2 ... 1.7
+}
+
+\large{
+\noindent 1.8 Red wine
+}
+
+\small{
+A red wine is a wine that has red color. There are the following kinds of wines: dry red wine, red burgundy, port AND red bordeaux. 
+
+Port: a port is a red wine. This has full body, strong flavor and sweet sugar. located in portugal region. taylor port is a type of port. 
+Taylor port: a taylor port has taylor maker. 
+}
+
+
+\large{
+\noindent 1.8.1 Red burgundy
+}
+
+\small{
+A red burgundy is a burgundy and red wine. This made from grape pinot noir grape. Also, red burgundy made at most one wine grape. cotes d or is the only kind of burgundy. 
+Cotes d or: a cotes d is a red burgundy that located in cotes d or region. This has moderate flavor. clos de vougeot cotes d or is a type of cotes d or. 
+Clos de vougeot cotes d or:	a has clos de vougeot maker. 
+}
+
+\small{\dots Otros vinos realizados como secciones}
 
 \large{
 \noindent 1.14 Wines descriptor
@@ -983,6 +1041,36 @@ Wine flavor: a wine flavor is a wine taste. a wine flavor is a moderate, delicat
 
 Wine body: a wine body is a wine taste. a wine body is a light, medium or full. there are the wines body: medium, full and light. 
 }
+
+\large{
+\noindent Otras secciones menos importantes
+}
+
+\large{
+\noindent 2 Region
+}
+
+\small{
+A region adjacent region. There are the regions: arroyo grande region, california region, ....
+
+Arroyo grande region: an arroyo grande region located in california region. 
+
+....
+}
+
+\large{
+\noindent 3 Vintage year
+}
+
+\small{
+A vintage year has year value. year1998 is a type of year. 
+Year1998: a year1998 has year value. a year1998 has year value. 
+}
+
+\small{
+\dots Otras secciones.
+}
+
 \end{minipage}
 }
 \caption{Fragmentos del Documento Final generado a partir de la ontología Wine.}

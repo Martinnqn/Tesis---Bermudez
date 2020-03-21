@@ -1,0 +1,294 @@
+\chapter*{Apéndice}
+\appendix
+%\markboth{Appendices}{}
+\addcontentsline{toc}{chapter}{Apéndice}
+\renewcommand{\thesection}{A.\arabic{section}}
+
+\section{Implementación Organizador de Información}
+\label{apx:impl_org_inf}
+
+\subsection{Clase \texttt{OntologyManager}}
+\label{sec:clase_ontologymanager}
+
+\begin{minted}[autogobble,linenos]{java}
+public class OntologyManager {
+
+    /*nameOf guarda el valor 0 o 1 para reconocer de donde tiene que
+    extraer el nombre de las entidades*/
+    private static int nameOf; // 0 -> iri, 1 -> label.
+    /*lang setea el valor del lenguaje para buscar los nombres
+    de las entidades en los labels correctos*/
+    private static String lang; // "en" -> ingles, "es" -> español.
+
+  public static Ontology createOntology
+            (OWLOntology ontology, int nameOfClass, String language) {
+        nameOf = nameOfClass;
+        lang = language;
+        Ontology onto = new Ontology();
+        
+        //Obtiene el título de la ontología desde la etiqueta title.
+        String title = getTitleOntology();
+        onto.setTitle(title);
+        
+        //crear clases
+        OWLClass rootClass = createClasses();
+
+        //crear los dataProperty
+        OWLDataProperty rootDataProp = createDataProperty();
+        
+        //crear properties
+        OWLObjectProperty rootProp = createObjectProperty();
+        //setea las objectProperty equivalentes, inversas y disjuntas.
+        setListsToProperties();
+        //setea el dominio y rango de las objectProperty
+        setObjectPropertyDomainRange();
+        //setea el dominio y rango de las dataProperty
+        setDataPropertyDomain();
+        
+        //crear individuals
+        createIndividuals();
+        
+        /*crear las clases anónimas para cada clase en onto.
+        Setea listas para guardar los axiomas. Para cada clase en onto
+        setea sus clases equivalentes, disjuntas y superClases.*/
+        /*createAnonymousClasses debe ser llamado despues de haber
+        creado las clases nombradas, las properties y los individuos.*/
+        createAnonymousClasses();
+        
+        //agrega los componentes creados al objeto onto.
+        addComponentsToOnto();
+        
+        //precomputeValues asocia a cada clase en onto una lista 
+        //de propiedades en las que participa como dominio.
+        onto.precomputeValues();
+        return onto;
+    }
+}
+\end{minted}
+
+\subsection{Clase \texttt{Ontology}}
+\label{sec:clase_ontology}
+\begin{minted}[autogobble,linenos]{java}
+public class Ontology {
+
+    private String title;
+    //guardan las Entidades de nivel mas alto en la jerarquía.
+    private OWLClass rootClass;
+    private OWLObjectProperty rootObjectProperty;
+    private OWLDataProperty rootDataProp;
+
+    //los siguientes hashmaps asocian IRIs a sus respectivas Entidades.
+    private HashMap<IRI, OWLClass> classes;
+    private HashMap<IRI, OWLObjectProperty> properties;
+    private HashMap<IRI, OWLObjectProperty> anonProperties;
+    private HashMap<IRI, OWLDataProperty> dataProperties;
+    private HashMap<IRI, OWLIndividual> individuals;
+    
+    //Las siguientes listas guardan las Entidades presentes en la 
+    //ontologia
+    private LinkedList<OWLClass> listClasses;
+    private LinkedList<OWLObjectProperty> listProps;
+    private LinkedList<OWLObjectProperty> anonListProps;
+    private LinkedList<OWLDataProperty> listDataProps;
+    private LinkedList<OWLIndividual> listIndividuals;
+
+    /*hashmaps para guardar que clases participan en el dominio
+    de que propiedades*/
+    HashMap<OWLClass, LinkedList<OWLObjectProperty>> classOnPropDomain;
+    /*hashmaps para guardar que clases participan en el rango
+    de que propiedades*/
+    HashMap<OWLClass, LinkedList<OWLObjectProperty>> classOnPropRange;
+
+    /*Retorna una lista de ObjectProperties que sean superProperties
+    en comun de las properties de la lista prop.*/
+    public LinkedList<OWLObjectProperty>
+    getCommonSuperProperties(LinkedList<OWLObjectProperty> prop) {}
+
+    /*Dada la clase cls, recorre las properties donde participa como dominio
+    y busca las superProperties de mas alto nivel que encuentre 
+    y las retorna. */
+     public LinkedList<OWLObjectProperty>
+     getCommonSuperPropertiesFromClass(OWLClass cls) {}
+
+    /*Retorna el contenido necesario para crear un nuevo grupo
+    de entidades a partir de la clase cls. Util para
+    el modulo ContentGrouping */
+    public LinkedList<OWLIntClass> 
+    createTopicsGroupsFromClass(OWLClass cls) {
+        LinkedList<OWLIntClass> res = new LinkedList<>();
+        res.addAll(getCommonSuperPropertiesFromClass(cls));
+        res.addAll(cls.getSubClass());
+        res.addAll(cls.getIndividuals());
+        return res;
+    }
+}
+\end{minted}
+
+
+\subsection{Clase \texttt{ContentClasification}}
+\label{sec:clase_content_clasif}
+
+\begin{minted}[autogobble,linenos]{java}
+public class ContentClasification {
+
+    /* Es el método principal que retorna las entidades
+    más relevantes para agregar en el primer nivel de
+    la jerarquía del Árbol de Entidades. */
+    public static HashMap<OWLIntClass, LinkedList<OWLObjectProperty>>
+    getMainContent(Ontology ontology) {
+        
+        cls2Cant = getClassesToCantProperties(ontology);
+        mainClasses = getMainClasses(cls2Cant);
+
+        /*insertar en un nuevo hashmap cls2SuperProp las clases de mainClasses
+        asociadas a las superProperties en común que haya entre las properties 
+        donde participa como dominio*/
+        for (OWLClass mainClass : mainClasses) {
+            cls2SuperProp.put(mainClass,
+            ontology.getCommonSuperPropertiesFromClass(mainClass));
+        }
+        
+        /*Si existe una Clase c y alguna SuperClase de c, 
+        entonces c se elimina por ser mas específica*/
+        cls2SuperProp = removeSubClass(cls2SuperProp);
+
+        /*si el hashmap es vacio, entonces se agregan todas las
+        clases sin objproperties*/
+        if (cls2SuperProp.isEmpty()) {
+            for (OWLClass cls : ontology.getClasses()) {
+                cls2SuperProp.put(cls, new LinkedList<>());
+            }
+        }
+        return cls2SuperProp;
+    }
+    
+    /*Devuelve una Lista de HashMaps desde Clases a Integers. Cada
+     Hashmap tiene una sola entrada, que va desde una Clase a la
+     cantidad de properties en las que participa como dominio.*/
+    private static LinkedList<HashMap<OWLClass, Integer>>
+    getClassesToCantProperties(Ontology ontology) {}
+    
+    /*Devuelve una lista de Clases. Las Clases retornadas son las
+     que participan en mas cantidad de properties, y que superan 
+     el promedio calculado como la suma de todas las properties
+     dividido entre la cantidad de clases.*/
+    private static LinkedList<OWLClass>
+    getMainClasses(LinkedList<HashMap<OWLClass, Integer>> cls) {}
+}
+
+\end{minted}
+
+
+\subsection{Clase \texttt{ContentGrouping}}
+\label{sec:clase_content_grouping}
+
+\begin{minted}[autogobble,linenos]{java}
+public class ContentGrouping {
+
+    /*A partir de la clase cls y la rama branch a la que pertenece,
+    se genera un nuevo grupo de Entidades, y se verifica que cada
+    Entidad aún no pertenezca a la rama*/
+    public static LinkedList<OWLIntClass>
+    generateNewTopics(Ontology ontology, OWLClass cls, 
+                LinkedList<OWLIntClass> branch) {
+        LinkedList<OWLIntClass> tops = ontology.createTopicsGroupsFromClass(cls);
+        for (OWLIntClass r : tops) {
+            if (!r.getType().equals("property")) {
+                    if (!branch.contains(r)) {
+                        res.add(r);
+                    }
+            }
+        }
+        for (OWLIntClass r : tops) {
+            if (r.getType().equals("property")) {
+                checkProperties((OWLObjectProperty) r, res, branch);
+            }
+        }
+        return res;
+    }
+
+    /*A partir de una property prop y la clase dom que pertenece
+    a su dominio, busca crear un nuevo grupo de Entidades.
+    Primero busca subProperties de prop. Si no tiene subProperties, 
+    entonces intenta agregar el Rango de prop.*/
+    public static LinkedList<OWLIntClass> 
+    generateNewTopics(Ontology ontology, OWLObjectProperty prop,
+                    OWLClass dom) {
+        
+        /*obtiene las subProperties de prop*/
+        LinkedList<OWLIntClass> newTopics = prop.getSubPropWithDomain(dom);
+        
+        if (newTopics.isEmpty()) {
+            newTopics = prop.getRange();
+        }
+        return newTopics;
+    }
+    
+    /*A partir de prop busca agregar a ella o una superProperty
+    de ella en res. Agrega a prop si tiene una superProperty en branch.
+    Si no puede agregar a prop busca agregar un ancestro de prop que 
+    tenga una superProperty en branch.*/
+    private static boolean checkProperties(OWLObjectProperty prop,
+    LinkedList<OWLIntClass> res, LinkedList<OWLIntClass> branch) {}
+}
+\end{minted}
+
+\subsection{Clase \texttt{GeneratorTreeManager}}
+\label{sec:clase_generator_tree}
+
+\begin{minted}[autogobble,linenos]{java}
+public class GeneratorTreeManager {
+
+    public static LinkedList<OWLIntClass> getText(Ontology onto) {
+
+        HashMap<OWLIntClass, LinkedList<OWLObjectProperty>> mainClass =
+        ContentClasification.getMainContent(onto);
+        
+        /*agregar las clases de mainClass al primer nivel del árbol. 
+        mainEntities representa el primer nivel del árbol 
+        (las entidades mas relevantes)*/
+        mainEntities.add(mainClass);
+        
+        /*para cada clase de mainClass crear una nueva rama y agregar 
+        sus Nuevos grupos de Entidades*/
+        for (Map.Entry<OWLIntClass, LinkedList<OWLObjectProperty>> entrySet : 
+                mainClass.entrySet()) {
+            /*navigation mantiene las clases del primer nivel y
+            las Entidades de la rama que se está creando*/
+            navigation.add(mainClass);
+            OWLClass mClass = entrySet.getKey();
+            LinkedList<OWLIntClass> newEntities =
+            ContentGrouping.generateNewTopics(onto, mClass, null);
+            addBranchFromEntity(newBranch, mClass, newEntities, navigation,
+            onto);
+            mainEntities.addNewBranchToEntity(mClass, newBranch);
+            navigation.clear();
+            
+        }
+        /*agregar informacion marginada*/
+        mainEntities.addNewBranch(addAbsentClass(onto));
+        return mainEntities;
+    }
+    
+    /*Recorre las newEntities creando sus respectivos niveles de jerarquía 
+    en el Árbol de Entidades.*/
+    private static void addBranchFromEntity(newBranch, OWLClass actualClass,
+    newEntities, navigation, onto) {
+        for (OWLIntClass enti : newEntities) {
+            if (!navigation.contains(enti)) {
+                navigation.addLast(enti);
+                if (enti.getType().equals("class")) {
+                    sub2 = ContentGrouping.generateNewTopics(onto, enti, navigation);
+                    addBranchFromEntity(newSubBranch, enti, sub2, navigation, onto);
+                }else if (enti.getType().equals("property")) {
+                    sub2 = ContentGrouping.generateNewTopics(onto, enti, actualClass);
+                    addBranchFromEntity(newSubBranch, actualClass, sub2, navigation, onto);
+                }
+                navigation.removeLast();
+                newBranch.addNewBranchToEntity(enti, newSubBranch);
+            }
+        }
+    }
+}
+
+\end{minted}
