@@ -1,7 +1,9 @@
 \chapter{Organización de la información}
 
 \section{Introducción}
-Para abordar los problemas de coherencia propuestos en la Sección~\ref{sec:problema_coherencia-texto}, es necesario crear una estructura jerárquica para guiar el desarrollo del texto. Esta estructura está compuesta por las entidades presentes en la ontología, de manera que las entidades que consideramos más relevantes se encuentren en el primer nivel de jerarquía, y a medida que se descienda por los niveles la importancia de las entidades disminuya. Nos referiremos a esta estructura como Árbol de Entidades.
+En este capítulo abordaremos el problema de organizar la información de una ontología. Para resolver este problema, crearemos una estructura jerárquica con toda la información presente en la ontología. Esta jerarquía debe estar organizada de tal manera que los nodos estén relacionados de forma semántica, para que sirva como base para el desarrollo de un documento de texto coherente. 
+
+La estructura estará compuesta por las entidades presentes en la ontología, de manera que las entidades que consideramos más relevantes se encuentren en el primer nivel de jerarquía, y a medida que se descienda por los niveles la importancia de las entidades disminuya. Nos referiremos a esta estructura como Árbol de Entidades.
 
 \section{Diseño}
 Para organizar la información, se crearon cuatro módulos que transforman la ontología de entrada en un árbol con toda la información contenida en la ontología. A continuación se describe cada módulo:
@@ -11,7 +13,6 @@ Para organizar la información, se crearon cuatro módulos que transforman la on
     \item Generador de Nuevo Grupo de Entidades: recibe una Entidad y recorre sus relaciones para crear un nuevo grupo de entidades relacionados semánticamente.
     \item Generador del Árbol de Entidades: se encarga de crear los niveles del Árbol de Entidades. 
 \end{itemize}
-%Para finalizar, un último módulo agrega en una nueva rama del árbol a aquellas entidades que no han sido utilizadas en ninguna otra rama.
 
 En la Figura~\ref{fig:modulos_organizador_inf} se muestra la transformación de la ontología OWL a través de los módulos. Los pasos 4 y 5 son iterativos, el proceso finaliza cuando no queden más Entidades que explorar, lo cual es definido por el Generador del Árbol de Entidades.
 
@@ -69,16 +70,15 @@ El contenido de cada grupo depende del tipo de \emph{E}.
 
 Cuando existen más de una Propiedad en un grupo, se busca reemplazarlas por propiedades en común de más alto nivel en la jerarquía de propiedades. Por ejemplo, en la ontología de las pizzas, para la clase \emph{pizza} existen dos propiedades: \emph{tieneCobertura} y \emph{tieneBase}. Como estas dos propiedades tienen a su vez una \emph{superproperty} en común llamada \emph{tieneIngrediente}, se reemplaza a las dos \emph{subproperties} por su ancestro \emph{tieneIngrediente}.
 
-En la Figura~\ref{fig:diagrama_secuencia_contentGrouping} se muestra un pseudocódigo del algoritmo usado para agrupar la información de las clases.
- 
- 
-\begin{figure}
-    \centering
-    \includegraphics%[width=8cm, height=7cm]
-    [scale=0.8]{img/organizacion_informacion/secuencia_contentGrouping}
-    \caption{Diagrama de secuencia para agrupar la información de las clases}
-    \label{fig:diagrama_secuencia_contentGrouping}
-\end{figure}
+%En la Figura~\ref{fig:diagrama_secuencia_contentGrouping} se muestra un pseudocódigo del algoritmo usado para agrupar la información de las clases.
+
+%\begin{figure}
+%    \centering
+%    \includegraphics%[width=8cm, height=7cm]
+%    {img/organizacion_informacion/secuencia_contentGrouping}
+%    \caption{Diagrama de secuencia para agrupar la información de las Clases}
+%    \label{fig:diagrama_secuencia_contentGrouping}
+%\end{figure}
 
 \subsection{Generador Árbol de Entidades}
 El cuarto módulo se encarga de crear la estructura del Árbol, sincronizando la interacción entre los demás módulos. Su objetivo es formar la jerarquía comenzando desde las Entidades más Relevantes, y agregando nuevos niveles con ayuda del Generador de Nuevos Grupos. Cuando no quedan más relaciones que recorrer en las Entidades del último nivel, revisa que todas las clases haya sido usadas al menos una vez. Si hay clases que no fueron utilizadas, invoca un algoritmo para agregar estas clases en una rama especial. Es el caso, por ejemplo, de las clases \emph{Comida} y \emph{Helado} en la ontología \emph{pizza}.
@@ -340,13 +340,13 @@ La ontología Wine cuenta con 138 clases y 16 propiedades. De las 16 propiedades
 %\subsection{Organización de Ontología SNOMED-CT}
 
 \section{Conclusiones}
-Abordamos el problema de organizar la información de una ontología, tratando de maximizar la coherencia de la estructura generada. Como planteamos inicialmente, tuvimos que definir:
+Abordamos el problema de organizar la información de una ontología, tratando de maximizar la coherencia de la estructura generada. Como presentamos en la Sección~\ref{sec:problema_coherencia-texto}, tuvimos que definir:
 \begin{itemize}
     \item Las entidades que iban a representar los nodos de la estructura: donde elegimos para el primer nivel de la jerarquía a las Clases, y para los próximos niveles a Clases, Propiedades e Individuos.
     \begin{itemize}
         \item El criterio para ponderar la importancia de las Clases para crear el primer nivel: donde decidimos usar el criterio de centralidad de un nodo, teniendo en cuenta solo la relación \emph{rdfs:domain}.
     \end{itemize}
-    \item El recorrido de la ontología para crear los siguientes niveles: para el cual seleccionamos las relaciones \emph{rdfs:Domain}, \emph{owl:subPropertyOf}, \emph{rdfs:Range} y \emph{rdfs:subClassOf}. El recorrido para cada Entidad visita todos sus vecinos a solo un nivel de profundidad.
+    \item El recorrido de la ontología para crear los siguientes niveles del Árbol: para el cual seleccionamos las relaciones \emph{rdfs:Domain}, \emph{owl:subPropertyOf}, \emph{rdfs:Range} y \emph{rdfs:subClassOf}. El recorrido para cada Entidad visita todos sus vecinos a solo un nivel de profundidad.
 \end{itemize}
 
 Los resultados fueron satisfactorios, obteniendo estructuras que corresponden a los resultados esperados. 

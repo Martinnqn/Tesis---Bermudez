@@ -290,5 +290,146 @@ public class GeneratorTreeManager {
         }
     }
 }
-
 \end{minted}
+
+
+\section{Implementación Micro Planificación}
+\label{apx:impl_micro_plan}
+
+\subsection{Implementación de la verbalización del constructor \emph{OWLObjectComplementOf} en español}
+\label{sec:clase_OWLObjectComplementOf}
+
+\begin{minted}[autogobble,linenos]{java}
+public class OWLObjectComplementOf extends OWLRestriction{
+
+    public OWLObjectComplementOf(String type, String lang) {
+        super(type, lang);
+    }
+
+/*La StatementComponent que retorna tiene la lista de Word 'resList',
+que representa la oración parcial que se compone en este constructor.
+Nótose que a esta lista se le inserta el 'enlace + clase', que se
+corresponde con la definición de su gramática.*/
+
+@Override
+    protected StatementComponent generateStatementSpanish(TextCotext c) {
+        LinkedList<StatementComponent> stmsClasses = new LinkedList<>();
+        stmsClasses.add(classes.get(0).generateStatement(c));
+        LinkedList<Word> resList = new LinkedList<>();
+        LinkedList<Word> enlace = getEnlaceSpanish(stmsClasses.get(0));
+        resList.addAll(enlace);
+        resList.addAll(stmsClasses.get(0).getListWords());
+        StatementComponent stm = new StatementComponentSpanish(c, resList, "ON", type);
+        stm.setComplementList(resList);
+        return stm;
+    }
+    
+    /*Diferentes enlaces dependiendo el tipo de oracion parcial que recibe*/
+    private LinkedList<Word> getEnlaceSpanish(StatementComponent stm) {
+        LinkedList<Word> enlace = new LinkedList<>();
+        if (stm.getType().equals("T")) {
+            WordSpanish lo = new WordSpanish("LO", WordSpanish.TYPE_PRONOUN);
+            WordSpanish opuesto = new WordSpanish("OPUESTO", WordSpanish.TYPE_ADJETIVE);
+            WordSpanish de = new WordSpanish("DE", WordSpanish.TYPE_PREPOSITION);
+            enlace.add(lo);
+            enlace.add(opuesto);
+            enlace.add(de);
+        } else if (stm.getType().equals("SV")) {
+            WordSpanish no = new WordSpanish("NO", WordSpanish.TYPE_ADV_NEG);
+            enlace.add(no);
+        } else if (stm.getType().equals("ON")) {
+            WordSpanish ni = new WordSpanish("NI", WordSpanish.TYPE_CONJUNTION_COORD);
+            enlace.add(ni);
+        }else {
+            WordSpanish no = new WordSpanish("EXCEPTO", WordSpanish.TYPE_ADV_NEG);
+            enlace.add(no);
+        }
+        return enlace;
+    }
+}
+\end{minted}
+
+
+\subsection{Método para generar las Expresiones de Referencia en español}
+\label{sec:met_exp_ref}
+
+\begin{minted}[autogobble,linenos]{java}
+public LinkedList<Word> getReferenceExpression(TextCotext c) {
+    LinkedList<Word> resList = new LinkedList<>();
+    Random r = new Random();
+    int x = r.nextInt(10);
+    /*Tiene un 20% de probabilidad de utilizar como expresión
+    de referencia el nombre de su superClase si posee una*/
+    if (superClass.size() == 1 && x < 2) {
+        TextCotext cot = new TextCotext(null, this, "init", 0, language);
+        Word n = superClass.get(0).generateStatement(cot).getNoun();
+        String gen = ((WordSpanish) n).getGender();
+        resList.add(getPronounDemostrative(gen));
+        resList.add(n.getUpercaseWord());
+    }else{
+        Word noun = statement.getNoun();
+        String gen = ((WordSpanish) noun).getGender();
+        resList.add(getPronounDemostrative(gen));
+    }
+    return resList;
+}
+
+private WordSpanish getPronounDemostrative(String gen) {
+    WordSpanish w;
+    if (gen.equals("femenino")) {
+        w = new WordSpanish("ESTA", WordSpanish.TYPE_PRONOUN_DEMONSTRATIVE);
+    } else {
+        w = new WordSpanish("ESTE", WordSpanish.TYPE_PRONOUN_DEMONSTRATIVE);
+    }
+    return w;
+}
+\end{minted}
+
+\section{Implementación Realizador}
+\label{sec:impl_realizador}
+\subsection{Clase \texttt{Section}}
+\label{sec:clase_section}
+
+\begin{minted}[autogobble,linenos]{java}
+public class Section {
+    private LinkedList<OWLIntClass> topics;
+    private Title title;
+    private LinkedList<Paragraph> paragraphs;
+    private LinkedList<Section> subSections;
+    private String language;
+
+    public Section(OWLIntClass topic, String lang) {
+        init(lang);
+        topics.add(topic);
+        title = new Title(topic, lang);
+        if (topic.getType().equals("class") ||
+        topic.getType().equals("individual")) {
+            //crear el Paragraph para la informacion de la seccion
+            Paragraph inf = new Paragraph(topic, lang);
+            paragraphs.add(inf);
+        } 
+    }
+    
+    public String generateText() {
+    String textF = "";
+    textF = titulo de la Section
+    textF += contenido de los Parrafos de la Section
+    for (Section s: subSections){
+        if (s no cumple los criterios para verbalizar como sección){
+            textF += contenido de s en forma de párrafo
+        }
+    }
+    /*La realización de las subsecciones se separa en dos
+    recorridos distintos para que todos los párrafos estén
+    juntos, y luego aparezcan todas las secciones.*/
+    for (Section s: subSections){
+        if (s cumple los criterios para verbalizar como sección){
+            textF += s.generateText();
+        }
+    }
+    
+    return textF;
+    }
+}
+\end{minted}
+

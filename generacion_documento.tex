@@ -1,9 +1,6 @@
 \chapter{Generación del documento de texto}
 
 \section{Introducción}
-
-
-\section{Diseño}
 En este capítulo se diseñará e implementará el proceso de generación del Documento de Texto. Elegimos organizar toda la información de la ontología generando un documento dividido en secciones, subsecciones y párrafos. Para alcanzar el Documento Final, se crearon módulos teniendo como referencia las actividades de la Generación de Lenguaje Natural nombradas en la Sección~\ref{sec:tareas_gnl}. Los tres módulos principales son \emph{Macro planificación}, \emph{Micro planificación} y \emph{Realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
 
 Para comenzar con la generación de un documento de texto, se planteó un Plan de Documento. Este Plan tiene la estructura resultante del Organizador de Información. Para crear el documento en la etapa de Macro Planificación, se reemplazó el módulo Generador del Árbol de Entidades del Organizador de Información, por un nuevo módulo específico del Macro Planning. El motivo de este reemplazo es evitar la creación de interfaces entre el Organizador de Información y el Macro Planning, por el overhead que estas suponen, ya que la creación del Árbol de Entidades y la Macro Planificación resultan ser procesos equivalentes, por lo que pueden ser reemplazables, evitando recorrer el doble de veces la estructura jerárquica.
@@ -69,7 +66,7 @@ En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama 
 \end{figure}
 
 \section{Implementación Macro Planning}
-La clase principal del Macroplanificador es \emph{TextManager}. Para crear el Documento Inicial, recorre las Entidades de la misma manera que la clase \emph{GeneratorTreeManager}, explicada en la Figura~\ref{fig:clase_generator_tree}, con la diferencia que crea el objeto \emph{Text} y los objetos \emph{Section} asociados a cada Entidad. Ya que el recorrido es equivalente no se presentará su implementación, en cambio comenzaremos a mostrar las clases que componen el Documento de Texto.
+La clase principal del Macroplanificador es \emph{TextManager}. Para crear el Documento Inicial, recorre las Entidades de la misma manera que la clase \emph{GeneratorTreeManager}, explicada en la Figura~\ref{sec:clase_generator_tree}, con la diferencia que crea el objeto \emph{Text} y los objetos \emph{Section} asociados a cada Entidad. Ya que el recorrido es equivalente no se presentará su implementación, en cambio comenzaremos a mostrar las clases que componen el Documento de Texto.
 
 La clase \emph{Text} solo contiene los objetos del primer nivel del Documento de Texto. Tiene acceso a las secciones principales y a las secciones que contienen la información que no había sido utilizada en otras secciones. 
 
@@ -698,67 +695,20 @@ Las subclases de \emph{OWLRestriction} tienen la capacidad de verbalizar los con
 Para facilitar la implementación de los algoritmos de Agregación y Expresiones de Referencia, decidimos implementar el contenido de las oraciones con listas de palabras en lugar de cadenas de texto, facilitando su manipulación y recorrido. De esta manera, se creó la interfaz \emph{Word} con sus respectivas subclases \emph{WordEnglish} y \emph{WordSpanish}. 
 La clase \emph{WordSpanish} utiliza la librería \emph{javaGramatica}\footnote{\url{https://www.proinf.net/permalink/gramatica_numero_genero_y_acentuacion}}, para implementar algunos métodos del idioma español, como pluralizar, cambio de género, número, etc. Para el idioma inglés estos métodos fueron implementados manualmente.
 
-Cada vez que se crea una Word, debe especificarse su palabra y el tipo de función que cumple la palabra. Para identificar el tipo de una palabra, se utilizó el software\texttt{Stanford POS Tagger}\footnote{https://nlp.stanford.edu/software/tagger.html}, el cual permite etiquetar palabras de inglés, español y otros idiomas. Este software utiliza una nomenclatura específica para etiquetar las palabras, por lo que utilizamos esa nomenclatura y la implementamos a través de Variables de Clase creadas en la clase Word.
+Cada vez que se crea una Word, debe especificarse su palabra y el tipo de función que cumple la palabra. Para identificar el tipo de una palabra, se utilizó el software \texttt{Stanford POS Tagger}\footnote{https://nlp.stanford.edu/software/tagger.html}, el cual permite etiquetar palabras de inglés, español y otros idiomas. Este software utiliza una nomenclatura específica para etiquetar las palabras (llamadas etiquetas \texttt{EAGLE}\footnote{\url{https://web.archive.org/web/20160325024315/http://nlp.lsi.upc.edu/freeling/doc/tagsets/tagset-es.html}} para el español, y para el inglés el \texttt{Penn Treebank}\footnote{\url{https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html}}), por lo que utilizamos esa nomenclatura y la implementamos a través de Variables de Clase creadas en la clase Word.
 
 Los objetos \emph{Word} son creados por cada \emph{StatementComponent}. Una \emph{StatementComponent} se crea durante el proceso de verbalización de los constructores de Expresiones de Clase y de Entidades. Como los constructores del nivel más bajo son de Entidades, es en ellas donde se decide qué tipo de objeto se instancia según el idioma, es decir \emph{StatementComponentEnglish} o \emph{StatementComponentSpanish}. 
 
 En el nivel de los constructores de Expresiones de Clase se encuentran las clases que heredan de la interfaz \emph{OWLRestriction}. Esta interfaz acopla los atributos que requieren los constructores, como los individuos, las clases, las propiedades y cardinalidades.
 
-Las clases que implementan \emph{OWLRestriction} componen y generan las \emph{StatementComponent}. Como ejemplo, se muestra en la Figura~\ref{fig:clase_OWLObjectComplementOf} la implementación de la clase \emph{OWLObjectComplementOf} con los métodos para implementar la verbalización del constructor en español.
+Las clases que implementan \emph{OWLRestriction} componen y generan las \emph{StatementComponent}. Como ejemplo, se muestra en la Anexo~\ref{sec:clase_OWLObjectComplementOf} la implementación de la clase \emph{OWLObjectComplementOf} con los métodos para implementar la verbalización del constructor en español.
 
 Se puede ver que el método \emph{generateStatementSpanish()} recibe como párametro un objeto de clase \emph{TextCotext}. Esta clase tiene el tópico al que hace referencia la oración que se está componiendo y el lenguaje de la oración, para ser utilizados, por ejemplo, en la generación de Expresiones de Referencia.
 
-Por último la interfaz \emph{Statement} tiene los atributos necesarios para que sus implementaciones \emph{StatementEnglish} y \emph{StatementSpanish} puedan verbalizar los constructores de Axiomas y de unir todas las oraciones. 
+Por último, la interfaz \emph{Statement} tiene los atributos necesarios para que sus implementaciones \emph{StatementEnglish} y \emph{StatementSpanish} puedan verbalizar los constructores de Axiomas y de unir todas las oraciones. 
 
-Las \emph{Statement} utilizan la Agregación y las Expresiones de Referencia cuando generan varias oraciones. Estas tareas se implementaron en las clases \emph{StatementComponent} (teniendo en cuenta sus implementaciones) y \emph{OWLClass} respectivamente. 
+Las \emph{Statement} utilizan la Agregación y las Expresiones de Referencia cuando generan varias oraciones. Estas tareas se implementaron en las clases \emph{StatementComponent} (teniendo en cuenta sus implementaciones) y \emph{OWLClass} respectivamente. En el Anexo~\ref{sec:met_exp_ref} se muestra el método usado para generar las Expresiones de referencia en la clase \emph{OWLClass}.
 
-\begin{figure}
-\begin{minted}[autogobble,linenos]{java}
-public class OWLObjectComplementOf extends OWLRestriction{
-
-    public OWLObjectComplementOf(String type, String lang) {
-        super(type, lang);
-    }
-
-@Override
-    protected StatementComponent generateStatementSpanish(TextCotext c) {
-        LinkedList<StatementComponent> stmsClasses = new LinkedList<>();
-        stmsClasses.add(classes.get(0).generateStatement(c));
-        LinkedList<Word> resList = new LinkedList<>();
-        LinkedList<Word> enlace = getEnlaceSpanish(stmsClasses.get(0));
-        resList.addAll(enlace);
-        resList.addAll(stmsClasses.get(0).getListWords());
-        StatementComponent stm = new StatementComponentSpanish(c, resList, "ON", type);
-        stm.setComplementList(resList);
-        return stm;
-    }
-    
-    private LinkedList<Word> getEnlaceSpanish(StatementComponent stm) {
-        LinkedList<Word> enlace = new LinkedList<>();
-        if (stm.getType().equals("T")) {
-            WordSpanish lo = new WordSpanish("LO", WordSpanish.TYPE_PRONOUN);
-            WordSpanish opuesto = new WordSpanish("OPUESTO", WordSpanish.TYPE_ADJETIVE);
-            WordSpanish de = new WordSpanish("DE", WordSpanish.TYPE_PREPOSITION);
-            enlace.add(lo);
-            enlace.add(opuesto);
-            enlace.add(de);
-        } else if (stm.getType().equals("SV")) {
-            WordSpanish no = new WordSpanish("NO", WordSpanish.TYPE_ADV_NEG);
-            enlace.add(no);
-        } else if (stm.getType().equals("ON")) {
-            WordSpanish ni = new WordSpanish("NI", WordSpanish.TYPE_CONJUNTION_COORD);
-            enlace.add(ni);
-        }else {
-            WordSpanish no = new WordSpanish("EXCEPTO", WordSpanish.TYPE_ADV_NEG);
-            enlace.add(no);
-        }
-        return enlace;
-    }
-}
-\end{minted}
-\caption{Implementación de los métodos para verbalizar el constructor \emph{OWLObjectComplementOf} en español.}
-\label{fig:clase_OWLObjectComplementOf}
-\end{figure}
 
 \section{Diseño del realizador}
 %La arquitectura de este trabajo relegó la tarea de definir la estructura de las oraciones y llevar acabo su realización lingüística a la etapa de Micro Planning.
@@ -771,7 +721,7 @@ El Documento Inicial tiene una estructura en la que todos los tópicos tienen su
 Para llevar a cabo el refinamiento, se buscó medir la información a verbalizar, para saber cuándo es posible convertir una sección. Para esto se propuso como métrica principal a la cantidad de oraciones presentes en la descripción de un tópico.
 
 \subsection{Criterio de reducción de Secciones}
-Una sección agrupa uno o más párrafos o sub-secciones, por lo que en una sección puede existir más de un tópico, con la condición de que esos tópicos tengan una relación, ya sea de hermanos o de hijos. Estas relaciones se obtienen de la Estructura de Árbol del Organizador de Información. 
+Una sección agrupa uno o más párrafos o sub-secciones, por lo que en una sección puede existir más de un tópico, con la condición de que esos tópicos tengan una relación, ya sea de hermanos o de hijos. Estas relaciones se obtienen del Documento Inicial. 
 
 Para decidir si un tópico es planificado como una Sección, se utilizan los siguientes criterios:
 \begin{itemize}
@@ -782,58 +732,8 @@ Para decidir si un tópico es planificado como una Sección, se utilizan los sig
 
 Si la cantidad de oraciones requeridas para ser considerado una sección, tiende a cero, la planificación del documento será similar al Documento Inicial; mientras que si la cantidad de oraciones tiende a infinito, la planificación perderá niveles de jerarquía, y únicamente contemplará como secciones a los tópicos del primer nivel. Ninguno de los dos extremos es conveniente: o se pierde coherencia, o se obtiene un texto con demasiados niveles de secciones, que resulta antinatural. Sin embargo, un documento en el que predominan las sub-secciones (aunque tengan poca información), ayuda a los humanos a reconocer y establecer relaciones entre los tópicos, siendo el objetivo principal no desaprovechar la semántica del dominio modelado, y teniendo como intención principal que el lector comprenda el dominio modelado en la ontología.
 
-\section{Implementación del realizador}
-El realizador está embebido dentro de la clase Section, en forma de métodos que implementan los criterios vistos para la definición del documento. En la figura~\ref{fig:clase_section} se presenta un pseudocódigo de la clase Section.
-
-\begin{figure}
-\begin{minted}[autogobble,linenos]{java}
-public class Section {
-
-    private LinkedList<OWLIntClass> topics;
-    private Title title;
-    private LinkedList<Paragraph> paragraphs;
-    private LinkedList<Section> subSections;
-    private String language;
-
-    public Section(OWLIntClass topic, String lang) {
-        init(lang);
-        topics.add(topic);
-        title = new Title(topic, lang);
-        if (topic.getType().equals("class") ||
-        topic.getType().equals("individual")) {
-            //crear el Paragraph para la informacion de la seccion
-            Paragraph inf = new Paragraph(topic, lang);
-            paragraphs.add(inf);
-        } 
-    }
-    
-    public String generateText() {
-    String textF = "";
-    textF = titulo de la Section
-    textF += contenido de los Parrafos de la Section
-    for (Section s: subSections){
-        if (s no cumple los criterios para verbalizar como sección){
-            textF += contenido de s en forma de párrafo
-        }
-    }
-    /*La realización de las subsecciones se separa en dos
-    recorridos distintos para que todos los párrafos estén
-    juntos, y luego aparezcan todas las secciones.*/
-    for (Section s: subSections){
-        if (s cumple los criterios para verbalizar como sección){
-            textF += s.generateText();
-        }
-    }
-    
-    return textF;
-    }
-    
-}
-\end{minted}
-\caption{Definición en Java de la Clase \texttt{Section}.}
-\label{fig:clase_section}
-\end{figure}
-
+\section{Implementación del Realizador}
+El Realizador está embebido dentro de la clase Section, en forma de métodos que implementan los criterios vistos para la definición del documento. En el Anexo~\ref{sec:clase_section} se presenta un pseudocódigo de la clase Section.
 
 \section{Casos de estudio}
 En el capítulo de Organización de Información analizamos cómo quedan organizados los tópicos de las ontologías Pizza y Wine, por lo que continuaremos con estas ontologías de ejemplo, analizando la realización del texto generado. Para identificar el formato del texto, a las secciones se le incluye el número de sección a la izquierda del título de la sección, y cada párrafo comienza con sangría.
@@ -857,6 +757,7 @@ La estructura de las oraciones es repetitiva, no era objetivo de este trabajo re
 En cuanto a la cuestión estética, el texto resulta agradable, no posee muchas secciones anidadas por lo que visualmente no sobrecarga la lectura.
 
 \begin{figure}
+\centering
 \fbox{
 \begin{minipage}{14cm}
 \setlength{\parindent}{1em}
@@ -971,6 +872,7 @@ La implementación de la sintaxis es sustancialmente equivalente a la del españ
 El resultado de la realización final también resulta satisfactorio. Si bien presenta hasta cinco niveles de anidamiento (a partir de \emph{Consumable thing}), la información que se transmite es necesaria para mantener la coherencia global y establecer las relaciones pertinentes entre los tópicos.
 
 \begin{figure}
+\centering
 \fbox{
 \begin{minipage}{14cm}
 \setlength{\parindent}{1em}
