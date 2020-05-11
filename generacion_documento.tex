@@ -1,9 +1,60 @@
-zzfzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzdzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz4\chapter{Generación del documento de texto}
+\chapter{Generación del documento de texto}
 
 \section{Introducción}
-En este capítulo se diseñará e implementará el proceso de generación del Documento de Texto. Elegimos organizar toda la información de la ontología generando un documento dividido en secciones, subsecciones y párrafos. Para alcanzar el Documento Final, se crearon módulos teniendo como referencia las actividades de la Generación de Lenguaje Natural nombradas en la Sección~\ref{sec:tareas_gnl}. Los tres módulos principales son \emph{Macro planificación}, \emph{Micro planificación} y \emph{Realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
+En este capítulo se diseñará e implementará el proceso de generación del Documento de Texto. 
 
-Para comenzar con la generación de un documento de texto, se planteó un Plan de Documento. Este Plan tiene la estructura resultante del Organizador de Información. Para crear el documento en la etapa de Macro Planificación, se reemplazó el módulo Generador del Árbol de Entidades del Organizador de Información, por un nuevo módulo específico del Macro Planning. El motivo de este reemplazo es evitar la creación de interfaces entre el Organizador de Información y el Macro Planning, por el overhead que estas suponen, ya que la creación del Árbol de Entidades y la Macro Planificación resultan ser procesos equivalentes, por lo que pueden ser reemplazables, evitando recorrer el doble de veces la estructura jerárquica.
+Se crearon tres módulos principales teniendo como referencia las actividades de la Generación de Lenguaje Natural nombradas en la Sección~\ref{sec:tareas_gnl}. Los módulos son \emph{Macro planificación}, \emph{Micro planificación} y \emph{Realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
+
+Elegimos organizar toda la información de la ontología generando un documento dividido en secciones, subsecciones y párrafos. 
+
+Como presentamos en el Objetivo (Sección~\ref{Intro:objetivo}), se esperan alcanzar dos cualidades principales en el texto de salida:
+\begin{enumerate}
+    \item A nivel macro: el texto debe tener una estructura que permita visualizar los principales temas, presentándolos de manera aislada (secciones, párrafos), pero que en conjunto se complementen para que el lector pueda establecer las relaciones adecuadas entre ellos. Como objetivo principal se espera alcanzar una estructura que presente la información más importante y necesaria lo más temprana posible, preparando al lector para que pueda comprender información nueva.
+    \item A nivel micro, el texto debe cumplir con cierta fluidez, utilizando frases que tengan una gramática aceptable, tratando de maximizar la cohesión.
+\end{enumerate}
+
+Para satisfacer las necesidades del nivel macro, usaremos como punto de partida la estructura resultante del módulo de Organización de Información, que servirá para generar un Documento Inicial. Este Documento Inicial se modificará para adoptar una estética más agradable para el lector, tratando de mantener la coherencia global de la estructura original.
+
+Parte de la estética resulta de crear secciones y párrafos con los tópicos del texto. Dado que queremos dotar al texto con coherencia local, debemos definir qué información habrá en cada sección y párrafo, y cómo estará organizada. 
+
+Tomando algunos postulados básicos de la Teoría de Centrado, contamos con una base inicial para elegir cómo presentar en lenguaje natural y de manera coherente la información contenida en la ontología. No es el objetivo de este trabajo implementar una solución basada estrictamente en las reglas propuestas por dicha Teoría, más bien, se pretende alcanzar una cierta coherencia local motivados por la idea que subyace en la misma.
+
+Para mantener la coherencia local según la Teoría de Centrado, debemos evitar cambiar continuamente los focos de atención. Por este motivo, para cada tópico tratado en el texto, trataremos de capturar y presentar toda su información agrupada en párrafos consecutivos.  
+
+Dado una entidad \emph{E}, para recuperar la información que la describe, adoptaremos dos criterios principales:
+\begin{itemize}
+    \item El primer criterio consiste en juntar los axiomas que describen a \emph{E} en un mismo párrafo. %Los axiomas de cada entidad están guardados en la estructura de la ontología creada en el módulo \emph{Traductor} del capítulo anterior, por lo que obtenerlos y agruparlos es trivial.
+    \item El segundo criterio consiste en recorrer la estructura de grafo a partir del nodo que representa a \emph{E}, navegando por las relaciones del nodo. Este recorrido busca capturar la máxima cantidad de información posible acerca de \emph{E}. 
+\end{itemize}
+
+Estos criterios permiten desarrollar el texto tomando centralmente a cada entidad una sola vez, de manera que el foco de atención solo salte hacia otras entidades cuando no haya nada más para decir acerca de \emph{E}.
+\\
+
+En el nivel micro, debemos definir una traducción desde la gramática del lenguaje OWL hacia el lenguaje humano. Luego se modificará convenientemente la traducción para alcanzar el Documento Final, generando un texto más fluido y organizando las sentencias para maximizar la cohesión.
+
+La relación entre el Organizador de Información y el Generador del Documento de Texto se puede ver en la Figura \ref{fig:modulos_sgln}.
+
+\begin{figure}
+    \centering
+    \includegraphics{img/presentacion_problema/modulos_sgln.pdf}
+    \caption{Módulos que componen el Sistema de Generación de Lenguaje Natural}
+    \label{fig:modulos_sgln}
+\end{figure}
+
+
+Ampliando el módulo \emph{Generador de Documento de Texto} en la Figura \ref{fig:modulos_documento_final}, se puede apreciar el flujo de información entre los módulos desarrollados en este capítulo.
+
+\begin{figure}
+    \centering
+    \includegraphics{img/generacion_documento/modulos_documento_final.pdf}
+    \caption{Módulos para la generación del Documento Final.}
+    \label{fig:modulos_documento_final}
+\end{figure}
+
+
+\section{Diseño Macro Planning}
+\label{sec:macro_planning}
+En esta etapa se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de Macro Planificación. Para crear el documento en la etapa de Macro Planificación, se reemplazó el módulo Generador del Árbol de Entidades del Organizador de Información, por un nuevo módulo específico del Macro Planning. El motivo de este reemplazo es evitar la creación de interfaces entre el Organizador de Información y el Macro Planning, por el overhead que estas suponen, ya que la creación del Árbol de Entidades y la Macro Planificación resultan ser procesos equivalentes, por lo que pueden ser reemplazables, evitando recorrer el doble de veces la estructura jerárquica.
 
 En la figura~\ref{fig:modulos_plan_documento} se puede ver el nuevo módulo Generador del Plan de Documento, que retorna como salida un Plan de Documento.
 
@@ -13,19 +64,6 @@ En la figura~\ref{fig:modulos_plan_documento} se puede ver el nuevo módulo Gene
     \caption{Módulos para la generación del Plan de Documento.}
     \label{fig:modulos_plan_documento}
 \end{figure}
-
-Cabe aclarar que este es un Plan de Documento Inicial que solo cuenta con una primera distribución de la información que estará contenida en el texto final. En el Documento Final, la realización de la estructura y la realización lingüística (secciones, párrafos y oraciones) se realizarán en las etapas de Micro Planificación y Realización, como se ve en la figura~\ref{fig:modulos_documento_final}.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=12cm]{img/generacion_documento/modulos_documento_final.pdf}
-    \caption{Módulos para la generación del Documento Final.}
-    \label{fig:modulos_documento_final}
-\end{figure}
-
-\section{Diseño Macro Planning}
-\label{sec:macro_planning}
-En esta etapa se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de Macro Planificación. Por este motivo, se decidió hacer una arquitectura monolítica entre el Organizador de Información y el Macroplanificador. 
 
 El documento de texto estará representado internamente con una estructura basada en componentes. Esta representación prepara el terreno para que, luego de la Micro Planificación, el Realizador decida el diseño final del documento.
 
@@ -240,7 +278,7 @@ Los tipos de componentes son los siguientes:
     \item Intersección: representa una adición o subordinación de oraciones parciales.
 \end{itemize}
 
-Estos tipos de componentes definen un sistema de tipos, en el que cada tipo puede componerse con otro y dan como resultado un nuevo componente. La particularidad de este sistema es que el tipo de una composición no depende de sus componentes, sino del constructor que opere con esos componentes.
+Estos tipos de componentes definen un sistema de tipos, en el que cada tipo puede componerse con otro y dan como resultado un nuevo componente. El tipo de una composición depende del constructor que opere con esos componentes.
 %En la mayoría de los casos el tipo de componente es predecible, a excepción de la \emph{intersección}.
 
 Los componentes que retorna cada constructor se definen a continuación:
@@ -287,6 +325,7 @@ Para no limitar la aplicación a una convención de nombrado, no se requiere una
 
 Estas condiciones ayudan a mejorar la fluidez del texto y no suponen una gran carga en los desarrolladores de ontologías.
 
+De hecho, existen varios trabajos que abordan la nomenclatura de conceptos, especificando convenciones de nombrado para el desarrollo de las ontologías, coincidiendo en algunos aspectos (y siendo hasta más estrictos) con nuestros requerimientos~\cite{montiel2011style}~\cite{OntoCheck}
 
 \subsection{Tratamiento sintáctico de los nombres de Entidades}
 Para facilitar el entendimiento de las secciones referidas al micro planning, se explicará cómo fueron tratados los nombres de las entidades, desde el punto de vista sintáctico. 
