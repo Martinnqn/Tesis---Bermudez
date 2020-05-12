@@ -950,7 +950,7 @@ Chianti classico: a chianti classico has mc guinnesso maker and medium body.
 }
 
 \small{
-A red wine is a wine that has red color. There are the following kinds of wines: dry red wine, red burgundy, port AND red bordeaux. 
+A red wine is a wine that has red color. There are the following kinds of wines: dry red wine, red burgundy, port and red bordeaux. 
 
 Port: a port is a red wine. This has full body, strong flavor and sweet sugar. located in portugal region. taylor port is a type of port. 
 Taylor port: a taylor port has taylor maker. 
@@ -1074,6 +1074,42 @@ Year1998: a year1998 has year value. a year1998 has year value.
 \caption{Resultado del organizador de información con la ontología Wine.}
 \label{fig:indice_secciones_wine}
 \end{figure}
+
+
+Ya que en lenguaje inglés hay ejemplos de verbalizaciones de otras investigaciones, a continuación se presenta una comparación de la verbalización de la clase \emph{Beaujolais} de la ontología \emph{Wine}, entre el trabajo~\cite{hewlett2005effective} y el nuestro:
+
+En~\cite{hewlett2005effective} proponen listar sus características de la siguiente manera: 
+``A Beaujolais is a Wine that:
+\begin{itemize}
+    \item is made from at most 1 grape, which is Gamay Grape
+    \item has Delicate flavor
+    \item has Dry sugar 
+    \item has Red color
+    \item has Light body ''
+\end{itemize}
+
+En nuestro caso, la oración resultante es la siguiente:
+``Beaujolais has light body, red color, delicate flavor and dry sugar. made from grape gamay grape.''
+
+Existe clara diferencia, no solo en el criterio de presentación lista frente a prosa, sino también en el hecho de elegir usar o no elipsis (en nuestro caso omitimos el verbo ``has'' para evitar redundancia), y de separar en diferentes oraciones las características asociadas al ``has'' y las asociadas al ``made from''. Decidir qué representación usar depende de muchos factores, por ejemplo, la versión en prosa no resulta muy compleja, pues la omisión del ``has'' solo ocurre en tres características, por lo que no recae tanta carga sobre el lector. Quizá en descripciones más largas sea conveniente un formato en lista, pero también hay que tener en cuenta cómo impacta visualmente representar todas las clases en forma de listas en una gran ontología. De acuerdo con~\cite{hewlett2005effective}, pueden existir métodos de generación más complejos que mejoren la calidad del texto de salida.
+
+Otra herramienta que se pudo probar con la ontología \emph{Wine} fue Attempto Tools, la cual retornó la siguiente salida para la clase Beaujolais:
+
+``
+Every Beaujolais hasBody Light.
+
+Every Beaujolais hasColor Red.
+
+Every Beaujolais hasFlavor Delicate.
+
+Every Beaujolais hasSugar Dry.
+
+Every Beaujolais madeFromGrape GamayGrape.
+
+Every Beaujolais madeFromGrape at most 1 thing.
+''
+
+En comparación con las salidas en formato lista y prosa, podemos apreciar que esta salida es la que menos trabaja sobre las oraciones, repitiendo información y dejando la nomenclatura camelCase sin procesar.
 
 \section{Conclusiones}
 
