@@ -1112,4 +1112,14 @@ Every Beaujolais madeFromGrape at most 1 thing.
 En comparación con las salidas en formato lista y prosa, podemos apreciar que esta salida es la que menos trabaja sobre las oraciones, repitiendo información y dejando la nomenclatura camelCase sin procesar.
 
 \section{Conclusiones}
+Hemos presentado un sistema que genera un texto en lenguaje natural a partir de los axiomas de una ontología. La estructura del documento de texto depende de la organización realizada en el macroplaning, y de los criterios tomados en el Realizador, conservando la coherencia global recibida del Organizador de Información. 
 
+Tomando como referencia lo postulado por la Teoría de Centrado, se pudo proveer a los párrafos de coherencia local. Para cada clase se reunió la mayor cantidad de información disponible, agrupándola a través de los constructores de Axiomas.
+
+La separación en constructores de Expresiones de Clases y constructores de Axiomas, dio lugar a las oraciones parciales y a un sistema de tipos. Si bien este sistema no se corresponde fielmente a las categorías gramaticales de alguna teoría lingüística, permitió minimizar la cantidad de combinaciones que había que diseñar en las gramáticas.
+
+Las sentencias fueron debidamente procesadas para aplicar algunas técnicas de Procesamiento de Lenguaje Natural, como expresiones de referencia, agregación de sentencias, inflexión de número y determinación de pronombres basados en el género (en el caso del lenguaje español). 
+
+El resultado en los casos de prueba fue satisfactorio, la sintaxis generó oraciones interpretables.
+
+Como mostramos en las comparaciones con resultados de otros trabajos, es posible tomar diferentes criterios para mostrar la misma información, y desarrollar técnicas o gramáticas más sofisticadas para mejorar la fluidez del texto.

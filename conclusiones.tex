@@ -1,1 +1,26 @@
 \chapter{Conclusiones}
+En el desarrollo de esta tesis pudimos diseñar e implementar un Sistema de Generación de Lenguaje Natural, orientado a generar un texto organizado a partir de una ontología de la Web Semántica. Para desarrollar tal sistema se propusieron dos problemas fundamentales: el de organización de la información y el de generar el documento de texto. 
+
+Para abordar el problema de la organización de la información, se tomó en cuenta que los textos poseen una estructura jerárquica en el que sus tópicos presentes están semánticamente relacionados, al igual que las ontologías. Para maximizar la relación semántica entre los tópicos, se usó como base la coherencia global, aplicando los fundamentos de la Teoría de Veins. Se propuso una solución basada en el análisis del grafo subyacente a la ontología, midiendo las relaciones entre sus nodos. De esta manera se obtuvieron las Entidades de la ontología que resultaban más sobresalientes, con el fin de usarlas como hilo conductoras de los temas del texto.
+Esta solución se vio motivada por la característica que poseen las ontologías de la Web Semántica, de ser grafos libres de escala. Los resultados obtenidos fueron satisfactorios para los casos de prueba presentados, retornando estructuras organizadas que se correspondían con los resultados esperados. Sin embargo queda pendiente poder analizar la solución con mayor diversidad de ontologías, variando la densidad de sus relaciones, pues la solución propuesta depende ampliamente de la cantidad de \emph{ObjectProperties} y del contenido de sus dominios.
+
+Para el sistema de generación de texto, se dividió el problema en tres sub-problemas, basados en los procesos conocidos del Procesamiento del Lenguaje Natural. Estos subproblemas fueron diseñar e implementar el \emph{Macroplanning}, \emph{Microplanning} y la \emph{Realización}. 
+
+Para comenzar, se desarrolló el módulo \emph{Macroplanning}, encargado de brindar la estructura jerárquica del texto. Dado que se integró el \emph{Macroplanning} con el Organizador de Información, su implementación fue trivial.
+
+Luego se procedió a verbalizar los axiomas de la ontología en el \emph{Microplanning}, desarrollando la gramática del lenguaje humano e implementando los algoritmos de generación de texto adecuados, para reducir la redundancia y mejorar la fluidez del texto. 
+
+Por último se resolvió el problema de la Realización del texto, modificando la estructura inicial obtenida del \emph{Macroplanning}, para reducir los niveles de la jerarquía del texto donde era adecuado. 
+
+Como se mostró en los casos de prueba, la solución basada en el desarrollo de estos módulos resultó en textos legibles y organizados. Si bien validar textos puede resultar subjetivo, podemos apreciar que existe suficiente relación semántica en el orden de los temas que se presentan, tanto entre las Secciones como entre las Oraciones, por lo que cumplen con cierta Coherencia Global y Local.
+
+En cuanto a la sintaxis, se demostró que pueden existir mejores formas de presentar la información, que depende de cada caso particular.
+
+Aún resulta conveniente explorar otras técnicas para desarrollar las gramáticas y la composición de las oraciones. Desarrollar las gramáticas manualmente es un trabajo costoso, y debido a la naturaleza recursiva de las construcciones de los axiomas y de la semántica de sus constructores, es difícil mantener el control de la oración compuesta, tanto a nivel sintáctico como semántico. Queda pendiente probar el sistema con otras ontologías que presenten mayor complejidad en sus axiomas, con el fin de desarrollar nuevas gramáticas que abarquen más casos de prueba.
+
+Más allá de probar el sistema con nuevos casos de prueba, para reconocer las ventajas y desventajas de la solución propuesta, aún hay ciertos factores a determinar, para ayudar a mejorar la estética del texto, que quedan fuera del alcance de esta tesis, por ejemplo:
+\begin{itemize}
+    \item Decidir cuándo es conveniente utilizar texto en formato lista en lugar de prosa, o en algún otro formato como tablas comparativas.
+    \item Decidir cuándo es conveniente utilizar expresiones de referencia o elipsis.
+    \item Establecer criterios más sofisticados para modificar la estructura del texto en la etapa de Realización. 
+\end{itemize}
