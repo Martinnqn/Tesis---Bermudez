@@ -1,9 +1,11 @@
 \chapter{Organización de la información}
 
-\section{Introducción}
-Este capítulo describe el diseño e implementación del módulo que preprocesa la ontología para organizar y estructurar la información de forma más significativa. Reiter E.~\cite{reiter2007architecture} ha propuesto esta etapa previa de preprocesamiento para el análisis y la interpretación de datos, aunque fue aplicada en una entrada de datos en crudo (generada directamente de sensores) en lugar de una base de conocimiento. En este caso, el resultado del preprocesamiento será usado para poder abordar la coherencia global del texto.
+Antes de comenzar con el desarrollo de los procesos asociados a la Generación de Lenguaje Natural, iniciaremos con el problema de Organizar la Información de una ontología.  
 
-Considerando lo propuesto por la Teoría de Veins, debemos crear una estructura jerárquica que facilite la relación entre unidades textuales. A medida que se avanza en el texto, un concepto solo debería ser capaz de referenciar otros conceptos que hayan sido nombrados anteriormente, ya sea en el mismo nivel de jerarquía o en niveles superiores. Esto implica evitar que una entidad en un nivel \emph{N} haga referencia a entidades que se encuentren en niveles \emph{N+1} (niveles inferiores). 
+Este capítulo describe el diseño e implementación de un módulo para organizar y estructurar la información de una ontología de forma más significativa. Reiter E.~\cite{reiter2007architecture} ha propuesto esta etapa previa de preprocesamiento para el análisis y la interpretación de datos, aunque fue aplicada en una entrada de datos en crudo (generada directamente de sensores) en lugar de una base de conocimiento. En este caso, el resultado del preprocesamiento será usado para poder abordar la coherencia global del texto.
+
+\section{Introducción}
+Considerando lo propuesto por la Teoría de Veins, para proveer de coherencia global a un texto debemos crear una estructura jerárquica que facilite la relación entre unidades textuales. A medida que se avanza en el texto, un concepto solo debería ser capaz de referenciar otros conceptos que hayan sido nombrados anteriormente, ya sea en el mismo nivel de jerarquía o en niveles superiores. Esto implica evitar que una entidad en un nivel \emph{N} haga referencia a entidades que se encuentren en niveles \emph{N+1} (niveles inferiores). 
 
 Suponemos que las entidades que tienen mayor impacto en la ontología son las que deberían aparecer en los niveles superiores de la jerarquía, con el objetivo de usarlas como hilo conductores para estructurar el texto. 
 
@@ -34,7 +36,7 @@ Si se comenzara a estructurar el texto desde ``Helado'' o desde ``Vegetariana'',
 
 Una vez identificados los nodos sobresalientes, se debe estructurar la información a partir de ellos. Para esto se recorre el grafo de la ontología a través de las relaciones entre los nodos.
 
-Considerando que las ontologías de la Web Semántica son redes libres de escala, esperamos que la naturaleza de las relaciones brinden información suficiente para discriminar entre el contenido principal y el menos relevante.
+Considerando que las ontologías de la Web Semántica son Redes Libres de Escala, esperamos que la naturaleza de las relaciones brinden información suficiente para discriminar entre el contenido principal y el menos relevante.
 \\
 
 Para este problema hemos reconocido dos sub-problemas a tratar:
@@ -384,11 +386,11 @@ La ontología Wine cuenta con 138 clases y 16 propiedades. De las 16 propiedades
 \section{Conclusiones}
 Abordamos el problema de organizar la información de una ontología, tratando de maximizar la coherencia de la estructura generada. Como presentamos en el inicio de este Capítulo, tuvimos que definir:
 \begin{itemize}
-    \item Las entidades que iban a representar los nodos de la estructura: donde elegimos para el primer nivel de la jerarquía a las Clases, y para los próximos niveles a Clases, Propiedades e Individuos.
+    \item {\bf Las entidades que iban a representar los nodos de la estructura}: donde elegimos para el primer nivel de la jerarquía a las Clases, y para los próximos niveles a Clases, Propiedades e Individuos.
     \begin{itemize}
-        \item El criterio para ponderar la importancia de las Clases para crear el primer nivel: donde decidimos usar el criterio de centralidad de un nodo, teniendo en cuenta solo la relación \emph{rdfs:domain}.
+        \item {\bf El criterio para ponderar la importancia de las Clases para crear el primer nivel}: donde decidimos usar el criterio de centralidad de un nodo, teniendo en cuenta solo la relación \emph{rdfs:domain}.
     \end{itemize}
-    \item El recorrido de la ontología para crear los siguientes niveles del Árbol: para el cual seleccionamos las relaciones \emph{rdfs:Domain}, \emph{owl:subPropertyOf}, \emph{rdfs:Range} y \emph{rdfs:subClassOf}. El recorrido para cada Entidad visita todos sus vecinos a solo un nivel de profundidad.
+    \item {\bf El recorrido de la ontología para crear los siguientes niveles del Árbol}: para el cual seleccionamos las relaciones \emph{rdfs:Domain}, \emph{owl:subPropertyOf}, \emph{rdfs:Range} y \emph{rdfs:subClassOf}. El recorrido para cada Entidad visita todos sus vecinos a solo un nivel de profundidad.
 \end{itemize}
 
 Los resultados fueron satisfactorios, obteniendo estructuras que corresponden a los resultados esperados. 
