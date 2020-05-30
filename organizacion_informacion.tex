@@ -1,17 +1,18 @@
-\chapter{Organización de la información}
+\chapter{Organización de la información\label{cap:organizacion}}
 
-Antes de comenzar con el desarrollo de los procesos asociados a la Generación de Lenguaje Natural, iniciaremos con el problema de Organizar la Información de una ontología.  
+Antes de comenzar con el desarrollo de los procesos asociados a la Generación de Lenguaje Natural, iniciaremos con el problema de \textit{Organizar la Información} de una ontología.  
 
 Este capítulo describe el diseño e implementación de un módulo para organizar y estructurar la información de una ontología de forma más significativa. Reiter E.~\cite{reiter2007architecture} ha propuesto esta etapa previa de preprocesamiento para el análisis y la interpretación de datos, aunque fue aplicada en una entrada de datos en crudo (generada directamente de sensores) en lugar de una base de conocimiento. En este caso, el resultado del preprocesamiento será usado para poder abordar la coherencia global del texto.
 
 \section{Introducción}
-Considerando lo propuesto por la Teoría de Veins, para proveer de coherencia global a un texto debemos crear una estructura jerárquica que facilite la relación entre unidades textuales. A medida que se avanza en el texto, un concepto solo debería ser capaz de referenciar otros conceptos que hayan sido nombrados anteriormente, ya sea en el mismo nivel de jerarquía o en niveles superiores. Esto implica evitar que una entidad en un nivel \emph{N} haga referencia a entidades que se encuentren en niveles \emph{N+1} (niveles inferiores). 
+Considerando lo propuesto por la Teoría de Veins, para proveer de coherencia global a un texto debemos crear una estructura jerárquica que facilite la relación entre unidades textuales. A medida que se avanza en el desarrollo de un texto, un concepto solo debería ser capaz de referenciar a otros conceptos que hayan sido nombrados anteriormente, ya sea en el mismo nivel de jerarquía o en niveles superiores. Esto implica evitar que una entidad en un nivel \emph{N} haga referencia a entidades que se encuentren en niveles \emph{N+1} (niveles inferiores). 
 
 Suponemos que las entidades que tienen mayor impacto en la ontología son las que deberían aparecer en los niveles superiores de la jerarquía, con el objetivo de usarlas como hilo conductores para estructurar el texto. 
 
-Para identificar las entidades más relevantes, usaremos las medidas de centralidad de los nodos.
+Para identificar las entidades más relevantes, usaremos las medidas de centralidad de los nodos. 
 
 A continuación veremos un ejemplo a partir de la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de la ontología {\tt pizza.owl}\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}.
+
 
 Nótese que hay formas más adecuadas que otras para comenzar a transmitirle a un receptor toda la información del grafo. Algunos de los posibles tópicos que engloban o relacionan a la mayoría de los datos expuestos son ``Tipo de comidas'', o ``Ingredientes de la pizza'', siendo que, la mayor cantidad de información está relacionada a la pizza. 
 
@@ -46,16 +47,16 @@ Para este problema hemos reconocido dos sub-problemas a tratar:
     \item El recorrido del grafo para obtener las unidades de información adecuada que maximicen la relación semántica respecto a los tópicos del texto (para abordar la coherencia global).% En este caso, las unidades de información que se tienen en cuenta para el recorrido del grafo son \emph{rdfs:subClassOf}, \emph{owl:ObjectProperty} y \emph{owl:DataProperty}.
 \end{itemize}
 
-Estos sub-problemas serán desarrollados en las siguientes Secciones.  Nos referiremos a la estructura jerárquica como Árbol de Entidades.
+Este sub-problema de la estructuración jerárquica como Árbol de entidades serán desarrollados en las siguientes secciones.  %Nos referiremos a la estructura jerárquica como Árbol de Entidades.
 
 
 \section{Diseño}
 Para organizar la información, se crearon cuatro módulos que transforman la ontología de entrada en un árbol con toda la información contenida en la ontología. A continuación se describe cada módulo:
 \begin{itemize}
-    \item Traductor: recibe la entrada y la traduce a una representación interna de la ontología.
-    \item Clasificador de Entidades: clasifica y extrae las entidades más relevantes, utilizando como criterio las medidas de centralidad.
-    \item Generador de Nuevo Grupo de Entidades: recibe una Entidad y recorre sus relaciones para crear un nuevo grupo de entidades relacionados semánticamente.
-    \item Generador del Árbol de Entidades: se encarga de crear los niveles del Árbol de Entidades. 
+    \item \textbf{Traductor}: recibe la entrada y la traduce a una representación interna de la ontología.
+    \item \textbf{Clasificador de Entidades}: clasifica y extrae las entidades más relevantes, utilizando como criterio las medidas de centralidad.
+    \item \textbf{Generador de Nuevo Grupo de Entidades}: recibe una Entidad y recorre sus relaciones para crear un nuevo grupo de entidades relacionado semánticamente.
+    \item \textbf{Generador del Árbol de Entidades}: se encarga de crear los niveles del Árbol de Entidades. 
 \end{itemize}
 
 En la Figura~\ref{fig:modulos_organizador_inf} se muestra la transformación de la ontología OWL a través de los módulos. Los pasos 4 y 5 son iterativos, el proceso finaliza cuando no queden más Entidades que explorar, lo cual es definido por el Generador del Árbol de Entidades.
@@ -95,7 +96,6 @@ La eficacia de este enfoque depende fuertemente de que las \emph{ObjectPropertie
 \subsubsection{Seleccionando las principales clases}
 \label{sec:select_class}
 Una vez calculado el valor de cada clase, se pueden seleccionar las clases que superen cierto umbral para agregarlas al primer nivel de la estructura jerárquica que guiará el desarrollo del texto. En este trabajo, se recorren todas las clases y se seleccionan las que superen el valor promedio entre cantidad de propiedades y cantidad de clases.
-
 Si ninguna supera el valor promedio, se selecciona la o las clases con el valor más alto.
 
 Cuando se seleccionan las clases que van a representar los temas principales, puede ocurrir que se elijan clases de una misma rama en la jerarquía de clases. Esto hace que se pierda algo de semántica, pues se incluyen clases en el mismo nivel, siendo que algunas son más específicas y pueden ser alcanzadas desde sus ancestros. Para evitar este problema, se optó por eliminar las subclases que sean seleccionadas en un principio, y que tengan a una clase ancestro dentro de los temas principales. Por ejemplo, continuando con la ontología de las pizzas, si las principales clases seleccionadas son \emph{comida} y \emph{pizza}, la clase \emph{pizza} sería eliminada del conjunto, pues es subclase de \emph{comida}. 
@@ -284,7 +284,6 @@ Respecto al resultado esperado, la organización de la información es satisfact
 
 \subsection{Organización de Ontología Wine}
 Esta ontología tiene como objetivo describir un dominio de vinos y comidas\footnote{\url{https://protege.stanford.edu/publications/ontology_development/ontology101-noy-mcguinness.html}}, por lo que esperamos que las entidades que se consideren más relevantes sean aquellas afines a los vinos y comidas.
-
 En la Figura~\ref{fig:caso_estudio_wine} se puede ver el resultado de aplicar el algoritmo.
 
 \begin{figure}

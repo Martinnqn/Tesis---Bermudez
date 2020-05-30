@@ -1,9 +1,9 @@
 \chapter{Generación del documento de texto}
 
-En este Capítulo se diseñará e implementará el proceso de generación del Documento de Texto, teniendo en mente los procesos conocidos de la GNL. Usaremos el Árbol de Entidades del Organizador de Información para dar una estructura inicial al texto, y luego verbalizaremos los Constructores de la Ontología, teniendo en cuenta la coherencia local dentro de los párrafos generados.
+En este Capítulo se diseñará e implementará el proceso de generación del Documento de Texto, teniendo en mente los procesos conocidos de la GLN vistos anteriormente. Usaremos el Árbol de Entidades del Organizador de Información detallado en el Capítulo~\ref{cap:organizacion} para dar una estructura inicial al texto, y luego verbalizaremos los Constructores de la Ontología, teniendo en cuenta la coherencia local dentro de los párrafos generados.
 
 \section{Introducción}
-Se crearon tres módulos principales teniendo como referencia las actividades de la Generación de Lenguaje Natural nombradas en la Sección~\ref{sec:tareas_gnl}. Los módulos son \emph{Macro planificación}, \emph{Micro planificación} y \emph{Realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
+Para abordar el proceso de generación de texto, se tomó como referencia las actividades de la Generación de Lenguaje Natural nombradas en la Sección~\ref{sec:tareas_gnl}. Se crearon tres módulos principales: \emph{Macro planificación}, \emph{Micro planificación} y \emph{Realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
 
 Elegimos organizar toda la información de la ontología generando un documento dividido en secciones, subsecciones y párrafos. 
 
@@ -28,11 +28,11 @@ Dado una entidad \emph{E}, para recuperar la información que la describe, adopt
 \end{itemize}
 
 Estos criterios permiten desarrollar el texto tomando centralmente a cada entidad una sola vez, de manera que el foco de atención solo salte hacia otras entidades cuando no haya nada más para decir acerca de \emph{E}.
-\\
+
 
 En el nivel micro, debemos definir una traducción desde la gramática del lenguaje OWL hacia el lenguaje humano. Luego se modificará convenientemente la traducción para alcanzar el Documento Final, generando un texto más fluido y organizando las sentencias para maximizar la cohesión.
 
-La relación entre el Organizador de Información y el Generador del Documento de Texto se puede ver en la Figura \ref{fig:modulos_sgln}.
+La relación entre el Organizador de Información y el Generador del Documento de Texto se puede ver en la Figura~\ref{fig:modulos_sgln}.
 
 \begin{figure}
     \centering
@@ -42,7 +42,7 @@ La relación entre el Organizador de Información y el Generador del Documento d
 \end{figure}
 
 
-Ampliando el módulo \emph{Generador de Documento de Texto} en la Figura \ref{fig:modulos_documento_final}, se puede apreciar el flujo de información entre los módulos desarrollados en este Capítulo.
+Ampliando el módulo \emph{Generador de Documento de Texto} en la Figura~\ref{fig:modulos_documento_final}, se puede apreciar el flujo de información entre los módulos desarrollados en este Capítulo.
 
 \begin{figure}
     \centering
@@ -56,7 +56,7 @@ Ampliando el módulo \emph{Generador de Documento de Texto} en la Figura \ref{fi
 \label{sec:macro_planning}
 En esta etapa se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de Macro Planificación. Para crear el documento en la etapa de Macro Planificación, se reemplazó el módulo Generador del Árbol de Entidades del Organizador de Información, por un nuevo módulo específico del Macro Planning. El motivo de este reemplazo es evitar la creación de interfaces entre el Organizador de Información y el Macro Planning, por el overhead que estas suponen, ya que la creación del Árbol de Entidades y la Macro Planificación resultan ser procesos equivalentes, por lo que pueden ser reemplazables, evitando recorrer el doble de veces la estructura jerárquica.
 
-En la figura~\ref{fig:modulos_plan_documento} se puede ver el nuevo módulo Generador del Plan de Documento, que retorna como salida un Plan de Documento.
+En la Figura~\ref{fig:modulos_plan_documento} se puede ver el nuevo módulo Generador del Plan de Documento, que retorna como salida un Plan de Documento.
 
 \begin{figure}
     \centering
@@ -69,10 +69,10 @@ El documento de texto estará representado internamente con una estructura basad
 
 La representación interna del documento de texto tiene en cuenta los siguientes criterios:
 \begin{itemize}
-    \item Cada Entidad presente en la estructura que resulta del Organizador de Información es considerada un tópico. 
-    \item A cada tópico del primer nivel le corresponde una sección. Los tópicos anidados (Subclases, Individuos y Relaciones) se corresponden a subsecciones (secciones anidadas).
-    \item Cada sección está compuesta de al menos un párrafo y un título.
-    \item Cada párrafo trata un único tópico, el cual puede ser una clase o un individuo. También, un párrafo puede o no tener alguna sentencia. Esto se debe a que no todas las entidades tienen asociados axiomas que la describan.
+    \item Cada\textit{ Entidad} presente en la estructura que resulta del Organizador de Información es considerada un tópico. 
+    \item A cada\textit{ Tópico} del primer nivel le corresponde una sección. Los tópicos anidados (Subclases, Individuos y Relaciones) se corresponden a subsecciones (secciones anidadas).
+    \item Cada \textit{Sección} está compuesta de al menos un párrafo y un título.
+    \item Cada \textit{Párrafo} trata un único tópico, el cual puede ser una clase o un individuo. También, un párrafo puede o no tener alguna sentencia. Esto se debe a que no todas las entidades tienen asociados axiomas que la describan.
 \end{itemize}
 
 \subsection{Secciones y párrafos}
@@ -94,7 +94,7 @@ Al tratar un solo tipo de información por oración, se maximiza la cohesión de
 
 
 \subsection{Diagrama de clases}
-En la figura \ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al Macroplanificador. La clase \emph{TextManager} es la implementación del módulo Generador del Plan de Documento. Esta clase se encarga de crear la clase \emph{Text}, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Oraciones, cada uno de los cuales tiene asociado su respectiva clase \emph{Section}, \emph{Paragraph} y \emph{Statement}.
+En la Figura~\ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama de clases correspondiente al Macroplanificador. La clase \emph{TextManager} es la implementación del módulo Generador del Plan de Documento. Esta clase se encarga de crear la clase \emph{Text}, que es la representación interna de un documento de texto. El documento está compuesto por Secciones, Párrafos y Oraciones, cada uno de los cuales tiene asociado su respectiva clase \emph{Section}, \emph{Paragraph} y \emph{Statement}.
 
 \begin{figure}
     \centering
@@ -161,7 +161,7 @@ Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gram
     \end{itemize}
     \end{multicols}
 \end{figure}
-
+%%Sandra
 
 \begin{figure}
 \captionof{listCap}{Constructores de Expresiones de Clase}
@@ -619,7 +619,7 @@ Para llevar a cabo la referenciación, se tuvo en cuenta el uso de pronombres de
 La agregación de sentencias ocurre en dos lugares. Uno es durante el proceso de producción de una oración en el constructor \emph{N-Ary}, es decir dentro de una oración; el otro es durante el proceso de creación de párrafos, es decir, entre oraciones.
 
 %de marco metodologico para la gnl
-Basaremos la agregación en la conjunción por componentes compartidos~\cite{bernardos2003marco}. El objetivo es que los elementos en común aparezcan una sola vez, mediante elipsis del componente repetido, por ejemplo: sean las oraciones: ``la casa tiene color rojo'', ``la casa tiene color azul'' y ``la casa tiene color verde'', al comparar linealmente las oraciones, se elimina de las consecutivas oraciones la parte inicial que tengan en común. El resultado de esta agregación es: ``la casa tiene color rojo, azul y verde''.
+Basaremos la agregación en la conjunción por componentes compartidos~\cite{bernardos2003marco}. El objetivo es que los elementos en común aparezcan una sola vez, mediante elipsis\footnote{\url{https://www.significados.com/elipsis/}} del componente repetido, por ejemplo: sean las oraciones: ``la casa tiene color rojo'', ``la casa tiene color azul'' y ``la casa tiene color verde'', al comparar linealmente las oraciones, se elimina de las consecutivas oraciones la parte inicial que tengan en común. El resultado de esta agregación es: ``la casa tiene color rojo, azul y verde''.
     
 \begin{itemize}
     \item {\bf Agregación en constructor NAry}: en las situaciones en las que este constructor se utiliza para enumerar sentencias, como el orden de los elementos enumerados no altera el significado de la oración, se optó por agrupar los elementos según su función (T, SV, ON). Para el grupo de sentencias T, se omitió información inicial de cada sentencia. Por ejemplo: las oraciones ``pizza con carne'', ``pizza picante'' y ``pizza no vegetariana'', se convierten en la oración ``pizza con carne, picante y no vegetariana''.
@@ -653,7 +653,7 @@ EquivalentClasses(
     )
 )    
 \end{verbatim}
-La verbalización se muestra en la figura~\ref{fig:ejemplo_verb_espaniol}.
+La verbalización se muestra en la Figura~\ref{fig:ejemplo_verb_espaniol}.
 
 Los pasos del proceso se encuentran enumerados desde el 1 al 6. La verbalización comienza en la parte más profunda del árbol, y a medida que se generan las oraciones parciales se retornan al nivel superior del árbol para continuar la composición.
 
@@ -693,7 +693,7 @@ EquivalentClasses(
     )
 )
 \end{verbatim}
-La verbalización se muestra en la figura~\ref{fig:ejemplo_verb_ingles}.
+La verbalización se muestra en la Figura~\ref{fig:ejemplo_verb_ingles}.
 
 Los pasos del proceso se encuentran enumerados desde el 1 al 4. Las gramáticas utilizadas son similares a las explicadas para lenguaje español, con la diferencia que los enlaces han sido traducidos a inglés.
 
@@ -712,7 +712,7 @@ La verbalización de este axioma da como resultado dos oraciones. Como ambas ora
 \end{figure}
 
 \subsection{Diagrama de clases}
-En la figura \ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de Micro Planificación. 
+En la Figura~\ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de Micro Planificación. 
 
 La clase \emph{Statement} es la encargada de realizar la verbalización de los constructores de Axiomas y las enumeraciones. Un objeto \emph{Statement} puede generar más de una oración, ya que cada \emph{Statement} trata un solo tópico y un solo tipo de constructor, pero pueden haber varios axiomas que utilicen el mismo tipo de constructor, por lo que todos esos axiomas estarán en la misma \emph{Statement}.
 
@@ -772,7 +772,7 @@ Para decidir si un tópico es planificado como una Sección, se utilizan los sig
 Si la cantidad de oraciones requeridas para ser considerado una sección, tiende a cero, la planificación del documento será similar al Documento Inicial; mientras que si la cantidad de oraciones tiende a infinito, la planificación perderá niveles de jerarquía, y únicamente contemplará como secciones a los tópicos del primer nivel. Ninguno de los dos extremos es conveniente: o se pierde coherencia, o se obtiene un texto con demasiados niveles de secciones, que resulta antinatural. Sin embargo, un documento en el que predominan las sub-secciones (aunque tengan poca información), ayuda a los humanos a reconocer y establecer relaciones entre los tópicos, siendo el objetivo principal no desaprovechar la semántica del dominio modelado, y teniendo como intención principal que el lector comprenda el dominio modelado en la ontología.
 
 \section{Implementación del Realizador}
-El Realizador está embebido dentro de la clase Section, en forma de métodos que implementan los criterios vistos para la definición del documento. En el Anexo~\ref{sec:clase_section} se presenta un pseudocódigo de la clase Section.
+El Realizador está embebido dentro de la \textit{clase }\textit{Section}, en forma de métodos que implementan los criterios vistos para la definición del documento. En el Anexo~\ref{sec:clase_section} se presenta un pseudocódigo de la\textit{ clase }\textit{Section}.
 
 \section{Casos de estudio}
 En el capítulo de Organización de Información analizamos cómo quedan organizados los tópicos de las ontologías Pizza y Wine, por lo que continuaremos con estas ontologías de ejemplo, analizando la realización del texto generado. Para identificar el formato del texto, a las secciones se le incluye el número de sección a la izquierda del título de la sección, y cada párrafo comienza con sangría.
@@ -785,7 +785,7 @@ Ya que existen muchos parámetros a tener en cuenta en el análisis de un texto,
 
 
 \subsection{Generación documento ontología Pizza}
-Ya que el texto completo resulta muy extenso, solo pondremos los fragmentos más significativos del Documento Final. En la figura~\ref{fig:doc_final_pizza} se presentan los fragmentos a analizar. Para visualizar la estructura total del documento, se imprimió el índice de las secciones, el cual se muestra en la Figura~\ref{fig:indice_secciones_pizza}. 
+Ya que el texto completo resulta muy extenso, solo pondremos los fragmentos más significativos del Documento Final. En la Figura~\ref{fig:doc_final_pizza} se presentan los fragmentos a analizar. Para visualizar la estructura total del documento, se imprimió el índice de las secciones, el cual se muestra en la Figura~\ref{fig:indice_secciones_pizza}. 
 
 Los tópicos reconocidos representan bien el tema del texto. Se puede apreciar que la estructura del documento comparte algunas similitudes con el Documento Inicial, manteniendo la coherencia global, pero disminuyó la cantidad de secciones, ya que muchas de ellas se convirtieron en párrafos. Aún así, prevalecen títulos de secciones que agregan información semántica aunque no aporten información en forma de texto, tales como Ingredientes, Coberturas y Bases.
 
