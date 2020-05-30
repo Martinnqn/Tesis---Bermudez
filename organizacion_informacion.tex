@@ -9,10 +9,9 @@ Considerando lo propuesto por la Teoría de Veins, para proveer de coherencia gl
 
 Suponemos que las entidades que tienen mayor impacto en la ontología son las que deberían aparecer en los niveles superiores de la jerarquía, con el objetivo de usarlas como hilo conductores para estructurar el texto. 
 
-Para identificar las entidades más relevantes, usaremos las medidas de centralidad de los nodos. 
+%Para identificar las entidades más relevantes, usaremos las medidas de centralidad de los nodos. 
 
-A continuación veremos un ejemplo a partir de la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de la ontología {\tt pizza.owl}\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}.
-
+A continuación analizaremos la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de las clases (Figura (a)) y propiedades (Figura (b)) de la ontología {\tt pizza.owl}\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}, y explicaremos cómo pretendemos estructurar su información.
 
 Nótese que hay formas más adecuadas que otras para comenzar a transmitirle a un receptor toda la información del grafo. Algunos de los posibles tópicos que engloban o relacionan a la mayoría de los datos expuestos son ``Tipo de comidas'', o ``Ingredientes de la pizza'', siendo que, la mayor cantidad de información está relacionada a la pizza. 
 
@@ -35,10 +34,10 @@ Si se comenzara a estructurar el texto desde ``Helado'' o desde ``Vegetariana'',
 \caption{Subconjunto de la ontología de pizzas.} \label{fig:pizza.owl}
 \end{figure}
 
-Una vez identificados los nodos sobresalientes, se debe estructurar la información a partir de ellos. Para esto se recorre el grafo de la ontología a través de las relaciones entre los nodos.
 
-Considerando que las ontologías de la Web Semántica son Redes Libres de Escala, esperamos que la naturaleza de las relaciones brinden información suficiente para discriminar entre el contenido principal y el menos relevante.
-\\
+Considerando que las ontologías de la Web Semántica son Redes Libres de Escala, esperamos que la naturaleza de las relaciones brinden información suficiente para discriminar entre el contenido principal y el menos relevante. 
+
+Una vez identificados los nodos sobresalientes (temas principales), se debe estructurar la información a partir de ellos. Para esto se recorre el grafo de la ontología a través de las relaciones entre los nodos.
 
 Para este problema hemos reconocido dos sub-problemas a tratar:
 
