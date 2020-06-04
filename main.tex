@@ -64,26 +64,56 @@
 
 \begin{document}
 	
-\title{Generación de texto en la web semántica}
-\author{\ }
-\date{}
-\maketitle
 
 %Empieza la numeración en números romanos
 \frontmatter
-\tableofcontents
+% Incluimos la carátula
+\input{1_caratula}
+
+% Incluimos la página de prefacio.
+\input{2_prefacio}
+
+
+% Incluimos la página de dedicatorias. Esta página es opcional.
+% Si la página no quiere ser incluida anteponga el símbolo "%" al comienzo de la siguiente línea
+\input{3_dedicatoria}
+
+% Incluimos la página de agradecimientos. Esta página es opcional.
+% Si la página no quiere ser incluida anteponga el símbolo "%" al comienzo de la siguiente línea
+\input{4_agradecimiento}
+
+% Incluimos la página de resumen
+\input{5_resumen}
+
+% Incluimos la página de resumen en inglés
+\input{6_abstract}
+
+
+% Tabla de contenido o Indice del contenido
+\tableofcontents{}
+
+% Lista de figuras o Indice de figuras
+\listoffigures
+
+% Lista de tablas o Indice de Tablas
+%\listoftables
+
+\newpage
+
 %Empieza la numeración en números arábigos
 \mainmatter
+
+
 
 \chapter{Introducción}
 La Web Semántica puede ser vista como una colección de estándares y tecnologías que permiten a las máquinas entender el significado (semántica) de la información disponible en la Web~\cite{yu2011developer}. Tiene como objetivo enriquecer la web actual agregando explícitamente una capa de significado a los datos. De esta manera, se crea un mejor ambiente para poder automatizar tareas complejas que actualmente se realizan por los humanos de forma manual. Además, crea un espacio donde la información tendría un significado bien definido, de manera que pudiera ser interpretada tanto por agentes humanos como por agentes computarizados.
 
 %MAYO el owl  no es solo para describir sino  para razonar tambien. Para representar tenemos tambien a RDF por ejpemplo. Habría que arreglar. AGREGADO RDF Y RAZONAMIENTO
-Para describir el dominio de interés en la Web Semántica, se adoptó el uso de ontologías. La W3C (\emph{World Wide Web Consortium })\footnote{W3C es un consorcio internacional que se encarga de establecer y recomendar estándares para la \emph{World Wide Web}} recomienda la representación de la información en la Web con los lenguajes RDF (\emph{Resource Description Framework})~\cite{RDFRecomendW3C} y OWL (\emph{Ontology Web Language})~\cite{RecomendW3C}. El lenguaje OWL tiene base en la lógica descriptiva y el vocabulario de RDF, lo que lo hace idóneo para representar conocimiento y permitir que agentes informáticos puedan razonar sobre ese conocimiento.
+Para describir el dominio de interés en la Web Semántica, se adoptó el uso de ontologías. Algunos lenguajes conocidos para representar ontologías son RDF (\emph{Resource Description Framework})~\cite{RDFRecomendW3C} y OWL 2. La W3C (\emph{World Wide Web Consortium })\footnote{W3C es un consorcio internacional que se encarga de establecer y recomendar estándares para la \emph{World Wide Web}} recomienda la representación de la información en la Web Semántica con el lenguaje OWL 2(\emph{Ontology Web Language})~\cite{RecomendW3C}. El lenguaje OWL 2 tiene base en la lógica descriptiva y el vocabulario de RDF, lo que lo hace idóneo para representar conocimiento y permitir que agentes informáticos puedan razonar sobre ese conocimiento.
 
 Como las ontologías estructuran los datos de manera formal, son poco comprensibles por usuarios no expertos, y no brindan una cómoda visualización de la información para aquellos que quieran beneficiarse del uso de las tecnologías semánticas.
 
-Actualmente existen algunas aplicaciones para  desarrollar y explorar ontologías, como Protégé~\cite{protege}, Mindswap~\cite{golbeck2002new}, OntoEdit~\cite{sure2002ontoedit}, OntoLingua~\cite{farquhar1997ontolingua}, WebOnto~\cite{domingue1998tadzebao}, entre otras, pero no resultan suficientemente satisfactorias para usuarios no expertos, o usuarios finales. 
+Actualmente existen algunas aplicaciones para  desarrollar y explorar ontologías, como Pro-tégé~\cite{protege}, Mindswap~\cite{golbeck2002new}, OntoEdit~\cite{sure2002ontoedit}, OntoLingua~\cite{farquhar1997ontolingua}, WebOnto~\cite{domingue1998tadzebao}, entre otras, pero no resultan suficientemente satisfactorias para usuarios no expertos, o usuarios finales. 
 
 Por este motivo, expresar el contenido formal en Lenguaje Natural (LN) resulta atractivo, brindando la capacidad de documentar y expresar ontologías en un lenguaje accesible por usuarios no entrenados en matemáticas o el dominio modelado. Un Sistema de Generación de Lenguaje Natural (SGLN) puede tener diferentes objetivos en cuanto a la salida que producen, ya sea enfocarse en la facilidad de lectura, la capacidad de poder generar diferentes oraciones para expresar la misma información,  enfocarse en la organización del contenido, entre otras. En el ámbito de las ontologías existen algunos trabajos que involucran el procesamiento de lenguaje natural~\cite{moreno2018ontologia}\cite{perez2002explotacion}\cite{vallez2009web}. Como se verá en la Sección~\ref{sec:trabajos_rel}, cada enfoque adoptado por los trabajos tiene ventajas y desventajas, por ejemplo en cuanto a la integración con las ontologías, debido a la necesidad de modificar la ontología subyacente o de requerir convenciones de nombrado; como en su potencial para resultarle útil al usuario final, debido a la complejidad de las oraciones, la falta de flexibilidad léxica, y la organización del contenido del texto, lo que resulta en una pobre comprensión el texto.  
 

@@ -5,13 +5,13 @@ Antes de comenzar con el desarrollo de los procesos asociados a la Generación d
 Este capítulo describe el diseño e implementación de un módulo para organizar y estructurar la información de una ontología de forma más significativa. Reiter E.~\cite{reiter2007architecture} ha propuesto esta etapa previa de preprocesamiento para el análisis y la interpretación de datos, aunque fue aplicada en una entrada de datos en crudo (generada directamente de sensores) en lugar de una base de conocimiento. En este caso, el resultado del preprocesamiento será usado para poder abordar la coherencia global del texto.
 
 \section{Introducción}
-Considerando lo propuesto por la Teoría de Veins, para proveer de coherencia global a un texto debemos crear una estructura jerárquica que facilite la relación entre unidades textuales. A medida que se avanza en el desarrollo de un texto, un concepto solo debería ser capaz de referenciar a otros conceptos que hayan sido nombrados anteriormente, ya sea en el mismo nivel de jerarquía o en niveles superiores. Esto implica evitar que una entidad en un nivel \emph{N} haga referencia a entidades que se encuentren en niveles \emph{N+1} (niveles inferiores). 
+Considerando lo propuesto por la Teoría de Veins~\cite{cristea1998veins}, para proveer de coherencia global a un texto debemos crear una estructura jerárquica que facilite la relación entre unidades textuales. A medida que se avanza en el desarrollo de un texto, un concepto solo debería ser capaz de referenciar a otros conceptos que hayan sido nombrados anteriormente, ya sea en el mismo nivel de jerarquía o en niveles superiores. Esto implica evitar que una entidad en un nivel \emph{N} haga referencia a entidades que se encuentren en niveles \emph{N+1} (niveles inferiores). 
 
 Suponemos que las entidades que tienen mayor impacto en la ontología son las que deberían aparecer en los niveles superiores de la jerarquía, con el objetivo de usarlas como hilo conductores para estructurar el texto. 
 
 %Para identificar las entidades más relevantes, usaremos las medidas de centralidad de los nodos. 
 
-A continuación analizaremos la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de las clases (Figura (a)) y propiedades (Figura (b)) de la ontología {\tt pizza.owl}\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}, y explicaremos cómo pretendemos estructurar su información.
+A continuación analizaremos la Figura~\ref{fig:pizza.owl}, la cual contiene representada gráficamente un subconjunto de las clases (Figura~\ref{fig:jerarquilapizza}) y propiedades (Figura~\ref{fig:propiedadespizza}) de la ontología {\tt pizza.owl}\footnote{https://protege.stanford.edu/ontologies/pizza/pizza.owl}, y explicaremos cómo pretendemos estructurar su información.
 
 Nótese que hay formas más adecuadas que otras para comenzar a transmitirle a un receptor toda la información del grafo. Algunos de los posibles tópicos que engloban o relacionan a la mayoría de los datos expuestos son ``Tipo de comidas'', o ``Ingredientes de la pizza'', siendo que, la mayor cantidad de información está relacionada a la pizza. 
 
@@ -28,14 +28,14 @@ Si se comenzara a estructurar el texto desde ``Helado'' o desde ``Vegetariana'',
 \centering
 
 \subfigure[Jerarquía de clases de la ontología pizza]{%\fbox{
-\includegraphics[scale=0.9]{img/presentacion_problema/onto_pizza.pdf}}%}
+\includegraphics[scale=0.9]{img/presentacion_problema/onto_pizza.pdf}\label{fig:jerarquilapizza}}%}
 
-\subfigure[Jerarquía de propiedades de la ontología pizza] {\includegraphics[scale=0.9]{img/presentacion_problema/onto_pizza_properties.pdf}}
+\subfigure[Jerarquía de propiedades de la ontología pizza] {\includegraphics[scale=0.9]{img/presentacion_problema/onto_pizza_properties.pdf}\label{fig:propiedadespizza}}
 \caption{Subconjunto de la ontología de pizzas.} \label{fig:pizza.owl}
 \end{figure}
 
 
-Considerando que las ontologías de la Web Semántica son Redes Libres de Escala, esperamos que la naturaleza de las relaciones brinden información suficiente para discriminar entre el contenido principal y el menos relevante. 
+Considerando que las ontologías de la Web Semántica son Redes Libres de Escala~\cite{zhang2008scale}, esperamos que la naturaleza de las relaciones brinden información suficiente para discriminar entre el contenido principal y el menos relevante. 
 
 Una vez identificados los nodos sobresalientes (temas principales), se debe estructurar la información a partir de ellos. Para esto se recorre el grafo de la ontología a través de las relaciones entre los nodos.
 
@@ -78,7 +78,7 @@ Una vez creada la representación de la ontología, el segundo módulo debe clas
 \subsubsection{Criterio de clasificación}
 El criterio principal para establecer una clasificación sobre las clases de una ontología, y que tal clasificación sirva para seleccionar las clases más relevantes, se basa en cuánta información posee una clase respecto al resto de las clases en la ontología. Consideramos que una clase tiene más información que otra si está presente en más cantidad de dominios de \emph{ObjectProperties}. Esto permite reconocer las clases que tengan mayor cantidad de conexiones con otras clases, y que a su vez sean el núcleo de la relación. 
 
-Para obtener la cantidad de información de cada clase, utilizaremos el grafo subyacente a la ontología y calcularemos el \emph{outdegree} de cada nodo que represente una clase. Para el cálculo se tendrá en cuenta únicamente la relación \emph{rdf:domain}.
+Para obtener la cantidad de información de cada clase, utilizaremos el grafo subyacente a la ontología y calcularemos el \emph{outdegree}~\footnote{El \emph{outdegree} es la medida de la cantidad de conexiones salientes de un nodo.} de cada nodo que represente una clase. Para el cálculo se tendrá en cuenta únicamente la relación \emph{rdf:domain}.
 
 Teniendo en cuenta a las clases mejor clasificadas, se puede centrar lo que se dice en el texto alrededor de estas clases.
 
