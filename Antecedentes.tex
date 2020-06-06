@@ -69,13 +69,13 @@ Según el tipo de entrada, un Sistema de Generación de Lenguaje Natural (SGLN) 
 \end{itemize}
 
 \subsection{Tareas de la generación de lenguaje natural}
-En el ámbito de la Generación de Lenguaje Natural, se engloban las tareas de cada nivel de abstracción en un módulo particular. Aunque no existe una clara delimitación de cuáles son y dónde deben realizarse cada tarea, existe un texto de referencia que define siete tareas y las ubica en una arquitectura de tres módulos principales: \emph{Macroplanning}, \emph{Microplanning} y \emph{Realización gramatical}~\cite{vicente2015generacion}.
+En el ámbito de la Generación de Lenguaje Natural, se engloban las tareas de cada nivel de abstracción en un módulo particular. Aunque no existe una clara delimitación de cuáles son y dónde deben realizarse cada tarea, existe un texto de referencia que define siete tareas y las ubica en una arquitectura de tres módulos principales: Macroplanificación, Microplanificación y Realización gramatical~\cite{vicente2015generacion}.
 
 \begin{itemize}
-    \item  \emph{Macroplanning:} agrupa las tareas de nivel más abstracto. Se encarga de seleccionar la información que se usará en la generación de texto y de organizarla a nivel de capítulos, secciones, párrafos, y sentencias.
-    \item \emph{Microplanning:} es la etapa asociada a la construcción de sentencias, agrupa las tareas de nivel de abstracción intermedio. Dado un conjunto de datos que deben estar presentes en una sentencia, el \emph{Microplanning} decide en qué orden aparecerán y cómo se combinarán para producir una oración cohesiva. 
+    \item  \emph{Macroplanificación:} agrupa las tareas de nivel más abstracto. Se encarga de seleccionar la información que se usará en la generación de texto y de organizarla a nivel de capítulos, secciones, párrafos, y sentencias.
+    \item \emph{Microplanificación:} es la etapa asociada a la construcción de sentencias, agrupa las tareas de nivel de abstracción intermedio. Dado un conjunto de datos que deben estar presentes en una sentencia, el \emph{Microplanificación} decide en qué orden aparecerán y cómo se combinarán para producir una oración cohesiva. 
     Para esto, se selecciona las configuraciones léxicas de las palabras, se elige qué entidades se reemplazarán por una expresión de referencia, y qué oraciones se pueden combinar para mejorar la fluidez del texto.
-    \item \emph{Realización} es la última etapa, donde se seleccionan las palabras adecuadas según lo establecido en el \emph{Microplanning}. Puede involucrar, por ejemplo, el uso de algoritmos de conjugación de verbos. 
+    \item \emph{Realización} es la última etapa, donde se seleccionan las palabras adecuadas según lo establecido en el \emph{Microplanificación}. Puede involucrar, por ejemplo, el uso de algoritmos de conjugación de verbos. 
     Genera la salida final, definiendo las oraciones y la estructura final del documento.
 \end{itemize}
 

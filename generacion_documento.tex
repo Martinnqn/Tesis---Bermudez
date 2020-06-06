@@ -3,7 +3,7 @@
 En este Capítulo se diseñará e implementará el proceso de generación del Documento de Texto, teniendo en mente los procesos conocidos de la GLN vistos anteriormente. Usaremos el Árbol de Entidades del Organizador de Información detallado en el Capítulo~\ref{cap:organizacion} para dar una estructura inicial al texto, y luego verbalizaremos los Constructores de la Ontología, teniendo en cuenta la coherencia local dentro de los párrafos generados.
 
 \section{Introducción}
-Para abordar el proceso de generación de texto, se tomó como referencia las actividades de la Generación de Lenguaje Natural nombradas en la Sección~\ref{sec:tareas_gnl}. Se crearon tres módulos principales: \emph{Macroplanificador}, \emph{Microplanificador} y \emph{Realización}. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
+Para abordar el proceso de generación de texto, se tomó como referencia las actividades de la Generación de Lenguaje Natural nombradas en la Sección~\ref{sec:tareas_gnl}. Se crearon tres módulos principales: Macroplanificador, Microplanificador y Realizador, los cuales implementan los procesos asociados a las etapas de Macroplanificación, Microplanificación y Realización gramatical, respectivamente. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
 
 Elegimos organizar toda la información de la ontología generando un documento dividido en secciones, subsecciones y párrafos. 
 
@@ -30,7 +30,7 @@ Dado una entidad \emph{E}, para recuperar la información que la describe, adopt
 Estos criterios permiten desarrollar el texto tomando centralmente a cada entidad una sola vez, de manera que el foco de atención solo salte hacia otras entidades cuando no haya nada más para decir acerca de \emph{E}.
 
 
-En el nivel micro, debemos definir una traducción desde la gramática del lenguaje OWL hacia el lenguaje humano. Luego se modificará convenientemente la traducción para alcanzar el Documento Final, generando un texto más fluido y organizando las sentencias para maximizar la cohesión.
+En el nivel micro, debemos definir una traducción desde la gramática del lenguaje OWL 2 hacia el lenguaje humano. Luego se modificará convenientemente la traducción para alcanzar el Documento Final, generando un texto más fluido y organizando las sentencias para maximizar la cohesión.
 
 La relación entre el Organizador de Información y el Generador del Documento de Texto se puede ver en la Figura~\ref{fig:modulos_sgln}.
 
@@ -52,9 +52,9 @@ Ampliando el módulo \emph{Generador de Documento de Texto} en la Figura~\ref{fi
 \end{figure}
 
 
-\section{Diseño Macroplanning}
+\section{Diseño Macroplanificador}
 \label{sec:macro_planning}
-En esta etapa se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de Macroplanificación. Para crear el documento en la etapa de macroplanificación, se reemplazó el módulo Generador del Árbol de Entidades del Organizador de Información, por un nuevo módulo específico del Macroplanning. El motivo de este reemplazo es evitar la creación de interfaces entre el Organizador de Información y el Macroplanning, por el overhead que estas suponen, ya que la creación del Árbol de Entidades y la macroplanificación resultan ser procesos equivalentes, por lo que pueden ser reemplazables, evitando recorrer el doble de veces la estructura jerárquica.
+En esta etapa se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de Macroplanificación. Para crear el documento en la etapa de Macroplanificación, se reemplazó el módulo Generador del Árbol de Entidades del Organizador de Información, por un nuevo módulo específico del Macroplanificador. El motivo de este reemplazo es evitar la creación de interfaces entre el Organizador de Información y el Macroplanificador, por el \emph{overhead} que estas suponen, ya que la creación del Árbol de Entidades y la Macroplanificación resultan ser procesos equivalentes, por lo que pueden ser reemplazables, evitando recorrer el doble de veces la estructura jerárquica.
 
 En la Figura~\ref{fig:modulos_plan_documento} se puede ver el nuevo módulo Generador del Plan de Documento, que retorna como salida un Plan de Documento.
 
@@ -65,7 +65,7 @@ En la Figura~\ref{fig:modulos_plan_documento} se puede ver el nuevo módulo Gene
     \label{fig:modulos_plan_documento}
 \end{figure}
 
-El documento de texto estará representado internamente con una estructura basada en componentes. Esta representación prepara el terreno para que, luego de la \emph{Microplanificación}, el Realizador decida el diseño final del documento.
+El documento de texto estará representado internamente con una estructura basada en componentes. Esta representación prepara el terreno para que, luego de la Microplanificación, el Realizador decida el diseño final del documento.
 
 La representación interna del documento de texto tiene en cuenta los siguientes criterios:
 \begin{itemize}
@@ -99,11 +99,11 @@ En la Figura~\ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama 
 \begin{figure}
     \centering
     \includegraphics{img/generacion_documento/diagrama_clases_macroplanificador.pdf}
-    \caption{Diagrama de clases del Macroplanning.}
+    \caption{Diagrama de clases del Macroplanificador.}
     \label{fig:diagrama_clases_macroplanificador}
 \end{figure}
 
-\section{Implementación Macroplanning}
+\section{Implementación Macroplanificador}
 La clase principal del Macroplanificador es \emph{TextManager}. Para crear el Documento Inicial, recorre las Entidades de la misma manera que la clase \emph{GeneratorTreeManager}, explicada en la Figura~\ref{sec:clase_generator_tree}, con la diferencia que crea el objeto \emph{Text} y los objetos \emph{Section} asociados a cada Entidad. Ya que el recorrido es equivalente no se presentará su implementación, en cambio comenzaremos a mostrar las clases que componen el Documento de Texto.
 
 La clase \emph{Text} solo contiene los objetos del primer nivel del Documento de Texto. Tiene acceso a las secciones principales y a las secciones que contienen la información que no había sido utilizada en otras secciones. 
@@ -116,10 +116,10 @@ La clase \emph{Paragraph} contiene una lista de todas las \emph{Statement} refer
 
 Cada \emph{Paragraph} se encarga de crear las \emph{Statement} correspondientes para el Tópico que recibe, y asociarles los componentes (Axiomas) que describen al Tópico. Adicionalmente el párrafo recibe el lenguaje del texto, por lo que debe instanciar las \emph{Statement} adecuadas, ya sea \emph{StatementEnglish} o \emph{StatementSpanish}.
 
-La clase \emph{Statement} contiene la información que tendrá cada oración. Será usada por el \emph{Microplanificador} para verbalizar la información e implementar los métodos de la etapa de \emph{Microplanning}. 
+La clase \emph{Statement} contiene la información que tendrá cada oración. Será usada por el Microplanificador para verbalizar la información e implementar los métodos de la etapa de Microplanificación. 
 
-\section{Diseño Microplanning}
-En esta estapa se llevarán a cabo las tareas para describir una Entidad en lenguaje natural a partir de la información que contiene cada \emph{Statement} creada en el Macroplanning. Esta descripción en lenguaje natural se alcanza a través de una o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
+\section{Diseño Microplanificador}
+En esta estapa se llevarán a cabo las tareas para describir una Entidad en lenguaje natural a partir de la información que contiene cada \emph{Statement} creada en la Macroplanificación. Esta descripción en lenguaje natural se alcanza a través de una o varias oraciones producidas con una estructura que se adapte a la gramática del lenguaje español.
 
 Como existen diversas estructuras sintácticas para expresar un mismo contenido, a modo de simplificación se asoció a cada constructor OWL solo algunas formas de verbalización. Se trató de generar oraciones que sean fieles al significado expresado en los axiomas y de evitar ambigüedades.
 
@@ -330,7 +330,7 @@ Estas condiciones ayudan a mejorar la fluidez del texto y no suponen una gran ca
 De hecho, existen varios trabajos que abordan la nomenclatura de conceptos, especificando convenciones de nombrado para el desarrollo de las ontologías, coincidiendo en algunos aspectos (y siendo hasta más estrictos) con nuestros requerimientos~\cite{montiel2011style}~\cite{OntoCheck}.
 
 \subsection{Tratamiento sintáctico de los nombres de Entidades}
-Para facilitar el entendimiento de las secciones referidas al \textit{Microplanning}, se explicará cómo fueron tratados los nombres de las entidades, desde el punto de vista sintáctico. 
+Para facilitar el entendimiento de las secciones referidas a la Microplanificación, se explicará cómo fueron tratados los nombres de las entidades, desde el punto de vista sintáctico. 
 
 Dado que los nombres de las\textit{ Entidades} pueden no corresponderse fielmente con la gramática de un lenguaje (por falta de palabras funcionales, tales como artículos o preposiciones), se optó por no realizar un análisis sintáctico a los nombres. Sin embargo, para soportar la creación de patrones gramaticales, se etiquetaron las palabras de cada \textit{Entidad }para reconocer la función gramatical de cada una y poder llevar a cabo las composiciones.
 
@@ -715,7 +715,7 @@ La verbalización de este axioma da como resultado dos oraciones. Como ambas ora
 \end{figure}
 
 \subsection{Diagrama de clases}
-En la Figura~\ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de \emph{Microplanificación}. 
+En la Figura~\ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de Microplanificación. 
 La clase \emph{Statement} es la encargada de realizar la verbalización de los constructores de Axiomas y las enumeraciones. Un objeto \emph{Statement} puede generar más de una oración, ya que cada \emph{Statement} trata un solo tópico y un solo tipo de constructor, pero pueden haber varios axiomas que utilicen el mismo tipo de constructor, por lo que todos esos axiomas estarán en la misma \emph{Statement}.
 
 La clase \emph{StatementComponent} representa la oraciones parciales. Se encarga de componer oraciones parciales y generar una nueva oración parcial. En el caso de un constructor de \textit{Entidad}, se encarga de generar una oración parcial compuesta por el nombre de la entidad.
@@ -732,7 +732,7 @@ Las subclases de \emph{OWLRestriction} tienen la capacidad de verbalizar los con
 \end{figure}
 
 
-\section{Implementación Microplanning}
+\section{Implementación Microplanificador}
 Para facilitar la implementación de los algoritmos de Agregación y Expresiones de Referencia, decidimos implementar el contenido de las oraciones con listas de palabras en lugar de cadenas de texto, facilitando su manipulación y recorrido. De esta manera, se creó la interfaz \emph{Word} con sus respectivas subclases \emph{WordEnglish} y \emph{WordSpanish}. 
 La clase \emph{WordSpanish} utiliza la librería \emph{javaGramatica}\footnote{\url{https://www.proinf.net/permalink/gramatica_numero_genero_y_acentuacion}}, para implementar algunos métodos del idioma español, como pluralizar, cambio de género, número, etc. Para el idioma inglés estos métodos fueron implementados manualmente.
 
@@ -752,9 +752,9 @@ Las \emph{Statement} utilizan la Agregación y las Expresiones de Referencia cua
 
 
 \section{Diseño del realizador}
-%La arquitectura de este trabajo relegó la tarea de definir la estructura de las oraciones y llevar acabo su realización lingüística a la etapa de Microplanning.
+%La arquitectura de este trabajo relegó la tarea de definir la estructura de las oraciones y llevar acabo su realización lingüística a la etapa de Microplanificación.
 En esta etapa queda la tarea de definir la estructura final del documento. 
-Alcanzaremos el Documento Final, a través del refinamiento del Documento Inicial creado en el \textit{Macroplanning}.
+Alcanzaremos el Documento Final, a través del refinamiento del Documento Inicial creado en la Macroplanificación.
 
 El Documento Inicial tiene una estructura en la que todos los tópicos tienen su propia sección, por lo que no existe más información que haga posible expandir la estructura. Por este motivo, nos enfocaremos en la idea de reducir la estructura del documento convirtiendo secciones en párrafos, para que se haga más compacto, tratando de mejorar la estética y el proceso de lectura, sin perjudicar la coherencia y la segmentación de la información.
 

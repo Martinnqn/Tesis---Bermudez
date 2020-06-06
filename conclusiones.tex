@@ -4,13 +4,15 @@ En el desarrollo de esta tesis pudimos diseñar e implementar un Sistema de Gene
 Para abordar el problema de la organización de la información, se tomó en cuenta que los textos poseen una estructura jerárquica en el que sus tópicos presentes están semánticamente relacionados, al igual que las ontologías. Para maximizar la relación semántica entre los tópicos, se usó como base la coherencia global, aplicando los fundamentos de la Teoría de Veins. Se propuso una solución basada en el análisis del grafo subyacente a la ontología, midiendo las relaciones entre sus nodos. De esta manera se obtuvieron las Entidades de la ontología que resultaban más sobresalientes, con el fin de usarlas como hilo conductoras de los temas del texto.
 Esta solución se vio motivada por la característica que poseen las ontologías de la Web Semántica, de ser grafos libres de escala. Los resultados obtenidos fueron satisfactorios para los casos de prueba presentados, retornando estructuras organizadas que se correspondían con los resultados esperados. Sin embargo queda pendiente poder analizar la solución con mayor diversidad de ontologías, variando la densidad de sus relaciones, pues la solución propuesta depende ampliamente de la cantidad de \emph{ObjectProperties} y del contenido de sus dominios.
 
-Para el sistema de generación de texto, se dividió el problema en tres sub-problemas, basados en los procesos conocidos del Procesamiento del Lenguaje Natural. Estos subproblemas fueron diseñar e implementar el \emph{Macroplanning}, \emph{Microplanning} y la \emph{Realización}. 
+Además de maximizar la relación entre los tópicos, se buscó maximizar la relación entre los elementos de los párrafos. Para esto se usó como base la coherencia local, a través de los postulados de la Teoría de Centrado.
 
-Para comenzar, se desarrolló el módulo \emph{Macroplanning}, encargado de brindar la estructura jerárquica del texto. Dado que se integró el \emph{Macroplanning} con el Organizador de Información, su implementación fue trivial.
+Para el sistema de generación de texto, se dividió el problema en tres sub-problemas, basados en los procesos conocidos del Procesamiento del Lenguaje Natural. Estos subproblemas fueron diseñar e implementar la \emph{Macroplanificación}, \emph{Microplanificación} y la \emph{Realización}. 
 
-Luego se procedió a verbalizar los axiomas de la ontología en el \emph{Microplanning}, desarrollando la gramática del lenguaje humano e implementando los algoritmos de generación de texto adecuados, para reducir la redundancia y mejorar la fluidez del texto. 
+Para comenzar, se desarrolló el módulo \emph{Macroplanificador}, encargado de brindar la estructura jerárquica del texto. Dado que se integró el \emph{Macroplanificador} con el Organizador de Información, su implementación fue trivial.
 
-Por último se resolvió el problema de la Realización del texto, modificando la estructura inicial obtenida del \emph{Macroplanning}, para reducir los niveles de la jerarquía del texto donde era adecuado. 
+Luego se procedió a verbalizar los axiomas de la ontología en la \emph{Microplanificación}, desarrollando la gramática del lenguaje humano e implementando los algoritmos de generación de texto adecuados, para reducir la redundancia y mejorar la fluidez del texto. 
+
+Por último se resolvió el problema de la Realización del texto, modificando la estructura inicial obtenida del \emph{Macroplanificador}, para reducir los niveles de la jerarquía del texto donde era adecuado. 
 
 Como se mostró en los casos de prueba, la solución basada en el desarrollo de estos módulos resultó en textos legibles y organizados. Si bien validar textos puede resultar subjetivo, podemos apreciar que existe suficiente relación semántica en el orden de los temas que se presentan, tanto entre las Secciones como entre las Oraciones, por lo que cumplen con cierta Coherencia Global y Local.
 
