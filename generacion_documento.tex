@@ -325,7 +325,8 @@ Para no limitar la aplicación a una convención de nombrado, no se requiere una
     % No se infieren verbos, por lo que si se quiere expresar, por ejemplo, que una clase \emph{está localizada en} algún lugar, la propiedad debería llamarse \emph{estáLocalizadaEn} y no \emph{localizadaEn}. Al igual que los verbos, no es conveniente omitir las preposiciones finales, por ejemplo, enla propiedadesParte, es recomendable utilizaresParteDe
 \end{enumerate}
 
-Estas condiciones ayudan a mejorar la fluidez del texto y no suponen una gran carga en los desarrolladores de ontologías. Sin embargo, se considerado como trabajo futuro de esta investigación.
+Estas condiciones ayudan a mejorar la fluidez del texto y no suponen una gran carga en los desarrolladores de ontologías.
+%Sin embargo, se considerado como trabajo futuro de esta investigación.
 
 De hecho, existen varios trabajos que abordan la nomenclatura de conceptos, especificando convenciones de nombrado para el desarrollo de las ontologías, coincidiendo en algunos aspectos (y siendo hasta más estrictos) con nuestros requerimientos~\cite{montiel2011style}~\cite{OntoCheck}.
 
@@ -359,7 +360,7 @@ La Gramática~\ref{gram:object_card_rest} muestra los patrones diseñados para l
 
 El enlace es seleccionado dependiendo del operador \emph{MinCardinality}, \emph{MaxCardinality} y \emph{ExactCardinality}.
 
-Ejemplo: para la clase ``pizza interesante'', se tiene el axioma: ``tieneCobertura min 3 owl:Thing''. Dado que la restricción se aplica sobre la clase \emph{owl:Thing}, en la verbalización se busca reemplazar esa clase por una oración que sea más significativa. Existen dos posibilidades, una es utilizar el complemento de la propiedad (elaborado en el patron$_2$), y la otra es utilizar el rango de la propiedad \emph{tieneCobertura} (elaborado en el patron$_3$). Como en este caso la propiedad tiene definido su rango, resulta más informativo utilizar el rango, que utilizar el complemento de la propiedad. Si se eligiera el patron$_2$, se obtendría la oración ``tiene como mínimo 3 coberturas'', mientras que utilizar el patron$_3$ genera la oración ``tiene como mínimo 3 coberturas de pizza''. Las gramáticas siempre buscan utilizar oraciones con la mayor información posible, evitando oraciones genéricas como ``tiene como mínimo 3 cosas'', por eso en este caso se elige usar el patron$_3$.
+Ejemplo: para la clase ``pizza interesante'', se tiene el axioma: ``tieneCobertura min 3 owl:Thing''. Dado que la restricción se aplica sobre la clase \emph{owl:Thing}, en la verbalización se busca reemplazar esa clase por una oración que sea más significativa. Existen dos posibilidades, una es utilizar el complemento de la propiedad (elaborado en el patron$_2$), y la otra es utilizar el rango de la propiedad \emph{tieneCobertura} (elaborado en el patron$_3$). Como en este caso la propiedad tiene definido su rango, resulta más informativo utilizar el rango, que utilizar el complemento de la propiedad. Si se eligiera el patron$_2$, se obtendría la oración ``tiene \texttt{como mínimo} 3 coberturas'', mientras que utilizar el patron$_3$ genera la oración ``tiene \texttt{como mínimo} 3 coberturas de pizza''. Las gramáticas siempre buscan utilizar oraciones con la mayor información posible, evitando oraciones genéricas como ``tiene \texttt{como mínimo} 3 cosas'', por eso en este caso se elige usar el patron$_3$.
 
 \begin{GrammarEnv}
 \begin{grammar}
@@ -417,11 +418,11 @@ La Gramática~\ref{gram:quant_obj_rest} muestra los patrones diseñados para las
 [(nonterminal){$<$}{$>$}]
 \fbox{\begin{minipage}{14cm} \small{ 
 <RestriccionQuant> : <patron$_1$> ; <patron$_2$> ; <patron$_3$> ; <patron$_4$> ; <patron$_5$> .
-<patron$_1$> : <verboPropiedad> "como" <complementoPropiedad> <enlace> <clases> .
-<patron$_2$> : <verboPropiedad> <enlace> <clases> .
-<patron$_3$> : <verboPropiedad> <enlace> "a" <clases> .
-<patron$_4$> : <verboPropiedad> "a" <enlace> <clases> .
-<patron$_5$> : <verboPropiedad> <complementoPropiedad> <enlace> <clases> .
+<patron$_1$> : <parteInicialPropiedad> "como" <complementoPropiedad> <enlace> <clases> .
+<patron$_2$> : <parteInicialPropiedad> <enlace> <complementoPropiedad> "$\colon$" <clases> .
+<patron$_3$> : <parteInicialPropiedad> <enlace> "a" <clases> .
+<patron$_4$> : <parteInicialPropiedad> "a" <enlace> <clases> .
+<patron$_5$> : <parteInicialPropiedad> <complementoPropiedad> <enlace> <clases> .
 <enlace> : "algún" ; "alguna"; "algo"; "exclusivamente" .
 }
 \end{minipage}}
@@ -429,10 +430,10 @@ La Gramática~\ref{gram:quant_obj_rest} muestra los patrones diseñados para las
 \caption{Patrones para QuantifiedObjectRestriction.}\label{gram:quant_obj_rest}
 \end{GrammarEnv}
 
-Los enlaces dependen del tipo de cuantificador y del tipo de palabra que lo proceda. Si el cuantificador es existencial, el enlace sería ``alguna/algún'' para palabras que sean sustantivo femenino o masculino respectivamente, o con cualquier otra palabra sería ``algo''.  Para el cuantificador universal el enlace es siempre ``exclusivamente''.
+Los enlaces dependen del tipo de cuantificador y del tipo de palabra que lo proceda. Si el cuantificador es existencial, el enlace sería ``alguna/algún'' para palabras que sean sustantivo femenino o masculino respectivamente, o con cualquier otra palabra sería ``algo''.  Para el cuantificador universal el enlace es siempre ``exclusivamente''. Adicionalmente, si posee una enumeración de clases (es decir que $<$clases$>$ posee más de una clase), se agrega al enlace la conexión ``las/los siguientes''.
 
 Ejemplo: la clase ``Margherita'' que es subclase de ``PizzaConNombre'', tiene el axioma ``tieneCobertura only 
-    (CoberturaDeMozzarella or CoberturaDeTomate)'' (siendo only el cuantificador universal), el cual se traduce a ``tiene cobertura de mozzarella o tomate''. También posee dos axiomas equivalentes al anterior: ``tieneCobertura some CoberturaDeMozzarella'' y ``tieneCobertura some CoberturaDeTomate'', (siendo some el cuantificador existencial), los cuales se traducen a ``tiene alguna cobertura de mozzarella'' y ``tiene alguna cobertura de tomate''.
+    (CoberturaDeMozzarella or CoberturaDeTomate)'' (siendo only el cuantificador universal), el cual se traduce con el patron$_2$ a ``tiene \texttt{exclusivamente las siguientes} coberturas: cobertura de mozzarella o cobertura de tomate''. También posee dos axiomas equivalentes al anterior: ``tieneCobertura some CoberturaDeMozzarella'' y ``tieneCobertura some CoberturaDeTomate'', (siendo some el cuantificador existencial), los cuales se traducen con patron$_1$ a ``tiene \texttt{como} cobertura \texttt{a alguna} cobertura de mozzarella'' y ``tiene \texttt{como} cobertura \texttt{a alguna} cobertura de tomate''.
 
 
 \subsubsection{Restricción de cuantificación \emph{QuantifiedDataRestriction}}
@@ -477,6 +478,14 @@ La Gramática~\ref{gram:complement_rest} muestra los patrones diseñados para el
 \end{grammar}
 \caption{Patrones para OWLObjectComplementOf.}\label{gram:complement_rest}
 \end{GrammarEnv}
+
+El enlace depende del tipo de componente que retorne $<$clase$>$:
+\begin{itemize}
+    \item Si retorna T utiliza \texttt{lo opuesto de}.
+    \item Si retorna SV utiliza \texttt{no}.
+    \item Si retorna ON utiliza \texttt{ni}.
+    \item En cualquier otro caso usa \texttt{excepto}.
+\end{itemize}
 
 \subsubsection{Restricción \emph{OWLObjectInverseOf}}
 La Gramática~\ref{gram:inverse_rest} muestra los patrones diseñados para el inverso de una Propiedad.
@@ -614,7 +623,7 @@ Para las propiedades se crearon los patrones de la Gramática~\ref{gram:propieda
 El proceso de referenciación se ve facilitado por el uso de la Teoría de Centrado. 
 Teniendo en cuenta que cada párrafo (y por lo tanto cada oración que lo compone) trata centralmente una única \textit{Clase }o \textit{Individuo}, no se intercalan tópicos como focos de atención, por lo que se reduce la posibilidad de ambigüedad. Las expresiones de referencia solo fueron implementadas para las \textit{Clases}.
 
-Para llevar a cabo la referenciación, se tuvo en cuenta el uso de pronombres demostrativos (``este/esta''), a veces, acompañados por el primer sustantivo (si posee) del nombre de la \textit{Clase}. Por ejemplo: sean las oraciones ``Una Rosa es una pizza con nombre. Una Rosa tiene como cobertura a alguna cobertura de gorgonzola, mozzarella Y tomate.'' en la segunda oración en lugar de repetir ``una Rosa'', se reemplaza por una expresión de referencia ``Una Rosa es una pizza con nombre. \emph{Esta} tiene como cobertura a alguna cobertura de gorgonzola, mozzarella Y tomate.''. Otro ejemplo en el que el pronombre es acompañado por el sustantivo de la \textit{9 } es: ``una cobertura de salsa de chile tabasco es una cobertura de salsa. \emph{Esta cobertura} tiene como picante algo muy picante.''
+Para llevar a cabo la referenciación, se tuvo en cuenta el uso de pronombres demostrativos (``este/esta''), a veces, acompañados por el primer sustantivo (si posee) del nombre de la \textit{Clase}. Por ejemplo: sean las oraciones ``Una Rosa es una pizza con nombre. Una Rosa tiene como cobertura a alguna cobertura de gorgonzola, mozzarella Y tomate.'' en la segunda oración en lugar de repetir ``una Rosa'', se reemplaza por una expresión de referencia ``Una Rosa es una pizza con nombre. \emph{Esta} tiene como cobertura a alguna cobertura de gorgonzola, mozzarella Y tomate.''. Otro ejemplo en el que el pronombre es acompañado por el sustantivo de la \textit{Clase} es: ``una cobertura de salsa de chile tabasco es una cobertura de salsa. \emph{Esta cobertura} tiene como picante algo muy picante.''
 
 %Otro tipo de referencias, se da en el momento de explicar una clase. Cuando se crea una sección hablando acerca de una clase \emph{A}, esa sección no vuelve a crearse si existe una clase \emph{B} cuya descripción requiere que se explique la clase \emph{A}, sino que en la clase \emph{B} se hace referencia a la sección donde ya fue explicada la clase \emph{A}. Esto permite reutilizar las secciones y evita agregar información redundante en el texto.
 
@@ -663,15 +672,15 @@ Los pasos del proceso se encuentran enumerados desde el 1 al 6. La verbalizació
 
 Las composiciones se resuelven a través de las Gramáticas de la Sección~\ref{sec:verbalizacion_constructores}. Por ejemplo, en el paso N$^\circ$1 utiliza {\tt patron$_1$} de la Gramática~\ref{gram:quant_obj_rest}, donde:
 \begin{itemize}
-    \item $<$verboPropiedad$>$ es ``tiene''.
+    \item $<$parteInicialPropiedad$>$ es ``tiene''.
     \item $<$complementoPropiedad$>$ es ``picante''.
-    \item $<$enlace$>$ es ``algún''.
+    \item $<$enlace$>$ es ``algo''.
     \item $<$clases$>$ es ``muy picante''.
 \end{itemize}
 
 En el paso N$^\circ$2 como es una intersección de dos operandos, utiliza la subordinación de SV respecto a T.
 
-De esta manera, en cada nivel busca utilizar un patrón que se ajuste a los componentes recibidos.
+De esta manera, en cada nivel busca utilizar un patrón que se ajuste a los componentes recibidos. El proceso finaliza en el paso N$^\circ$6, donde retorna una oración completa.
 
 \begin{figure}
     \centering
@@ -705,7 +714,7 @@ Como es una intersección de tres componentes, se procede a agrupar los componen
 
 Por otro lado, la Clase Wine retorna un tipo T, por lo que queda aislado en una oración independiente. Estas agrupaciones resultan en el texto del paso Nº3.
 
-La verbalización de este axioma da como resultado dos oraciones. Como ambas oraciones hacen referencia a la misma Clase, en el paso N$^\circ$4 ocurre un reemplazo del nombre de la Clase por una Expresión de Referencia en la segunda oración. 
+La verbalización de este axioma da como resultado dos oraciones. Como ambas oraciones hacen referencia a la misma Clase, en el paso N$^\circ$4  se ejecuta el algoritmo para agregar Expresiones de Referencias, por lo que en la segunda oración se reemplaza el nombre de la Clase por la expresión \texttt{This}. En el paso N$^\circ$4 finaliza la verbalización del axioma y se retorna la oración completa.
 
 \begin{figure}
     \centering
@@ -788,7 +797,7 @@ Debido a que existen una gran cantidad de  parámetros a tener en cuenta en el a
 
 
 \subsection{Generación documento ontología Pizza}
-Por causa del que texto completo resulta muy extenso, solo pondremos los fragmentos más significativos del Documento Final. En la Figura~\ref{fig:doc_final_pizza} se presentan los fragmentos a analizar. Para visualizar la estructura total del documento, se imprimió el índice de las secciones, el cual se muestra en la Figura~\ref{fig:indice_secciones_pizza}. 
+Por causa de que el texto completo resulta muy extenso, solo pondremos los fragmentos más significativos del Documento Final. En la Figura~\ref{fig:doc_final_pizza} se presentan los fragmentos a analizar. Para visualizar la estructura total del documento, se imprimió el índice de las secciones, el cual se muestra en la Figura~\ref{fig:indice_secciones_pizza}. 
 
 Los tópicos reconocidos representan adecuadamente el tema del texto. Se puede apreciar que la estructura del documento comparte algunas similitudes con el Documento Inicial, manteniendo la coherencia global, pero disminuyó la cantidad de secciones, ya que muchas de ellas se convirtieron en párrafos. Aún así, prevalecen títulos de secciones que agregan información semántica aunque no aporten información en forma de texto, tales como Ingredientes, Coberturas y Bases.
 
@@ -796,7 +805,7 @@ La sintaxis es aceptable y las oraciones pueden comprenderse, aunque pueden mejo
 
 La estructura de las oraciones es repetitiva, no era el objetivo de este trabajo realizar un texto variado, por lo que ante la misma información para verbalizar se obtiene la misma estructura.
 
-En cuanto a la cuestión estética, el texto resulta aceptable, posee muchas secciones anidadas por lo que visualmente no sobrecarga la lectura.
+En cuanto a la cuestión estética, el texto resulta aceptable, no posee muchas secciones anidadas por lo que visualmente no sobrecarga la lectura.
 
 \begin{figure}
 \centering
@@ -1119,7 +1128,7 @@ Hemos presentado un sistema que genera un texto en lenguaje natural a partir de 
 
 Tomando como referencia lo postulado por la Teoría de Centrado, se pudo proveer a los párrafos de coherencia local. Para cada clase se reunió la mayor cantidad de información disponible, agrupándola a través de los constructores de Axiomas.
 
-La separación en constructores de Expresiones de Clases y constructores de Axiomas, dio lugar a las oraciones parciales y a un sistema de tipos. Si bien este sistema no se corresponde fielmente a las categorías de constituyentes sintácticos\footnote{Un constituyente sintáctico es una palabra, o secuencia de palabras, que funciona en conjunto como una unidad dentro de la estructura jerárquica de una oración} de alguna gramática conocida (como la gramática tradicional o la gramática generativista), permitió minimizar la cantidad de combinaciones que había que diseñar en las gramáticas.
+La separación en constructores de Expresiones de Clases y constructores de Axiomas, dio lugar a las oraciones parciales y a un sistema de tipos. Si bien este sistema no se corresponde fielmente a las categorías de constituyentes sintácticos\footnote{Un constituyente sintáctico es una palabra, o secuencia de palabras, que funciona en conjunto como una unidad dentro de la estructura jerárquica de una oración} de alguna gramática conocida (como la gramática tradicional o la gramática generativa\footnote{La gramática tradicional y la generativa se enfocan en el estudio de la gramática del lenguaje. La gramática generativa es más moderna y estudia la sintaxis del lenguaje a través de definiciones formales.} ), permitió minimizar la cantidad de combinaciones que había que diseñar en las gramáticas.
 
 Las sentencias fueron debidamente procesadas para aplicar algunas técnicas de Procesamiento de Lenguaje Natural, como expresiones de referencia, agregación de sentencias, inflexión de número y determinación de pronombres basados en el género (en el caso del lenguaje español). 
 
