@@ -7,19 +7,21 @@ Las Ontologías juegan un rol clave en la formación de la Web Semántica. Permi
 
 La Web Semántica es definida como una extensión de la Web actual. Tiene el objetivo de agregar explícitamente una capa de significado a los datos, con el fin de crear un mejor ambiente para poder automatizar tareas complejas. Es en este punto donde las ontologías son útiles, brindando las herramientas adecuadas para estructurar la Web Semántica. 
 
-Existen varios lenguajes que tienen la capacidad de describir ontologías, como RDF (\emph{Resource Description Framework})~\cite{RDFRecomendW3C} y OWL 2 (\emph{Ontology Web Language})~\cite{RecomendW3C}, siendo este útlimo el recomendado por la La W3C (\emph{World Wide Web Consortium })\footnote{W3C es un consorcio internacional que se encarga de establecer y recomendar estándares para la \emph{World Wide Web}}.
+%Existen varios lenguajes que tienen la capacidad de describir ontologías, como RDF (\emph{Resource Description Framework})~\cite{RDFRecomendW3C} y OWL 2 (\emph{Ontology Web Language})~\cite{RecomendW3C}, siendo este útlimo el recomendado por la La W3C (\emph{World Wide Web Consortium})\footnote{W3C es un consorcio internacional que se encarga de establecer y recomendar estándares para la \emph{World Wide Web}}.
+%El  lenguaje  OWL2  (Ontology  Web  Language)~\cite{RecomendW3C}  tiene  base  en  la  lóogica  descriptiva  y  elvocabulario de RDF, lo que lo hace id ́oneo para representar conocimiento y permitir que agentesinform ́aticos puedan razonar sobre ese conocimiento
 
-El lenguaje OWL 2 tiene base en la lógica descriptiva y el vocabulario de RDF, lo que lo hace idóneo para representar conocimiento y permitir que agentes informáticos puedan razonar sobre ese conocimiento.
+El lenguaje OWL2 (\emph{Ontology Web Language})~\cite{RecomendW3C}, es una recomendación de la W3C (\emph{World Wide Web Consortium})\footnote{W3C es un consorcio internacional que se encarga de establecer y recomendar estándares para la \emph{World Wide Web}}. Tiene base en la lógica descriptiva y el vocabulario de RDF, lo que lo hace idóneo para representar conocimiento y permitir que agentes informáticos puedan razonar sobre ese conocimiento.
 
 Teniendo en cuenta que las ontologías estructuran los datos de manera formal, son poco comprensibles por usuarios no expertos, y no brindan una cómoda visualización de la información para aquellos que quieran beneficiarse del uso de las tecnologías semánticas.
 
-Si bien existen algunas aplicaciones para  desarrollar y explorar ontologías, no resultan suficientemente satisfactorias para usuarios no expertos, o usuarios finales. 
-
+Si bien existen algunas aplicaciones para  desarrollar y explorar ontologías, éstas no resultan suficientemente satisfactorias para usuarios no expertos o finales. 
 Por este motivo, expresar el contenido formal en Lenguaje Natural (LN) resulta atractivo, brindando la capacidad de documentar y expresar ontologías en un lenguaje accesible por usuarios no entrenados en matemáticas o el dominio modelado. 
 
 Para llevar a cabo un sistema que tenga la capacidad de generar lenguaje natural a partir de una ontología, se deben tener en cuenta algunos criterios que impactan sobre el diseño de las ontologías, y sobre los resultados obtenidos de la generación de texto, como dificultad para comprender las relaciones del dominio, oraciones complejas y difíciles de entender, complejidad de la sintaxis y flexibilidad del texto, entre otras. 
 
-Teniendo en cuenta estos criterios, en esta tesis se propone un Sistema de Generación de Texto que mantenga un equilibrio entre la dificultad de integrar el sistema con las ontologías, y la capacidad del sistema de generar texto que resulte útil al usuario final. No será necesario agregar información a la base de conocimiento, mientras que se espera alcanzar una salida que sea sintácticamente aceptable.
+Teniendo en cuenta estos criterios, en esta tesis se propone un Sistema de Generación de Texto que mantenga un equilibrio entre la dificultad de integrar el sistema con las ontologías, y la capacidad del sistema de generar texto que resulte útil al usuario final. 
+
+El resultado de este trabajo es un sistema que requiere un mínimo compromiso en el diseño de las ontologías, y produce una salida sintácticamente aceptable y organizada.
 
 Los dos puntos claves en este trabajo son: la \textit{Organización de la Información}, para estructurar el texto con base en las relaciones semánticas, con el fin de reducir la carga cognitiva que exige reconocer las relaciones del dominio; y la \textit{Generación del Texto en Lenguaje Natural}, maximizando la cohesión de las oraciones.
 

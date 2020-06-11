@@ -337,8 +337,8 @@ Dado que los nombres de las\textit{ Entidades} pueden no corresponderse fielment
 
 Se consideró, a cada conjunto de palabras que conforman el nombre de una entidad, como un componente incompleto (oración parcial) que es parte de una oración más grande. Por este motivo, se divide en dos partes fundamentales: una parte inicial y un complemento, entre los cuales pueden insertarse nexos y cuantificaciones. A continuación se explican cómo se reconocen ambas partes en las clases y propiedades:
 \begin{itemize}
-    \item Los nombres de las propiedades (en los que suponemos existe al menos un verbo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer verbo, incluído el verbo. El complemento se conforma con todas las palabras que siguen al verbo. Por ejemplo: la propiedad \emph{tiene color} se compone de parte inicial: \emph{tiene}, y complemento: \emph{color}. La propiedad \emph{se solapa con} se compone de \emph{se solapa} como parte de inicial, y \emph{con} como complemento.
-    \item Para las clases (en las que suponemos existe al menos un sustantivo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer sustantivo, incluido el sustantivo. El complemento se conforma con todas las palabras que siguen al sustantivo. Por ejemplo: la clase \emph{agente social}, tiene como parte inicial \emph{agente} y complemento \emph{social}. La clase \emph{cobertura de pizza} se compone de \emph{cobertura} con complemento \emph{de pizza}.
+    \item Los nombres de las propiedades (en los que suponemos existe al menos un verbo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer verbo. El complemento se conforma con todas las palabras que siguen al primer verbo. Por ejemplo: la propiedad \emph{tiene color} se compone de parte inicial: \emph{tiene}, y complemento: \emph{color}. La propiedad \emph{se solapa con} se compone de \emph{se solapa} como parte de inicial, y \emph{con} como complemento.
+    \item Para las clases (en las que suponemos existe al menos un sustantivo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer sustantivo. El complemento se conforma con todas las palabras que siguen al primer sustantivo. Por ejemplo: la clase \emph{agente social}, tiene como parte inicial \emph{agente} y complemento \emph{social}. La clase \emph{cobertura de pizza} se compone de \emph{cobertura} con complemento \emph{de pizza}.
     \item Los nombres de los individuos son tratados igual que los nombres de las clases.
 \end{itemize}
 
@@ -574,11 +574,14 @@ Por ejemplo, el axioma de clase equivalente ``Pizza and (tieneCobertura some (Co
 En caso de asociar la intersección al conector \textbf{y} sin tener en cuenta el contexto, se generaría una oración como la siguiente ``pizza picante es una pizza \textbf{y} tiene alguna cobertura de pizza \textbf{y} tiene algo muy picante'', dando lugar a ambigüedad, pues la segunda \textbf{y} podría cumplir la función de adición, interpretándose que la pizza tiene algo picante, en lugar de cumplir una función de subordinación, donde la interpretación correcta es que la cobertura de la pizza es picante. 
 
 \subsection{Enumeración de propiedades, subclases e individuos}
-Enumerar esta información es solo para anunciar la existencia de estos componentes, por lo que la sintaxis es simple.
+%Enumerar esta información es solo para anunciar la existencia de estos componentes, por lo que la sintaxis es simple.
+La enumeración de propiedades, subclases e individuos es simple. Para llevar a cabo la sintaxis requerida se consideraron lo siguiente: 
 
-Para las subclases se crearon los patrones de la Gramática~\ref{gram:subclases}.
-Para los individuos se crearon patrones similares al de las subclases.
-Para las propiedades se crearon los patrones de la Gramática~\ref{gram:propiedades}.
+\begin{itemize}
+    \item Para las subclases se crearon los patrones de la Gramática~\ref{gram:subclases}.
+\item Para los individuos se crearon patrones similares al de las subclases.
+\item Para las propiedades se crearon los patrones de la Gramática~\ref{gram:propiedades}.
+ \end{itemize}
 
 \begin{GrammarEnv}
 \begin{grammar}
@@ -779,7 +782,11 @@ Para decidir si un tópico es planificado como una Sección, se utilizan los sig
     \item En cualquier otro caso será planificado como un Párrafo.
 \end{itemize}
 
-Si la cantidad de oraciones requeridas para ser considerada una sección tiende a cero, la planificación del documento será similar al Documento Inicial; mientras que si la cantidad de oraciones tiende a infinito, la planificación perderá niveles de jerarquía, y únicamente contemplará como secciones a los tópicos del primer nivel. Ninguno de los dos extremos es conveniente: o se pierde coherencia, o se obtiene un texto con demasiados niveles de secciones, que resulta antinatural. Sin embargo, un documento en el que predominan las sub-secciones (aunque tengan poca información), ayuda a los humanos a reconocer y establecer relaciones entre los tópicos, siendo el objetivo principal no desaprovechar la semántica del dominio modelado, y teniendo como intención principal que el lector comprenda el dominio modelado en la ontología.
+
+%Si la cantidad de oraciones requeridas para ser considerada una sección tiende a cero, la planificación del documento será similar al Documento Inicial; mientras que si la cantidad de oraciones tiende a infinito, la planificación perderá niveles de jerarquía, y únicamente contemplará como secciones a los tópicos del primer nivel. Ninguno de los dos extremos es conveniente: o se pierde coherencia, o se obtiene un texto con demasiados niveles de secciones, que resulta antinatural. Sin embargo, un documento en el que predominan las sub-secciones (aunque tengan poca información), ayuda a los humanos a reconocer y establecer relaciones entre los tópicos, siendo el objetivo principal no desaprovechar la semántica del dominio modelado, y teniendo como intención principal que el lector comprenda el dominio modelado en la ontología.
+
+Cuanto menor sea la cantidad de oraciones requeridas para ser considerada una sección,  la planificación del documento será más similar al Documento Inicial; mientras que si la cantidad de  oraciones requeridas es muy grande, la planificación perderá niveles de jerarquía, y únicamente contemplará como secciones a los tópicos del primer nivel. Ninguno de los dos extremos es conveniente: o se pierde coherencia, o se obtiene un texto con demasiados niveles de secciones, que resulta antinatural. Sin embargo, un documento en el que predominan las sub-secciones (aunque tengan poca información), ayuda a los humanos a reconocer y establecer relaciones entre los tópicos, siendo el objetivo principal no desaprovechar la semántica del dominio modelado, y teniendo como intención principal que el lector comprenda el dominio modelado en la ontología.
+
 
 \section{Implementación del Realizador}
 El Realizador está embebido dentro de la \textit{clase }\textit{Section}, en forma de métodos que implementan los criterios vistos para la definición del documento. En el Anexo~\ref{sec:clase_section} se presenta un pseudocódigo de la\textit{ clase }\textit{Section}.
@@ -1124,14 +1131,15 @@ Every Beaujolais madeFromGrape at most 1 thing.
 En comparación con las salidas en formato lista y prosa, podemos apreciar que esta salida es la que menos trabaja sobre las oraciones, repitiendo información y dejando la nomenclatura camelCase sin procesar.
 
 \section{Conclusiones}
-Hemos presentado un sistema que genera un texto en lenguaje natural a partir de los axiomas de una ontología. La estructura del documento de texto depende de la organización realizada en el Macroplaning, y de los criterios tomados en el Realizador, conservando la coherencia global recibida del Organizador de Información. 
+Hemos presentado un sistema que genera un texto en lenguaje natural a partir de los axiomas de una ontología. La estructura del documento de texto depende de la organización realizada en la Macroplanificación, y de los criterios tomados en el Realizador, conservando la coherencia global recibida del Organizador de Información. 
 
-Tomando como referencia lo postulado por la Teoría de Centrado, se pudo proveer a los párrafos de coherencia local. Para cada clase se reunió la mayor cantidad de información disponible, agrupándola a través de los constructores de Axiomas.
+Tomando como referencia lo postulado por la Teoría de Centrado,% se pudo proveer a los párrafos de coherencia local. Para cada clase se reunió la mayor cantidad de información disponible, agrupándola a través de los constructores de Axiomas.
+se incrementó el grado de coherencia local a los párrafos. Para cada clase se reunió la mayor cantidad de información disponible, agrupándola a través de los constructores de Axiomas.
 
-La separación en constructores de Expresiones de Clases y constructores de Axiomas, dio lugar a las oraciones parciales y a un sistema de tipos. Si bien este sistema no se corresponde fielmente a las categorías de constituyentes sintácticos\footnote{Un constituyente sintáctico es una palabra, o secuencia de palabras, que funciona en conjunto como una unidad dentro de la estructura jerárquica de una oración} de alguna gramática conocida (como la gramática tradicional o la gramática generativa\footnote{La gramática tradicional y la generativa se enfocan en el estudio de la gramática del lenguaje. La gramática generativa es más moderna y estudia la sintaxis del lenguaje a través de definiciones formales.} ), permitió minimizar la cantidad de combinaciones que había que diseñar en las gramáticas.
+La separación en constructores de \textit{Expresiones de Clases} y constructores de \textit{Axiomas}, dio lugar a las oraciones parciales y a un sistema de tipos. Si bien este sistema no se corresponde fielmente a las categorías de constituyentes sintácticos\footnote{Un constituyente sintáctico es una palabra, o secuencia de palabras, que funciona en conjunto como una unidad dentro de la estructura jerárquica de una oración (por ejemplo Sintagma Verbal.)} de alguna gramática conocida (como la gramática tradicional o la gramática generativa\footnote{La gramática tradicional y la generativa se enfocan en el estudio de la gramática del lenguaje. La gramática generativa es más moderna y estudia la sintaxis del lenguaje a través de definiciones formales.}), permitió minimizar la cantidad de combinaciones que había que diseñar en las gramáticas.
 
 Las sentencias fueron debidamente procesadas para aplicar algunas técnicas de Procesamiento de Lenguaje Natural, como expresiones de referencia, agregación de sentencias, inflexión de número y determinación de pronombres basados en el género (en el caso del lenguaje español). 
 
-El resultado en los casos de prueba fue satisfactorio, la sintaxis generó oraciones interpretables.
+El resultado en los casos de prueba mostró que los patrones implementados generaron oraciones interpretables.
 
 Como mostramos en las comparaciones con resultados de otros trabajos, es posible tomar diferentes criterios para mostrar la misma información, y desarrollar técnicas o gramáticas más sofisticadas para mejorar la fluidez del texto.
