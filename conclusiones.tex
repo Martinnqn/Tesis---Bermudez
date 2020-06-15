@@ -14,11 +14,11 @@ Los resultados obtenidos de los casos de prueba retornaron estructuras organizad
 
 Además de maximizar la relación entre los tópicos, se buscó maximizar la relación entre los elementos de los párrafos. Para esto se usó como base la coherencia local, a través de los postulados de la Teoría de Centrado.
 
-Para el sistema de generación de texto, se dividió el problema en tres sub-problemas, basados en los procesos conocidos del Procesamiento del Lenguaje Natural. Estos subproblemas fueron diseñar e implementar la \textit{Macroplanificación},\textit{ Microplanificación} y  la \textit{Realización}. 
+Para el sistema de generación de texto, se dividió el problema en tres sub-problemas, basados en los procesos conocidos del Procesamiento del Lenguaje Natural. Estos subproblemas fueron diseñar e implementar la Macroplanificación, Microplanificación y la Realización. 
 
-Para comenzar, se desarrolló el módulo \textit{Macroplanificador}, encargado de brindar la estructura jerárquica del texto. Dado que se integró el \textit{Macroplanificador} con el Organizador de Información, su implementación fue trivial.
-Luego se procedió a verbalizar los axiomas de la ontología en la \textit{Microplanificación}, desarrollando la gramática del lenguaje humano e implementando los algoritmos de generación de texto adecuados, para reducir la redundancia y mejorar la fluidez del texto.
-Por  último  se  resolvió  el  problema  de  la  Realización  del  texto,  modificando  la  estructura inicial obtenida del \textit{Macroplanificador}, para reducir los niveles de la jerarquía del texto donde era adecuado.
+Para comenzar, se desarrolló el módulo Macroplanificador, encargado de brindar la estructura jerárquica del texto. Dado que se integró el Macroplanificador con el Organizador de Información, su implementación fue trivial.
+Luego se procedió a verbalizar los axiomas de la ontología en la Microplanificación, desarrollando la gramática del lenguaje humano e implementando los algoritmos de generación de texto adecuados, para reducir la redundancia y mejorar la fluidez del texto.
+Por  último  se  resolvió  el  problema  de  la  Realización  del  texto,  modificando  la  estructura inicial obtenida del Macroplanificador, para reducir los niveles de la jerarquía del texto donde era adecuado.
 
 Como se mostró en los casos de prueba, la solución basada en el desarrollo de estos módulos resultó en textos legibles y organizados. Si bien validar textos puede resultar subjetivo, podemos apreciar que existe suficiente relación semántica en el orden de los temas que se presentan, tanto entre las Secciones como entre las Oraciones, por lo que cumplen con cierta Coherencia Global y Local.
 
