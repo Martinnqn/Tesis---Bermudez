@@ -653,6 +653,7 @@ Para no sobrecargar la imagen, se omitió información de menor importancia, com
 
 \subsubsection{Ejemplo verbalización lenguaje español}
 El ejemplo se tomó de la ontología Pizza. El \textit{Axioma }se corresponde al constructor \emph{owl:equivalentClass} sobre la clase \emph{PizzaPicanteEquivalente}. El contenido del axioma es el siguiente: 
+\begin{figure}[H]
 \begin{verbatim}
 EquivalentClasses(
     :PizzaPicanteEquivalente
@@ -670,6 +671,8 @@ EquivalentClasses(
     )
 )    
 \end{verbatim}
+\label{fig:axioma_pizza_ejemplo}
+\end{figure}
 La verbalización se muestra en la Figura~\ref{fig:ejemplo_verb_espaniol}.
 Los pasos del proceso se encuentran enumerados desde el 1 al 6. La verbalización comienza en la parte más profunda del árbol, y a medida que se generan las oraciones parciales se retornan al nivel superior del árbol para continuar la composición.
 
@@ -695,6 +698,7 @@ De esta manera, en cada nivel busca utilizar un patrón que se ajuste a los comp
 \subsubsection{Axioma lenguaje inglés}
 El ejemplo se tomó de la ontología Wine. El \textit{Axioma} se corresponde al constructor \emph{owl:equivalentClass} sobre la clase \emph{CheninBlanc}. El contenido del axioma es el siguiente: 
 
+\begin{figure}[H]
 \begin{verbatim}
 EquivalentClasses(
     :CheninBlanc
@@ -709,6 +713,7 @@ EquivalentClasses(
     )
 )
 \end{verbatim}
+\end{figure}
 La verbalización se muestra en la Figura~\ref{fig:ejemplo_verb_ingles}.
 Los pasos del proceso se encuentran enumerados desde el 1 al 4. Las gramáticas utilizadas son similares a las explicadas para lenguaje español, con la diferencia que los enlaces han sido traducidos a inglés.
 
