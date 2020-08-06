@@ -43,7 +43,7 @@ Para este problema hemos reconocido dos sub-problemas a tratar:
 
 \begin{itemize}
     \item La obtención de los tópicos más relevantes para tratar en el texto.%, que en nuestro caso son unidades de información representadas por \emph{owl:Class} y \emph{owl:NamedIndividual}.
-    \item El recorrido del grafo para obtener las unidades de información adecuada que maximicen la relación semántica respecto a los tópicos del texto (para abordar la coherencia global).% En este caso, las unidades de información que se tienen en cuenta para el recorrido del grafo son \emph{rdfs:subClassOf}, \emph{owl:ObjectProperty} y \emph{owl:DataProperty}.
+    \item El recorrido del grafo para obtener las unidades de información que maximicen la relación semántica respecto a los tópicos del texto (para abordar la coherencia global).% En este caso, las unidades de información que se tienen en cuenta para el recorrido del grafo son \emph{rdfs:subClassOf}, \emph{owl:ObjectProperty} y \emph{owl:DataProperty}.
 \end{itemize}
 
 Este sub-problema de la estructuración jerárquica como Árbol de entidades serán desarrollados en las siguientes secciones.  %Nos referiremos a la estructura jerárquica como Árbol de Entidades.
@@ -54,8 +54,8 @@ Para organizar la información, se crearon cuatro módulos que transforman la on
 \begin{itemize}
     \item \textbf{Traductor}: recibe la entrada y la traduce a una representación interna de la ontología.
     \item \textbf{Clasificador de Entidades}: clasifica y extrae las entidades más relevantes, utilizando como criterio las medidas de centralidad.
-    \item \textbf{Generador de Nuevo Grupo de Entidades}: recibe una Entidad y recorre sus relaciones para crear un nuevo grupo de entidades relacionado semánticamente.
     \item \textbf{Generador del Árbol de Entidades}: se encarga de crear los niveles del Árbol de Entidades. 
+    \item \textbf{Generador de Nuevo Grupo de Entidades}: recibe una Entidad y recorre sus relaciones para crear un nuevo grupo de entidades relacionado semánticamente.
 \end{itemize}
 
 En la Figura~\ref{fig:modulos_organizador_inf} se muestra la transformación de la ontología OWL a través de los módulos. Los pasos 4 y 5 son iterativos, el proceso finaliza cuando no queden más Entidades que explorar, lo cual es definido por el Generador del Árbol de Entidades.
@@ -80,7 +80,7 @@ El criterio principal para establecer una clasificación sobre las clases de una
 
 Para obtener la cantidad de información de cada clase, utilizaremos el grafo subyacente a la ontología y calcularemos el \emph{outdegree}~\footnote{El \emph{outdegree} es la medida de la cantidad de conexiones salientes de un nodo.} de cada nodo que represente una clase. Para el cálculo se tendrá en cuenta únicamente la relación \emph{rdf:domain}.
 
-Teniendo en cuenta a las clases mejor clasificadas, se puede centrar lo que se dice en el texto alrededor de estas clases.
+Teniendo en cuenta a las clases mejor clasificadas, se puede centrar la verbalización alrededor de estas clases.
 
 Algunas ventajas de este enfoque son:
 \begin{itemize}
@@ -99,32 +99,8 @@ Si ninguna supera el valor promedio, se selecciona la o las clases con el valor 
 
 Cuando se seleccionan las clases que van a representar los temas principales, puede ocurrir que se elijan clases de una misma rama en la jerarquía de clases. Esto hace que se pierda algo de semántica, pues se incluyen clases en el mismo nivel, siendo que algunas son más específicas y pueden ser alcanzadas desde sus ancestros. Para evitar este problema, se optó por eliminar las subclases que sean seleccionadas en un principio, y que tengan a una clase ancestro dentro de los temas principales. Por ejemplo, continuando con la ontología de las pizzas, si las principales clases seleccionadas son \emph{comida} y \emph{pizza}, la clase \emph{pizza} sería eliminada del conjunto, pues es subclase de \emph{comida}. 
 
-\subsection{Agrupando la información de las Entidades}
-\label{sec:agrupando_info}
-El tercer módulo crea nuevos grupos de entidades para agregar como un nuevo nivel al Árbol. Los elementos de cada grupo serán insertados como hijos de la Entidad correspondiente.
-
-Dada una Entidad \emph{E}, debe recorrerse las relaciones de \emph{E} en la ontología, para seleccionar Entidades que serán agregadas al nuevo grupo.
-El contenido de cada grupo depende del tipo de \emph{E}.
-\begin{itemize}
-    \item Si \emph{E} es una Clase, el nuevo grupo estará constituido por Propiedades, Individuos y Subclases. 
-    \item Si \emph{E} es una Propiedad, el nuevo grupo estará constituido por Subpropiedades cuyo dominio contenga a \emph{E}, o por las clases del Rango de \emph{E} si no posee Subpropiedades.
-    \item Si \emph{E} es un Individuo, no se creará ningún grupo nuevo.
-\end{itemize}
-
-Cuando existen más de una Propiedad en un grupo, se busca reemplazarlas por propiedades en común de más alto nivel en la jerarquía de propiedades. Por ejemplo, en la ontología de las pizzas, para la clase \emph{pizza} existen dos propiedades: \emph{tieneCobertura} y \emph{tieneBase}. Como estas dos propiedades tienen a su vez una \emph{superproperty} en común llamada \emph{tieneIngrediente}, se reemplaza a las dos \emph{subproperties} por su ancestro \emph{tieneIngrediente}.
-
-%En la Figura~\ref{fig:diagrama_secuencia_contentGrouping} se muestra un pseudocódigo del algoritmo usado para agrupar la información de las clases.
-
-%\begin{figure}
-%    \centering
-%    \includegraphics%[width=8cm, height=7cm]
-%    {img/organizacion_informacion/secuencia_contentGrouping}
-%    \caption{Diagrama de secuencia para agrupar la información de las Clases}
-%    \label{fig:diagrama_secuencia_contentGrouping}
-%\end{figure}
-
 \subsection{Generador Árbol de Entidades}
-El cuarto módulo se encarga de crear la estructura del Árbol, sincronizando la interacción entre los demás módulos. Su objetivo es formar la jerarquía comenzando desde las Entidades más Relevantes, y agregando nuevos niveles con ayuda del Generador de Nuevos Grupos. Cuando no quedan más relaciones que recorrer en las Entidades del último nivel, revisa que todas las clases haya sido usadas al menos una vez. Si hay clases que no fueron utilizadas, invoca un algoritmo para agregar estas clases en una rama especial. Es el caso, por ejemplo, de las clases \emph{Comida} y \emph{Helado} en la ontología \emph{pizza}.
+El tercer módulo se encarga de crear la estructura del Árbol, sincronizando la interacción entre los demás módulos. Su objetivo es formar la jerarquía comenzando desde las Entidades más Relevantes, y agregando nuevos niveles con ayuda del Generador de Nuevos Grupos. Cuando no quedan más relaciones que recorrer en las Entidades del último nivel, revisa que todas las clases haya sido usadas al menos una vez. Si hay clases que no fueron utilizadas, invoca un algoritmo para agregar estas clases en una rama especial llamada \emph{Otras Secciones}. Es el caso, por ejemplo, de las clases \emph{Comida} y \emph{Helado} en la ontología \emph{pizza}.
 
 Como ejemplo, el primer y segundo nivel de la ontología de las pizzas quedaría como en la Figura~\ref{fig:macro_planning_pizza}; y el tercer nivel se muestra en la Figura~\ref{fig:macro_planning_pizza_n2}.
 
@@ -174,7 +150,32 @@ Como ejemplo, el primer y segundo nivel de la ontología de las pizzas quedaría
 \end{figure}
 
 
-Se puede ver que las subproperties \emph{tieneBase} y \emph{tieneCobertura} tienen en su dominio a \emph{pizza}, la clase más cercana recorriendo sus ancestros. Si existiera por ejemplo, \emph{tieneCondimento} como una tercer subproperty de \emph{tieneIngrediente}, cuyo dominio no tuviera \emph{pizza}, entonces no sería listada dentro del grupo \emph{tieneIngredientes} en la rama de \emph{pizza}. Sin embargo, deben explorarse las subproperties de \emph{tieneCondimento}, por el caso de que tenga alguna subproperty que tuviera como dominio a \emph{pizza}. Por ejemplo, supongamos que \emph{tieneCondimento} tiene como subproperty a \emph{tieneOrégano} con diminio \emph{pizza}, en ese caso se habilita a \emph{tieneCondimento} para ser insertado en el grupo junto a  \emph{tieneCobertura} y \emph{tieneBase}. 
+Se puede ver en la Figura~\ref{fig:macro_planning_pizza_n2} que las subpropiedades \emph{tieneBase} y \emph{tieneCobertura} tienen en su dominio a \emph{pizza}, la clase más cercana recorriendo sus ancestros. Si existiera por ejemplo, \emph{tieneCondimento} como una tercer subpropiedad de \emph{tieneIngrediente}, cuyo dominio no tuviera \emph{pizza}, entonces no sería listada dentro del grupo \emph{tieneIngredientes} en la rama de \emph{pizza}. Sin embargo, deben explorarse las subpropiedades de \emph{tieneCondimento}, por el caso de que tenga alguna subpropiedad que tuviera como dominio a \emph{pizza}. Por ejemplo, supongamos que \emph{tieneCondimento} tiene como subpropiedad a \emph{tieneOrégano} con dominio \emph{pizza}, en ese caso se habilita a \emph{tieneCondimento} para ser insertado en el grupo junto a  \emph{tieneCobertura} y \emph{tieneBase}. 
+
+
+\subsection{Generador de Nuevos Grupos de Entidades}
+\label{sec:agrupando_info}
+El cuarto módulo crea nuevos grupos de entidades para agregar como nuevos niveles al Árbol. Los elementos de cada grupo serán insertados como hijos de la Entidad correspondiente.
+
+Dada una Entidad \emph{E}, deben recorrerse las relaciones de \emph{E} en la ontología, para seleccionar Entidades que serán agregadas al nuevo grupo.
+El contenido de cada grupo depende del tipo de \emph{E}.
+\begin{itemize}
+    \item Si \emph{E} es una Clase, el nuevo grupo estará constituido por Propiedades, Individuos y Subclases. 
+    \item Si \emph{E} es una Propiedad, el nuevo grupo estará constituido por Subpropiedades cuyo dominio contenga a \emph{E}, o por las clases del Rango de \emph{E} si no posee Subpropiedades.
+    \item Si \emph{E} es un Individuo, no se creará ningún grupo nuevo.
+\end{itemize}
+
+Cuando existe más de una Propiedad en un grupo, se busca reemplazarlas por propiedades en común de más alto nivel en la jerarquía de propiedades. Por ejemplo, en la ontología de las pizzas, para la clase \emph{pizza} existen dos propiedades: \emph{tieneCobertura} y \emph{tieneBase}. Como estas dos propiedades tienen a su vez una subpropiedad en común llamada \emph{tieneIngrediente}, se reemplaza a las dos subpropiedades por su ancestro \emph{tieneIngrediente}.
+
+%En la Figura~\ref{fig:diagrama_secuencia_contentGrouping} se muestra un pseudocódigo del algoritmo usado para agrupar la información de las clases.
+
+%\begin{figure}
+%    \centering
+%    \includegraphics%[width=8cm, height=7cm]
+%    {img/organizacion_informacion/secuencia_contentGrouping}
+%    \caption{Diagrama de secuencia para agrupar la información de las Clases}
+%    \label{fig:diagrama_secuencia_contentGrouping}
+%\end{figure}
 
 \subsection{Diagrama de clases}
 En la Figura~\ref{fig:diagrama_clases_organizador} se muestra el diagrama de clases correspondiente al Organizador de Información. El módulo \emph{Traductor} está representado a través de la clase \emph{OntologyManager}; el módulo Clasificador de Entidades está representado por la clase \emph{ContentClasification}; el módulo que genera el Árbol de Entidades está implementado por la clase \emph{GeneratorTreeManager}, y el módulo que crea nuevos grupos de entidades está implementado en la clase \emph{ContentGrouping}. 
@@ -191,7 +192,7 @@ Las clases \emph{OWLIntClass},  \emph{OWLClass},  \emph{OWLDataProperty},  \emph
 \section{Implementación}
 Para documentar la implementación se tomarán principalmente las cuatro clases asociadas a los módulos del Organizador de Información. Para simplificar la longitud de las clases documentadas, solo se mostrará el encabezado de los métodos con sus respectivas descripciones, y solo se incluirá la implementación de los métodos más importantes.
 
-La estructura de la ontología se crea a través de la clase \emph{OntologyManager}. Esta clase hace uso de la librería  \emph{OWLAPI}\footnote{http://owlapi.sourceforge.net/} para cargar el archivo que contiene la ontología de entrada. El beneficio de esta librería es que también importa los archivos necesarios en caso de que hayan definiciones de tipo \emph{import} en la ontología. En el Anexo~\ref{sec:clase_ontologymanager} se muestra un pseudocódigo del método principal de \emph{OntologyManager}.
+La estructura de la ontología se crea a través de la clase \emph{OntologyManager}. Esta clase hace uso de la librería  \emph{OWLAPI}\footnote{http://owlapi.sourceforge.net/} para cargar el archivo que contiene la ontología de entrada. El beneficio de esta librería es que también importa los archivos necesarios en caso de que hayan definiciones de tipo \emph{import} en la ontología. En el Anexo~\ref{sec:clase_ontologymanager} se muestra el método principal de \emph{OntologyManager} que contiene la llamada y la explicación de los métodos involucrados para crear la estructura de la ontología.
 
 La clase \emph{Ontology} posee la estructura creada con \emph{OntologyManager}. También posee algunos métodos útiles para el proceso de organizar la información, los cuales se muestran en el Anexo~\ref{sec:clase_ontology}.
 
@@ -212,6 +213,8 @@ Al momento de realizar este trabajo no se reconoce ninguna aplicación que abord
 
 \subsection{Organización de Ontología Pizza}
 Según la descripción de la ontología, este dominio representa las pizzas y sus coberturas, por lo que esperamos que las entidades que representen a las pizzas, a las coberturas y la información complementaria tiendan a agruparse en los niveles más altos de la jerarquía, mientras que en los niveles más bajos esperamos encontrar las clases más específicas y que tienen menor impacto sobre el entendimiento del dominio.
+
+En el Anexo~\ref{apx:traza_pizza} se muestra una salida del programa en ejecución, en el que se ve el proceso de clasificación de las Entidades para obtener los temas principales, y luego se muestran algunas partes del proceso de creación de la estructura, donde se crean los niveles de la jerarquía de la estructura.
 
 En la Figura~\ref{fig:caso_estudio_pizza} se puede ver el resultado de aplicar el algoritmo teniendo como entrada la ontología pizza. 
 
@@ -277,7 +280,7 @@ Como se puede observar en la Figura~\ref{fig:caso_estudio_pizza}, en la primer c
 
 En la jerarquía de los tópicos principales, se puede ver como toda la información se agrupa como hijas de la entidad Pizza, describiendo los tipos de pizzas y sus ingredientes. Inmediato a los ingredientes lista las coberturas, y reconoce a las bases de pizza a la misma altura que las coberturas, asignándoles la misma importancia.
 
-En la jerarquía de \emph{otras secciones}, se aprecian las demás entidades que aportan información secundaria a la descripción del dominio, que no está directamente relacionada con el dominio de las pizzas, como son los países, los tipos de picante y otras comidas.
+En la jerarquía de \emph{Otras Secciones}, se aprecian las demás entidades que aportan información secundaria a la descripción del dominio, que no está directamente relacionada con el dominio de las pizzas, como son los países, los tipos de picante y otras comidas.
 
 Respecto al resultado esperado, la organización de la información es satisfactoria, ya que se asimila a la propia descripción del dominio. 
 
@@ -377,7 +380,7 @@ En la Figura~\ref{fig:caso_estudio_wine} se puede ver el resultado de aplicar el
 \end{figure}
 
 
-La ontología Wine cuenta con 138 clases y 16 propiedades. De las 16 propiedades, 12 fueron usadas para verificar qué clases superan el promedio para ser seleccionadas como las principales. El promedio fue de 2.5 y la única clase que lo superó fue Wine, lo que cumple parcialmente el resultado esperado, ya que parte del objetivo de la ontología es describir el dominio de los vinos. Respecto a la sección que describe las comidas, quedó desplazada a \emph{otras secciones}, siendo un resultado no esperado según el objetivo de la ontología. Sin embargo, analizando manualmente la ontología, se puede apreciar que el porcentaje de  información que describe a las comidas es significativamente menor en relación a la información referida a los vinos, factor por el cual resulta aceptable que no aparezcan como sección principal.
+La ontología Wine cuenta con 138 clases y 16 propiedades. De las 16 propiedades, 12 fueron usadas para verificar qué clases superan el promedio para ser seleccionadas como las principales. El promedio fue de 2.5 y la única clase que lo superó fue Wine, lo que cumple parcialmente el resultado esperado, ya que parte del objetivo de la ontología es describir el dominio de los vinos. Respecto a la sección que describe las comidas, quedó desplazada a \emph{Otras Secciones}, siendo un resultado no esperado según el objetivo de la ontología. Sin embargo, analizando manualmente la ontología, se puede apreciar que el porcentaje de  información que describe a las comidas es significativamente menor en relación a la información referida a los vinos, factor por el cual resulta aceptable que no aparezcan como sección principal.
 
 %\subsection{Organización de Ontología SNOMED-CT}
 
@@ -393,4 +396,4 @@ Abordamos el problema de organizar la información de una ontología, tratando d
 
 Los resultados fueron satisfactorios, obteniendo estructuras que corresponden a los resultados esperados. 
 
-Si bien el resultado de la clasificación de las entidades mas importantes depende de la cantidad de \emph{owl:ObjectProperties} y de que sus \emph{rdfs:domain} estén correctamente establecidos, en general el hecho de que son Redes Libres de Escala es un punto a favor para este enfoque.
+%Si bien el resultado de la clasificación de las entidades mas importantes depende de la cantidad de \emph{owl:ObjectProperties} y de que sus \emph{rdfs:domain} estén correctamente establecidos, en general el hecho de que son Redes Libres de Escala es un punto a favor para este enfoque.

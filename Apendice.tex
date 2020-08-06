@@ -4,6 +4,84 @@
 \addcontentsline{toc}{chapter}{Apéndice}
 \renewcommand{\thesection}{A.\arabic{section}}
 
+\section{Traza de la generación de la estructura inicial para la ontología Pizza}
+\label{apx:traza_pizza}
+
+\centering
+\setlength{\parindent}{1em}
+\begin{verbatim}
+
+Comienza la clasificación de las Entidades
+para seleccionar los temas principales:
+Participación de cada clase en la ontología
+(cantidad de veces que aparece en un dominio):
+    Pizza: 2
+    BaseDePizza: 1
+    Comida: 1
+    CoberturaDePizza: 1
+Suma total de participación: 5.0
+Promedio de participación (suma total de participación
+divido por la cantidad de clases que 
+participaron de la suma):
+    5.0/4 = 1.25
+Clases que superan el promedio y por lo tanto
+son consideradas temas principales:
+[Pizza] -> porcentaje de participación en 
+los dominios de la ontología: 40.0%
+Temas principales reconocidos:[Pizza]
+
+Comienza a crear los grupos para la Clase: Pizza
+Crea subnivel
+Comienza a crear el grupo para: PizzaConCarne
+Comienza a crear el grupo para: PizzaPicante
+Comienza a crear el grupo para: PizzaNoVegetariana
+Comienza a crear el grupo para: PizzaConNombre
+Crea subnivel
+...
+Sale del subnivel actual.
+...
+Comienza a crear el grupo para: PizzaVegetariana
+Comienza a crear el grupo para: tieneIngrediente
+Crea subnivel
+Comienza a crear el grupo para: tieneCobertura
+Crea subnivel
+Comienza a crear el grupo para: CoberturaDePizza
+Crea subnivel
+...
+Sale del subnivel actual.
+Comienza a crear el grupo para: tieneBase
+Crea subnivel
+Comienza a crear el grupo para: BaseDePizza
+Crea subnivel
+Comienza a crear el grupo para: BaseGruesa
+Comienza a crear el grupo para: BaseDelgadaYCrujiente
+Sale del subnivel actual.
+Sale del subnivel actual.
+Sale del subnivel actual.
+Sale del subnivel actual.
+Finalizó la creación de la Sección rincipal.
+
+Las siguientes Entidades no poseen su propia Sección,
+por lo que serán agregadas a Otras Secciones: 
+Comienza a crear el grupo para: DomainConcept
+Crea subnivel
+Comienza a crear el grupo para: Comida
+...
+Comienza a crear el grupo para: Pais
+...
+Sale del subnivel actual.
+Comienza a crear el grupo para: ValuePartition
+Crea subnivel
+Comienza a crear el grupo para: Picante
+Crea subnivel
+Comienza a crear el grupo para: PocoPicante
+Comienza a crear el grupo para: AlgoPicante
+Comienza a crear el grupo para: MuyPicante
+Sale del subnivel actual.
+Sale del subnivel actual.
+Finalizó la creación de Otras Secciones
+\end{verbatim}
+
 \section{Implementación Organizador de Información}
 \label{apx:impl_org_inf}
 

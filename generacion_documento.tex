@@ -1,6 +1,6 @@
 \chapter{Generación del documento de texto}
 
-En este Capítulo se diseñará e implementará el proceso de generación del Documento de Texto, teniendo en mente los procesos conocidos de la GLN vistos anteriormente. Usaremos el Árbol de Entidades del Organizador de Información detallado en el Capítulo~\ref{cap:organizacion} para dar una estructura inicial al texto, y luego verbalizaremos los Constructores de la Ontología, teniendo en cuenta la coherencia local dentro de los párrafos generados.
+En este Capítulo se presenta el diseño e implementación del proceso de generación del Documento de Texto, teniendo en mente los procesos conocidos de la GLN vistos anteriormente. Usaremos el Árbol de Entidades del Organizador de Información detallado en el Capítulo~\ref{cap:organizacion} para dar una estructura inicial al texto, y luego verbalizaremos los Constructores de la Ontología, teniendo en cuenta la coherencia local dentro de los párrafos generados.
 
 \section{Introducción}
 Para abordar el proceso de generación de texto, se tomó como referencia las actividades de la Generación de Lenguaje Natural nombradas en la Sección~\ref{sec:tareas_gnl}. Se crearon tres módulos principales: Macroplanificador, Microplanificador y Realizador, los cuales implementan los procesos asociados a las etapas de Macroplanificación, Microplanificación y Realización gramatical, respectivamente. Dentro de cada módulo se desarrollaron submódulos, para resolver cada problema específico. 
@@ -17,11 +17,11 @@ Para satisfacer las necesidades del nivel macro, usaremos como punto de partida 
 
 Parte de la estética resulta de crear secciones y párrafos con los tópicos del texto. Dado que queremos dotar al texto con coherencia local, debemos definir qué información habrá en cada sección y párrafo, y cómo estará organizada. 
 
-Tomando algunos postulados básicos de la Teoría de Centrado, contamos con una base inicial para elegir cómo presentar en lenguaje natural y de manera coherente la información contenida en la ontología. No es el objetivo de este trabajo implementar una solución basada estrictamente en las reglas propuestas por dicha Teoría, más bien, se pretende alcanzar una cierta coherencia local motivados por la idea que subyace en la misma.
+Tomando algunos postulados básicos de la Teoría de Centrado, contamos con una base inicial para elegir cómo presentar en lenguaje natural y de manera coherente la información contenida en la ontología. No es el objetivo de este trabajo implementar una solución basada estrictamente en las reglas propuestas por dicha teoría, más bien, se pretende alcanzar una cierta coherencia local motivados por la idea que subyace en la misma.
 
 Para mantener la coherencia local según la Teoría de Centrado, debemos evitar cambiar continuamente los focos de atención. Por este motivo, para cada tópico tratado en el texto, trataremos de capturar y presentar toda su información agrupada en párrafos consecutivos.  
 
-Dado una entidad \emph{E}, para recuperar la información que la describe, adoptaremos dos criterios principales:
+Dada una entidad \emph{E}, para recuperar la información que la describe, adoptaremos dos criterios principales:
 \begin{itemize}
     \item El primer criterio consiste en juntar los axiomas que describen a \emph{E} en un mismo párrafo. %Los axiomas de cada entidad están guardados en la estructura de la ontología creada en el módulo \emph{Traductor} del capítulo anterior, por lo que obtenerlos y agruparlos es trivial.
     \item El segundo criterio consiste en recorrer la estructura de grafo a partir del nodo que representa a \emph{E}, navegando por las relaciones del nodo. Este recorrido busca capturar la máxima cantidad de información posible acerca de \emph{E}. 
@@ -36,32 +36,32 @@ La relación entre el Organizador de Información y el Generador del Documento d
 
 \begin{figure}
     \centering
-    \includegraphics{img/presentacion_problema/modulos_sgln.pdf}
+    \includegraphics{img/generacion_documento/modulos_SGLN.pdf}
     \caption{Módulos que componen el Sistema de Generación de Lenguaje Natural}
     \label{fig:modulos_sgln}
 \end{figure}
 
 
-Ampliando el módulo \emph{Generador de Documento de Texto} en la Figura~\ref{fig:modulos_documento_final}, se puede apreciar el flujo de información entre los módulos desarrollados en este Capítulo.
+% Ampliando el módulo \emph{Generador de Documento de Texto} en la Figura~\ref{fig:modulos_documento_final}, se puede apreciar el flujo de información entre los módulos desarrollados en este Capítulo.
 
-\begin{figure}
-    \centering
-    \includegraphics{img/generacion_documento/modulos_documento_final.pdf}
-    \caption{Módulos para la generación del Documento Final.}
-    \label{fig:modulos_documento_final}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics{img/generacion_documento/modulos_documento_final.pdf}
+%     \caption{Módulos para la generación del Documento Final.}
+%     \label{fig:modulos_documento_final}
+% \end{figure}
 
 
 \section{Diseño Macroplanificador}
 \label{sec:macro_planning}
-En esta etapa se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de Macroplanificación. Para crear el documento en la etapa de Macroplanificación, se reemplazó el módulo Generador del Árbol de Entidades del Organizador de Información, por un nuevo módulo específico del Macroplanificador. El motivo de este reemplazo es evitar la creación de interfaces entre el Organizador de Información y el Macroplanificador, por el \emph{overhead} que estas suponen, ya que la creación del Árbol de Entidades y la Macroplanificación resultan ser procesos equivalentes, por lo que pueden ser reemplazables, evitando recorrer el doble de veces la estructura jerárquica.
+En esta etapa se planificará la estructura del documento. Como nombramos anteriormente, la organización a priori de la información, realizada en el capítulo anterior, facilita la tarea de Macroplanificación. Para crear el documento en la etapa de Macroplanificación, se reemplazó el módulo Generador del Árbol de Entidades del Organizador de Información, por el módulo Macroplanificador. El motivo de este reemplazo es evitar la creación de interfaces entre el Organizador de Información y el Macroplanificador, por el \emph{overhead} que estas suponen, ya que la creación del Árbol de Entidades y la Macroplanificación resultan ser procesos equivalentes, por lo que pueden ser reemplazables, evitando recorrer el doble de veces la estructura jerárquica. De esta manera, el Generador de Documento de Texto ya no recibe un Árbol de Entidades, sino que recibe el Plan de Documento directamente en el Microplanificador. 
 
-En la Figura~\ref{fig:modulos_plan_documento} se puede ver el nuevo módulo Generador del Plan de Documento, que retorna como salida un Plan de Documento.
+En la Figura~\ref{fig:modulos_plan_documento} se puede ver la integración del Organizador de Información con el Generador de Documento de Texto.
 
 \begin{figure}
     \centering
-    \includegraphics{img/generacion_documento/modulos_plan_documento.pdf}
-    \caption{Módulos para la generación del Plan de Documento.}
+    \includegraphics{img/generacion_documento/modulos_SGLN_integrado.pdf}
+    \caption{Interacción entre todos los módulos que componen el Sistema de Generación de Lenguaje Natural.}
     \label{fig:modulos_plan_documento}
 \end{figure}
 
@@ -76,7 +76,7 @@ La representación interna del documento de texto tiene en cuenta los siguientes
 \end{itemize}
 
 \subsection{Secciones y párrafos}
-Las Secciones tiene como objetivo principal delimitar la información asociada a una Entidad, segmentando el texto con el fin de mantener la coherencia global.
+Las Secciones tienen como objetivo principal delimitar la información asociada a una Entidad, segmentando el texto con el fin de mantener la coherencia global.
 
 Dentro de una sección para una Clase, se verbalizarán sus axiomas y se enumerarán sus Individuos, Subclases y Relaciones, todo en un párrafo. Enumerar esta información (es decir, presentarla sin considerarla un nuevo tópico) resulta conveniente ya que luego se crearán subsecciones para cada uno de esos componentes.
 
@@ -88,7 +88,7 @@ En una sección para Individuos, se creará un párrafo para describir sus propi
 Las subsecciones son secciones anidadas dentro de otras secciones. Una subsección puede surgir a partir de un Individuo, Subclases o Relaciones. Cuando surge a partir de un Individuo, la subsección trata como tópico al Individuo; cuando surge a partir de una Subclase, el tópico principal es la Subclase; y cuando surge a partir de una Relación, el tópico principal resulta ser el rango de la Relación, es decir, otra Clase.
 
 \subsection{Oraciones}
-Las oraciones pertenecen a los párrafos por lo que tratan un solo tópico. Cada oración que tenga como tópico a una Clase,  aborda un solo tipo de información, por lo que existe una oración para las clases disjuntas, una oración para las clases equivalentes, y así con los demás tipos de información. Cada oración correspondientes a un Individuo contiene las propiedades con sus valores declaradas sobre el Individuo.
+Las oraciones pertenecen a los párrafos por lo que tratan un solo tópico. Cada oración que tenga como tópico a una Clase,  aborda un solo tipo de información, por lo que existe una oración para las clases disjuntas, una oración para las clases equivalentes, y así con los demás tipos de información. Cada oración correspondiente a un Individuo contiene las propiedades con sus valores declaradas sobre el Individuo.
 
 Al tratar un solo tipo de información por oración, se maximiza la cohesión dentro de cada oración.
 
@@ -104,11 +104,11 @@ En la Figura~\ref{fig:diagrama_clases_macroplanificador} se muestra el diagrama 
 \end{figure}
 
 \section{Implementación Macroplanificador}
-La clase principal del Macroplanificador es \emph{TextManager}. Para crear el Documento Inicial, recorre las Entidades de la misma manera que la clase \emph{GeneratorTreeManager}, explicada en la Figura~\ref{sec:clase_generator_tree}, con la diferencia que crea el objeto \emph{Text} y los objetos \emph{Section} asociados a cada Entidad. Ya que el recorrido es equivalente no se presentará su implementación, en cambio comenzaremos a mostrar las clases que componen el Documento de Texto.
+La clase principal del Macroplanificador es \emph{TextManager}. Para crear el Documento Inicial, recorre las Entidades de la misma manera que la clase \emph{GeneratorTreeManager}, explicada en el Anexo~\ref{sec:clase_generator_tree}, con la diferencia que crea el objeto \emph{Text} y los objetos \emph{Section} asociados a cada Entidad. Ya que el recorrido es equivalente no se presentará su implementación, en cambio mostraremos las clases que componen el Documento de Texto.
 
-La clase \emph{Text} solo contiene los objetos del primer nivel del Documento de Texto. Tiene acceso a las secciones principales y a las secciones que contienen la información que no había sido utilizada en otras secciones. 
+La clase \emph{Text} solo contiene los objetos del primer nivel del Documento de Texto. Tiene acceso a las secciones principales y a \emph{Otras Secciones}. 
 
-La clase \emph{Section} contiene la información referida a una Sección, como título, párrafos, sus subsecciones y el tópico asociado. Implementa el método de realización del Documento Final, el cual se verá en el Capítulo de Realización.
+La clase \emph{Section} contiene la información referida a una Sección, como título, párrafos, sus subsecciones y el tópico asociado. Implementa el método de realización del Documento Final, el cual se verá en la Sección~\ref{sec:realizacion} de Realización.
 
 Cada \emph{Section} se encarga de crear el \emph{Paragraph} correspondiente a su Tópico.
 
@@ -131,13 +131,13 @@ Tanto las oraciones acerca de Clases como las de Individuos requieren la verbali
 Las tareas necesarias para la verbalización de una oración son:
 \begin{itemize}
     \item Verbalizar los constructores OWL o enumerar las propiedades, instancias y subclases.
-    \item Eliminar información redundante entre oraciones a través del proceso de agragación.
+    \item Eliminar información redundante entre oraciones.
     \item En el caso de las Clases, se reemplaza con expresiones de referencia a los nombres de las Clases en oraciones consecutivas evitando que se repitan y que genere un texto poco fluido.
 \end{itemize}
 
 \subsection{Sintaxis OWL 2}
 \label{sec:gen_doc_sintaxis_owl}
-Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gramática BNF y de los diagramas de clases de su documentación~\cite{OWL2W3C}), agrupamos en diferentes niveles de abstracción las tres categorías sintácticas: en el nivel inferior se encuentran las Entidades, en el nivel intermedio las Expresiones de Clases, y en el nivel superior los Axiomas. Esta separación en niveles de abstracción será útil para organizar la verbalización. El conjunto de constructores elegido para verbalizar se encuentra en las siguientes listas: en la lista~\ref{list:constructores_axiomas} se agrupan los constructores del nivel de Axiomas, en la Lista~\ref{list:constructores_expresiones} los constructores de Expresiones de Clases y en la lista~\ref{list:constructores_entity} los constructores de nivel de Entidades.
+Teniendo en cuenta la estructura jerárquica de la sintaxis (a partir de su gramática BNF y de los diagramas de clases de su documentación~\cite{OWL2W3C}), agrupamos en diferentes niveles de abstracción las tres categorías sintácticas: en el nivel inferior se encuentran las Entidades, en el nivel intermedio las Expresiones de Clases, y en el nivel superior los Axiomas. Esta separación en niveles de abstracción será útil para organizar la verbalización. El conjunto de constructores elegido para verbalizar se encuentra en las siguientes listas: en la Lista~\ref{list:constructores_axiomas} se agrupan los constructores del nivel de Axiomas, en la Lista~\ref{list:constructores_expresiones} los constructores de Expresiones de Clases y en la Lista~\ref{list:constructores_entity} los constructores de nivel de Entidades.
 \begin{figure}
 \begin{multicols}{2}
 \captionof{listCap}{Constructores de Entidades}
@@ -310,13 +310,13 @@ El beneficio de este sistema es que cada constructor sabe cómo realizar la comp
 Además, incorporar un sistema como este, evita el uso de otras técnicas menos afines a la lingüística, como \emph{templates} prediseñados o texto genérico para cada caso particular, ya que se basa en el uso de patrones más cercanos a la Lingüística Teórica, apoyando el uso de teorías lingüísticas en el campo del Procesamiento de Lenguaje Natural.
 
 
-Sin embargo, estos componentes no intentan ser exhaustivos ni completamente fieles a la sintaxis del lenguaje humano, sino que intentan acaparar de la forma más general los posibles resultados de cada constructor, para mantener una sintaxis sencilla y aceptable. Una \textit{Clase}, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una \textit{Clase}, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas.
+Sin embargo, estos componentes no intentan ser exhaustivos ni completamente fieles a la sintaxis del lenguaje humano, sino que intentan acaparar de la forma más general los posibles resultados de cada constructor, para mantener una sintaxis sencilla y aceptable. Una \textit{Clase}, por ejemplo, podría cumplir la función de sintagma nominal, adjetival o adverbial, pero para simplificar la nomenclatura, se retorna un tipo más genérico y al momento de usar una \textit{Clase}, de ser necesario, se resuelve la composición en función de los elementos que la constituyen. Como veremos más adelante, a veces es innecesario discriminar los tipos de sintagmas~\footnote{Un sintagma es una palabra o conjunto de palabras que se articula en torno a un núcleo y que puede ejercer alguna función sintáctica. Por ejemplo: ``tiene cobertura'' es un Sintagma Verbal}.
 
 
 \subsection{Convención y suposiciones del nombrado de Entidades}
 Para no limitar la aplicación a una convención de nombrado, no se requiere una forma estricta para nombrar las entidades en una ontología. Sin embargo, nos basamos en algunas suposiciones que resultan natural al crear una ontología:
 \begin{enumerate}
-    \item Las entidades pueden tener su nombre ya sea en la IRI o en un label\footnote{Estas opciones son excluyentes, al verbalizar una ontología solo se extraen los nombres de un solo lugar, por lo que todos los nombres deben ser extraídos de IRI o de label sin combinarse}. Si el nombre es extraído de una IRI, debe estar escrito con el estilo CamelCase. Si el nombre se extrae de un label, debe estar escrito en lenguaje natural, y debe tener el idioma del label (en este caso, español ``es'' o ingles ``en'').
+    \item Las entidades pueden tener su nombre ya sea en la IRI o en un label\footnote{Estas opciones son excluyentes, al verbalizar una ontología solo se extraen los nombres de un solo lugar, por lo que todos los nombres deben ser extraídos de IRI o de label sin combinarse}. Si el nombre es extraído de una IRI, debe estar escrito con el estilo CamelCase. Si el nombre se extrae de un label, debe estar escrito en lenguaje natural, y debe tener el idioma del label (en este caso, español ``es'' o inglés ``en'').
     \item No hay condiciones para el nombre de una clase, sin embargo es preferible que contenga al menos un sustantivo.
     \item No hay condiciones para el nombre de una propiedad, sin embargo es preferible que contenga al menos un verbo. 
     
@@ -337,7 +337,7 @@ Dado que los nombres de las\textit{ Entidades} pueden no corresponderse fielment
 
 Se consideró, a cada conjunto de palabras que conforman el nombre de una entidad, como un componente incompleto (oración parcial) que es parte de una oración más grande. Por este motivo, se divide en dos partes fundamentales: una parte inicial y un complemento, entre los cuales pueden insertarse nexos y cuantificaciones. A continuación se explican cómo se reconocen ambas partes en las clases y propiedades:
 \begin{itemize}
-    \item Los nombres de las propiedades (en los que suponemos existe al menos un verbo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer verbo. El complemento se conforma con todas las palabras que siguen al primer verbo. Por ejemplo: la propiedad \emph{tiene color} se compone de parte inicial: \emph{tiene}, y complemento: \emph{color}. La propiedad \emph{se solapa con} se compone de \emph{se solapa} como parte de inicial, y \emph{con} como complemento.
+    \item Para los nombres de las propiedades (en los que suponemos existe al menos un verbo), la parte inicial se conforma desde la primer palabra hasta el primer verbo. El complemento se conforma con todas las palabras que siguen al primer verbo. Por ejemplo: la propiedad \emph{tiene color} se compone de parte inicial: \emph{tiene}, y complemento: \emph{color}. La propiedad \emph{se solapa con} se compone de \emph{se solapa} como parte de inicial, y \emph{con} como complemento.
     \item Para las clases (en las que suponemos existe al menos un sustantivo), se considera como parte inicial a todas las palabras desde el inicio hasta el primer sustantivo. El complemento se conforma con todas las palabras que siguen al primer sustantivo. Por ejemplo: la clase \emph{agente social}, tiene como parte inicial \emph{agente} y complemento \emph{social}. La clase \emph{cobertura de pizza} se compone de \emph{cobertura} con complemento \emph{de pizza}.
     \item Los nombres de los individuos son tratados igual que los nombres de las clases.
 \end{itemize}
@@ -350,7 +350,7 @@ Esta tarea se encarga de componer las oraciones según la información de cada c
 %Para cada uno de estos tipos de información, se pueden presentar una o varias oraciones. Las oraciones que tratan el mismo tipo de información se organizan adyacentemente entre ellas.
 En algunos constructores, tener un único patrón gramatical resulta insuficiente, debido a que pueden recibir distintas estructuras gramaticales como entrada, que requieren diferentes formas de componerse. Por lo tanto, en estos casos se diseñó más de una forma de composición, mejorando la variabilidad, fluidez e interpretación de las oraciones. 
 
-Para reconocer cómo componer las oraciones en cada constructor, se revisó empíricamente los axiomas de algunas ontologías, y se buscó utilizar oraciones que sean lo más genéricas posibles, que permitan la comprensión de los axiomas. 
+Para reconocer cómo componer las oraciones en cada constructor, se revisaron empíricamente los axiomas de algunas ontologías, y se buscó utilizar oraciones que sean lo más genéricas posibles, que permitan la comprensión de los axiomas. 
 
 A continuación se explican los patrones gramaticales usados para cada constructor. %El signo $+$ corresponde a la concatenación de cadenas de texto.
 
@@ -551,7 +551,7 @@ La Gramática~\ref{gram:hasself_rest} muestra los patrones diseñados para una a
 
 
 \subsubsection{Restricción N-Ary \emph{UnionOf} y \emph{oneOf}} 
-Como representan una secuencia de elementos, en la que uno o más elementos pueden ser verdaderos, se eligió concatenar a todos los elementos con el conector disyuntivo ``\textbf{o}''.  
+Como las restricciones N-Ary representan una secuencia de elementos, en la que uno o más elementos pueden ser verdaderos, se eligió concatenar a todos los elementos con el conector disyuntivo ``\textbf{o}''.  
 Sean $e_1, e_2,\ldots,e_N$ los elementos de la enumeración, el patrón gramatical elegido es: $e_1, e_2,\ldots,e_{N-1}$ {\textbf{o}} $e_N$''.
 
 \subsubsection{Restricción N-Ary \emph{InterseccionOf}}
@@ -623,6 +623,7 @@ La enumeración de propiedades, subclases e individuos es simple. Para llevar a 
 
 
 \subsection{Expresiones de referencia}
+\label{sec:expresiones_ref}
 El proceso de referenciación se ve facilitado por el uso de la Teoría de Centrado. 
 Teniendo en cuenta que cada párrafo (y por lo tanto cada oración que lo compone) trata centralmente una única \textit{Clase }o \textit{Individuo}, no se intercalan tópicos como focos de atención, por lo que se reduce la posibilidad de ambigüedad. Las expresiones de referencia solo fueron implementadas para las \textit{Clases}.
 
@@ -631,10 +632,11 @@ Para llevar a cabo la referenciación, se tuvo en cuenta el uso de pronombres de
 %Otro tipo de referencias, se da en el momento de explicar una clase. Cuando se crea una sección hablando acerca de una clase \emph{A}, esa sección no vuelve a crearse si existe una clase \emph{B} cuya descripción requiere que se explique la clase \emph{A}, sino que en la clase \emph{B} se hace referencia a la sección donde ya fue explicada la clase \emph{A}. Esto permite reutilizar las secciones y evita agregar información redundante en el texto.
 
 \subsection{Agregación de sentencias}
+\label{sec:agregacion}
 Utilizaremos la agregación de sentencias para eliminar información redundante.
 
 %de marco metodologico para la gnl
-Basaremos la agregación en la conjunción por componentes compartidos~\cite{bernardos2003marco}. El objetivo es que los elementos en común aparezcan una sola vez, mediante elipsis\footnote{\url{https://www.significados.com/elipsis/}} del componente repetido, por ejemplo: sean las oraciones: ``la casa tiene color rojo'', ``la casa tiene color azul'' y ``la casa tiene color verde'', al comparar linealmente las oraciones, se elimina de las consecutivas oraciones la parte inicial que tengan en común. El resultado de esta agregación es: ``la casa tiene color rojo, azul y verde''.
+Basaremos la agregación en la conjunción por componentes compartidos~\cite{bernardos2003marco}. El objetivo es que los elementos en común aparezcan una sola vez, mediante elipsis\footnote{La elipsis es la omisión intencional de un elemento del discurso que se sobreentiende o puede ser reconstruido gracias al contexto.} del componente repetido, por ejemplo: sean las oraciones: ``la casa tiene color rojo'', ``la casa tiene color azul'' y ``la casa tiene color verde'', al comparar linealmente las oraciones, se elimina de las consecutivas oraciones la parte inicial que tengan en común. El resultado de esta agregación es: ``la casa tiene color rojo, azul y verde''.
 
 La agregación de sentencias ocurre en dos lugares. Uno es durante el proceso de producción de una oración en el constructor \emph{N-Ary}, es decir dentro de una oración; el otro es durante el proceso de creación de párrafos, es decir, entre oraciones.
     
@@ -732,14 +734,8 @@ La verbalización de este axioma da como resultado dos oraciones. Como ambas ora
 \end{figure}
 
 \subsection{Diagrama de clases}
-En la Figura~\ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de Microplanificación. 
-La clase \emph{Statement} es la encargada de realizar la verbalización de los constructores de Axiomas y las enumeraciones. Un objeto \emph{Statement} puede generar más de una oración, ya que cada \emph{Statement} trata un solo tópico y un solo tipo de constructor, pero pueden haber varios axiomas que utilicen el mismo tipo de constructor, por lo que todos esos axiomas estarán en la misma \emph{Statement}.
+En la Figura~\ref{fig:diagrama_clases_microplanificador} se puede ver el diagrama de clases asociado al módulo de Microplanificación.
 
-La clase \emph{StatementComponent} representa la oraciones parciales. Se encarga de componer oraciones parciales y generar una nueva oración parcial. En el caso de un constructor de \textit{Entidad}, se encarga de generar una oración parcial compuesta por el nombre de la entidad.
-
-La clase \emph{Word} representa las palabras usadas durante la verbalización. Contiene la función gramatical de la palabra, y los algoritmos necesarios para convertir una palabra en plural, un número en palabra (1 a uno), cambiar el género de una palabra, retornar el artículo correspondiente a un sustantivo, entre otros.
-
-Las subclases de \emph{OWLRestriction} tienen la capacidad de verbalizar los constructores de Expresiones de Clases y de generar las \emph{StatementComponent}.
 
 \begin{figure}
     \centering
@@ -749,8 +745,18 @@ Las subclases de \emph{OWLRestriction} tienen la capacidad de verbalizar los con
 \end{figure}
 
 
+La clase \emph{Statement} es la encargada de realizar la verbalización de los constructores de Axiomas y las enumeraciones. Un objeto \emph{Statement} puede generar más de una oración, ya que cada \emph{Statement} trata un solo tópico y un solo tipo de constructor, pero pueden haber varios axiomas que utilicen el mismo tipo de constructor, por lo que todos esos axiomas estarán en la misma \emph{Statement}.
+
+La clase \emph{StatementComponent} representa la oraciones parciales. Se encarga de componer oraciones parciales y generar una nueva oración parcial. En el caso de un constructor de \textit{Entidad}, se encarga de generar una oración parcial compuesta por el nombre de la entidad.
+
+La clase \emph{Word} representa las palabras usadas durante la verbalización. Contiene la función gramatical de la palabra, y los algoritmos necesarios para convertir una palabra en plural, un número en palabra (1 a uno), cambiar el género de una palabra, retornar el artículo correspondiente a un sustantivo, entre otros.
+
+Las subclases de \emph{OWLRestriction} tienen la capacidad de verbalizar los constructores de Expresiones de Clases y de generar las \emph{StatementComponent}.
+
+
+
 \section{Implementación Microplanificador}
-Para facilitar la implementación de los algoritmos de Agregación y Expresiones de Referencia, decidimos implementar el contenido de las oraciones con listas de palabras en lugar de cadenas de texto, facilitando su manipulación y recorrido. De esta manera, se creó la interfaz \emph{Word} con sus respectivas subclases \emph{WordEnglish} y \emph{WordSpanish}. 
+Para facilitar la implementación de los algoritmos de Agregación (Sección~\ref{sec:agregacion}) y Expresiones de Referencia (Sección~\ref{sec:expresiones_ref}), decidimos implementar el contenido de las oraciones con listas de palabras en lugar de cadenas de texto, facilitando su manipulación y recorrido. De esta manera, se creó la interfaz \emph{Word} con sus respectivas subclases \emph{WordEnglish} y \emph{WordSpanish}. 
 La clase \emph{WordSpanish} utiliza la librería \emph{javaGramatica}\footnote{\url{https://www.proinf.net/permalink/gramatica_numero_genero_y_acentuacion}}, para implementar algunos métodos del idioma español, como pluralizar, cambio de género, número, etc. Para el idioma inglés estos métodos fueron implementados manualmente.
 
 Cada vez que se crea una Word, debe especificarse su palabra y el tipo de función que cumple la palabra. Para identificar el tipo de una palabra, se utilizó el software \texttt{Stanford POS Tagger}\footnote{https://nlp.stanford.edu/software/tagger.html}, el cual permite etiquetar palabras de inglés, español y otros idiomas. Este software utiliza una nomenclatura específica para etiquetar las palabras (llamadas etiquetas \texttt{EAGLE}\footnote{\url{https://web.archive.org/web/20160325024315/http://nlp.lsi.upc.edu/freeling/doc/tagsets/tagset-es.html}} para el español, y para el inglés el \texttt{Penn Treebank}\footnote{\url{https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html}}), por lo que utilizamos esa nomenclatura y la implementamos a través de Variables de Clase creadas en la clase Word.
@@ -794,10 +800,11 @@ Cuanto menor sea la cantidad de oraciones requeridas para ser considerada una se
 
 
 \section{Implementación del Realizador}
+\label{sec:realizacion}
 El Realizador está embebido dentro de la \textit{clase }\textit{Section}, en forma de métodos que implementan los criterios vistos para la definición del documento. En el Anexo~\ref{sec:clase_section} se presenta un pseudocódigo de la\textit{ clase }\textit{Section}.
 
 \section{Casos de estudio}
-En el Capítulo~\ref{cap:organizacion} de Organización de información analizamos cómo quedan organizados los tópicos de las ontologías Pizza y Wine, por lo que continuaremos con estas ontologías de ejemplo, analizando la realización del texto generado. Para identificar el formato del texto, a las secciones se le incluye el número de sección a la izquierda del título de la sección, y cada párrafo comienza con sangría.
+En el Capítulo~\ref{cap:organizacion} de Organización de información analizamos las ontologías Pizza y Wine, por lo que continuaremos con estas ontologías de ejemplo, analizando la realización del texto generado. Para identificar el formato del texto, a las secciones se le incluye el número de sección a la izquierda del título de la sección, y cada párrafo comienza con sangría.
 
 Debido a que existen una gran cantidad de  parámetros a tener en cuenta en el análisis de un texto, consideraremos aquellos que estén directamente relacionados con el objetivo propuesto: 
 
@@ -810,14 +817,6 @@ Debido a que existen una gran cantidad de  parámetros a tener en cuenta en el a
 
 \subsection{Generación documento ontología Pizza}
 Por causa de que el texto completo resulta muy extenso, solo pondremos los fragmentos más significativos del Documento Final. En la Figura~\ref{fig:doc_final_pizza} se presentan los fragmentos a analizar. Para visualizar la estructura total del documento, se imprimió el índice de las secciones, el cual se muestra en la Figura~\ref{fig:indice_secciones_pizza}. 
-
-Los tópicos reconocidos representan adecuadamente el tema del texto. Se puede apreciar que la estructura del documento comparte algunas similitudes con el Documento Inicial, manteniendo la coherencia global, pero disminuyó la cantidad de secciones, ya que muchas de ellas se convirtieron en párrafos. Aún así, prevalecen títulos de secciones que agregan información semántica aunque no aporten información en forma de texto, tales como Ingredientes, Coberturas y Bases.
-
-La sintaxis es aceptable y las oraciones pueden comprenderse, aunque pueden mejorarse para disminuir la redundancia. Los axiomas no son muy complejos, aunque verbalizó bien axiomas de hasta cuatro niveles de jerarquía, como el de la Figura~\ref{fig:ejemplo_verb_espaniol}. Las oraciones resultan coherentes, el salto entre oraciones es fluido teniendo en cuenta que no intercalan tópicos, y el contenido del texto anticipa bien la aparición de párrafos y subsecciones.
-
-La estructura de las oraciones es repetitiva, no era el objetivo de este trabajo realizar un texto variado, por lo que ante la misma información para verbalizar se obtiene la misma estructura.
-
-En cuanto a la cuestión estética, el texto resulta aceptable, no posee muchas secciones anidadas por lo que visualmente no sobrecarga la lectura.
 
 \begin{figure}
 \centering
@@ -922,17 +921,19 @@ Una base de pizza es una comida. Una base de pizza es base de una pizza. Existen
 \label{fig:indice_secciones_pizza}
 \end{figure}
 
+Los tópicos reconocidos representan adecuadamente el tema del texto. Se puede apreciar que la estructura del documento comparte algunas similitudes con el Documento Inicial, manteniendo la coherencia global, pero disminuyó la cantidad de secciones, ya que muchas de ellas se convirtieron en párrafos. Aún así, prevalecen títulos de secciones que agregan información semántica aunque no aporten información en forma de texto, tales como Ingredientes, Coberturas y Bases.
+
+La sintaxis es aceptable y las oraciones pueden comprenderse, aunque pueden mejorarse para disminuir la redundancia. Los axiomas no son muy complejos, aunque verbalizó bien axiomas de hasta cuatro niveles de jerarquía, como el de la Figura~\ref{fig:ejemplo_verb_espaniol}. Las oraciones resultan coherentes, el salto entre oraciones es fluido teniendo en cuenta que no intercalan tópicos, y el contenido del texto anticipa bien la aparición de párrafos y subsecciones.
+
+La estructura de las oraciones es repetitiva, no era el objetivo de este trabajo realizar un texto variado, por lo que ante la misma información para verbalizar se obtiene la misma estructura.
+
+En cuanto a la cuestión estética, el texto resulta aceptable, no posee muchas secciones anidadas por lo que visualmente no sobrecarga la lectura.
 
 \subsection{Generación documento ontología Wine}
 Al igual que el caso de estudio anterior, solo incluiremos algunos fragmentos del documento generado, los cuales se pueden ver en la Figura~\ref{fig:doc_final_wine}.
 
-En la Figura~\ref{fig:indice_secciones_wine} se visualiza el índice del documento. El resultado es similar al obtenido en la verbalización de la ontología Pizza, comparando la Figura~\ref{fig:indice_secciones_wine} con la Figura~\ref{fig:caso_estudio_wine}, se observa que la estructura resulta mucho más compacta.
+En la Figura~\ref{fig:indice_secciones_wine} se visualiza el índice del documento. Podemos observar que su estructura es mucho más compacta que la estructura inicial presentada en la Figura~\ref{fig:caso_estudio_wine}.
 
-Analizando la coherencia global y el sentido del texto, la estructuración resultó razonable, enfocada en los vinos y las propiedades de los vinos.
-
-La implementación de la sintaxis es sustancialmente equivalente a la del español, por lo que puede presentar las mismas características y capacidades, como redundancia, repetitividad y claridad. 
-
-El resultado de la realización final también resulta satisfactorio. Si bien presenta hasta cinco niveles de anidamiento (a partir de \emph{Consumable thing}), la información que se transmite es necesaria para mantener la coherencia global y establecer las relaciones pertinentes entre los tópicos.
 
 \begin{figure}
 \centering
@@ -1042,7 +1043,6 @@ Year1998: a year1998 has year value. a year1998 has year value.
 \label{fig:doc_final_wine}
 \end{figure}
 
-
 \begin{figure}
 \begin{multicols}{2}
 {\small
@@ -1099,6 +1099,11 @@ Year1998: a year1998 has year value. a year1998 has year value.
 \label{fig:indice_secciones_wine}
 \end{figure}
 
+Analizando la coherencia global y el sentido del texto, la estructuración resultó razonable, enfocada en los vinos y las propiedades de los vinos.
+
+La implementación de la sintaxis es sustancialmente equivalente a la del español, por lo que puede presentar las mismas características y capacidades, como redundancia, repetitividad y claridad. 
+
+El resultado de la realización final también resulta satisfactorio. Si bien presenta hasta cinco niveles de anidamiento (a partir de \emph{Consumable thing}), la información que se transmite es necesaria para mantener la coherencia global y establecer las relaciones pertinentes entre los tópicos.
 
 Dado que en lenguaje inglés hay ejemplos de verbalizaciones de otras investigaciones, a continuación se presenta una comparación de la verbalización de la clase \emph{Beaujolais} de la ontología \emph{Wine}, entre el trabajo~\cite{hewlett2005effective} y el nuestro:
 
@@ -1115,7 +1120,7 @@ En~\cite{hewlett2005effective} proponen listar sus características de la siguie
 En nuestro caso, la oración resultante es la siguiente:
 ``Beaujolais has light body, red color, delicate flavor and dry sugar. Made from grape gamay grape.''
 
-Existe clara diferencia, no solo en el criterio de presentación lista frente a prosa, sino también en el hecho de elegir cuánta elipsis emplear (en nuestro caso, además de omitir Beaujolais, también omitimos el verbo ``has'' para evitar redundancia), y de separar en diferentes oraciones las características asociadas al ``has'' y las asociadas al ``made from''. Decidir qué representación usar depende de muchos factores, por ejemplo, la versión en prosa no resulta muy compleja, pues la omisión del ``has'' solo ocurre en tres características, por lo que no recae tanta carga sobre el lector. Quizá en descripciones más largas sea conveniente un formato en lista, pero también hay que tener en cuenta cómo impactaría visualmente representar todas las clases de una gran ontología de esta forma. De acuerdo con~\cite{hewlett2005effective}, pueden existir métodos de generación más complejos que mejoren la calidad del texto de salida.
+Existe clara diferencia, no solo en el criterio de presentación lista frente a prosa, sino también en el hecho de elegir cuánta elipsis emplear (en nuestro caso, además de omitir Beaujolais, también omitimos el verbo ``has'' para evitar redundancia), y de separar en diferentes oraciones las características asociadas al ``has'' y las asociadas al ``made from''. Decidir qué representación usar depende de muchos factores, por ejemplo, la versión en prosa no resulta muy compleja, pues la omisión del ``has'' solo ocurre en tres características, por lo que no recae tanta carga sobre el lector. Quizá en descripciones más largas sea conveniente un formato en lista, pero también hay que tener en cuenta cómo impactaría visualmente representar todas las clases de una gran ontología de esta forma. %De acuerdo con~\cite{hewlett2005effective}, pueden existir métodos de generación más complejos que mejoren la calidad del texto de salida.
 
 Otra herramienta que se pudo probar con la ontología \emph{Wine} fue Attempto Tools~\cite{attempto}, la cual retornó la siguiente salida para la clase Beaujolais:
 
@@ -1138,7 +1143,7 @@ En comparación con las salidas en formato lista y prosa, podemos apreciar que e
 \section{Conclusiones}
 Hemos presentado un sistema que genera un texto en lenguaje natural a partir de los axiomas de una ontología. La estructura del documento de texto depende de la organización realizada en la Macroplanificación, y de los criterios tomados en el Realizador, conservando la coherencia global recibida del Organizador de Información. 
 
-Tomando como referencia lo postulado por la Teoría de Centrado,% se pudo proveer a los párrafos de coherencia local. Para cada clase se reunió la mayor cantidad de información disponible, agrupándola a través de los constructores de Axiomas.
+Tomando como referencia lo postulado por la Teoría de Centrado, % se pudo proveer a los párrafos de coherencia local. Para cada clase se reunió la mayor cantidad de información disponible, agrupándola a través de los constructores de Axiomas.
 se incrementó el grado de coherencia local a los párrafos. Para cada clase se reunió la mayor cantidad de información disponible, agrupándola a través de los constructores de Axiomas.
 
 La separación en constructores de \textit{Expresiones de Clases} y constructores de \textit{Axiomas}, dio lugar a las oraciones parciales y a un sistema de tipos. Si bien este sistema no se corresponde fielmente a las categorías de constituyentes sintácticos\footnote{Un constituyente sintáctico es una palabra, o secuencia de palabras, que funciona en conjunto como una unidad dentro de la estructura jerárquica de una oración (por ejemplo Sintagma Verbal.)} de alguna gramática conocida (como la gramática tradicional o la gramática generativa\footnote{La gramática tradicional y la generativa se enfocan en el estudio de la gramática del lenguaje. La gramática generativa es más moderna y estudia la sintaxis del lenguaje a través de definiciones formales.}), permitió minimizar la cantidad de combinaciones que había que diseñar en las gramáticas.
