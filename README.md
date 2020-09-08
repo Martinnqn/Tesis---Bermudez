@@ -3,6 +3,7 @@ Este repositorio es un backup y control de versiones de mi Tesis de Grado, sincr
 
 ### Título de la tesis: "Estrategias para abordar la macro y micro planificación en el proceso de verbalización de ontologías."
 Esta tesis está escrita en Latex.
+
 **Nota final**: 10
 
 **Área de estudio**: Procesamiento de Lenguaje Natural
